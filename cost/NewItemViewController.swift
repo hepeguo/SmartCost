@@ -15,6 +15,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate {
     var priceLabel: UILabel?
     var numberPad: NumberPad?
     var contentView: UIView?
+    var kind: [String] = ["Film", "Food", "Snacks", "Clothing", "Shopping", "Gifts", "Home", "Study", "Traffic", "Fun", "Net Bill", "Visa", "Investment", "Medical", "Other"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,8 +106,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate {
             self.contentView!.alpha = 0
             self.contentView!.transform = CGAffineTransformMakeScale(0.9, 0.9)
             }, completion: {_ in
-                let vc = self.storyboard?.instantiateViewControllerWithIdentifier("MainView") as! MainViewController
-                self.presentViewController(vc, animated: false, completion: nil)
+                self.performSegueWithIdentifier("closeNewItemView", sender: self)
         })
     }
     
@@ -121,11 +121,15 @@ class NewItemViewController: UIViewController, NumberPadDelegate {
             self.contentView!.alpha = 0
             self.contentView!.transform = CGAffineTransformMakeScale(0.9, 0.9)
             }, completion: {_ in
-                let vc = self.storyboard?.instantiateViewControllerWithIdentifier("MainView") as! MainViewController
-                self.presentViewController(vc, animated: false, completion: {_ in
-                    vc.newItemFromAddView(self.item)
-                })
+                self.performSegueWithIdentifier("closeNewItemView", sender: self)
         })
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if item.price != 0 {
+            let mainViewController = segue.destinationViewController as! MainViewController
+            mainViewController.newItemFromAddView(self.item)
+        }
     }
     
     func showNumberPad(sender: UITapGestureRecognizer) {

@@ -42,8 +42,9 @@ class CalendarWeekViewControllerView: UIView, UIScrollViewDelegate, CalendarWeek
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        let date = GDate()
         initContentView()
-        getPresentWeek()
+        getPresentWeek(date)
         initWeekView()
         presnetWeekView?.selectDayFromWeek(selectedDay)
     }
@@ -67,20 +68,15 @@ class CalendarWeekViewControllerView: UIView, UIScrollViewDelegate, CalendarWeek
         addSubview(scrollView!)
     }
     
-    func getPresentWeek(){
+    func getPresentWeek(date: GDate){
         var today = GDate()
         let todayOfWeek = today.getWeek().dayOfWeek
         presentWeekDay = today.addDay(-todayOfWeek + 1)
         prevWeekDay = presentWeekDay.addDay(-7)
         nextWeekDay = presentWeekDay.addDay(7)
-        for var i = 0; i < 7; i++ {
-            let presentDate = presentWeekDay.addDay(i)
-            presentWeek.append(presentDate)
-            let prevDate = prevWeekDay.addDay(i)
-            prevWeek.append(prevDate)
-            let nextDate = nextWeekDay.addDay(i)
-            nextWeek.append(nextDate)
-        }
+        prevWeek = getDayOfWeek(prevWeekDay)
+        presentWeek = getDayOfWeek(presentWeekDay)
+        nextWeek = getDayOfWeek(nextWeekDay)
     }
     
     func initWeekView() {
@@ -100,6 +96,44 @@ class CalendarWeekViewControllerView: UIView, UIScrollViewDelegate, CalendarWeek
         scrollView!.addSubview(prevWeekView!)
         scrollView!.addSubview(presnetWeekView!)
         scrollView!.addSubview(nextWeekView!)
+    }
+    
+    func setCalendarSelectedDay(date: GDate) {
+        var nextSelectDay = date;
+        let nextDate = nextSelectDay.getDay()
+        let nextWeekDayDate = nextWeekDay.getDay()
+        let presentWeekDayDate = presentWeekDay.getDay()
+        if GDate(year: nextDate.year, month: nextDate.month, day: nextDate.day, hour: 0, minute: 0, second: 0) >= GDate(year: nextWeekDayDate.year, month: nextWeekDayDate.month, day: nextWeekDayDate.day, hour: 0, minute: 0, second: 0) {
+            scrollView!.setContentOffset(CGPointMake(frame.width * 2, 0), animated: true)
+            
+            let todayOfWeek = nextSelectDay.getWeek().dayOfWeek
+            presentWeekDay = nextSelectDay.addDay(-todayOfWeek + 1)
+            prevWeekDay = presentWeekDay.addDay(-7)
+            nextWeekDay = presentWeekDay.addDay(7)
+            
+            prevWeek = getDayOfWeek(prevWeekDay)
+            presentWeek = getDayOfWeek(presentWeekDay)
+            nextWeek = getDayOfWeek(nextWeekDay)
+            
+            selectedDay = nextSelectDay
+        } else if GDate(year: nextDate.year, month: nextDate.month, day: nextDate.day, hour: 0, minute: 0, second: 0) < GDate(year: presentWeekDayDate.year, month: presentWeekDayDate.month, day: presentWeekDayDate.day, hour: 0, minute: 0, second: 0) {
+            scrollView!.setContentOffset(CGPointMake(0, 0), animated: true)
+            
+            let todayOfWeek = nextSelectDay.getWeek().dayOfWeek
+            presentWeekDay = nextSelectDay.addDay(-todayOfWeek + 1)
+            prevWeekDay = presentWeekDay.addDay(-7)
+            nextWeekDay = presentWeekDay.addDay(7)
+            
+            prevWeek = getDayOfWeek(prevWeekDay)
+            presentWeek = getDayOfWeek(presentWeekDay)
+            nextWeek = getDayOfWeek(nextWeekDay)
+            
+            selectedDay = nextSelectDay
+        } else {
+            selectedDay = nextSelectDay
+            initWeekView()
+            presnetWeekView!.selectDayFromWeek(selectedDay)
+        }
     }
     
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
@@ -205,6 +239,8 @@ class CalendarWeekViewControllerView: UIView, UIScrollViewDelegate, CalendarWeek
         }
         return weekDays
     }
+    
+//MARK: CalendarWeekViewDelegate
     
     func selectedDay(dayView: CalendarDayView) {
         selectedDay = dayView.date!

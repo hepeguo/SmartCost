@@ -18,6 +18,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var calendarView: CalendarWeekViewControllerView?
     var counterNumber: CounterNumber?
     var dateLabel: UILabel?
+    var gotoTodayIcon: UIImageView?
     
     //三个列表的数据
     var todayList = [ItemModel]()
@@ -107,6 +108,13 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         dateLabel = UILabel(frame: CGRectMake(10, 20, 100, 22))
         let totalLabel = UILabel(frame: CGRectMake(10, 42, 70, 22))
+        
+        let setUpIcon = UIImageView(frame: CGRectMake(view.bounds.width - 75, 34, 18, 18))
+        setUpIcon.image = UIImage(named: "setUp")
+        setUpIcon.userInteractionEnabled = true
+        let setUpTap = UITapGestureRecognizer(target: self, action: "showSetUpView:")
+        setUpIcon.addGestureRecognizer(setUpTap)
+        
         let addLabel = UILabel(frame: CGRectMake(view.bounds.width - 42, 25, 32, 32))
         addLabel.textAlignment = .Center
         addLabel.text = "+"
@@ -137,6 +145,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         calendarView!.delegate = self
         
         topBar!.addSubview(statusLabel)
+        topBar!.addSubview(setUpIcon)
         topBar!.addSubview(addLabel)
         topBar!.addSubview(dateLabel!)
         topBar!.addSubview(totalLabel)
@@ -180,6 +189,39 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         pageScrollView!.delegate = self
         
         listView!.addSubview(pageScrollView!)
+        
+        let statistics = UIImageView(frame: CGRectMake(frame.width - 28, frame.height - 48, 18, 18))
+        statistics.image = UIImage(named: "pan")
+        statistics.userInteractionEnabled = true
+        let showStatisticsViewTap = UITapGestureRecognizer(target: self, action: "showStatisticsView:")
+        statistics.addGestureRecognizer(showStatisticsViewTap)
+        listView?.addSubview(statistics)
+        
+        gotoTodayIcon = UIImageView(frame: CGRectMake(10, frame.height - 50, 22, 22))
+        gotoTodayIcon?.userInteractionEnabled = true
+        let gotoTodayTap = UITapGestureRecognizer(target: self, action: "gotoToday:")
+        gotoTodayIcon?.addGestureRecognizer(gotoTodayTap)
+        listView?.addSubview(gotoTodayIcon!)
+    }
+    
+    func setupGotoTodayIcon() {
+        if numberOfDayFromToday == 0 {
+            UIView.animateWithDuration(0.3, animations: {
+                self.gotoTodayIcon?.alpha = 0
+                }, completion: { _ in
+                    self.gotoTodayIcon?.image = nil
+            })
+        } else if numberOfDayFromToday > 0 {
+            gotoTodayIcon?.image = UIImage(named: "arrow-left")
+            UIView.animateWithDuration(0.3, animations: {
+                self.gotoTodayIcon?.alpha = 1
+                }, completion: nil)
+        } else {
+            gotoTodayIcon?.image = UIImage(named: "arrow-right")
+            UIView.animateWithDuration(0.3, animations: {
+                self.gotoTodayIcon?.alpha = 1
+                }, completion: nil)
+        }
     }
     
     func initDataForTableViews() {
@@ -255,13 +297,56 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         })
     }
     
+    func showSetUpView(tap: UITapGestureRecognizer) {
+        UIView.animateWithDuration(0.3, animations: {
+            self.topBar!.frame.origin.y = -110
+            self.listView?.frame.origin.y = self.view.frame.height
+            }, completion: {_ in
+                let vc = self.storyboard?.instantiateViewControllerWithIdentifier("setUpView") as! SetUpViewController
+                self.presentViewController(vc, animated: false, completion: nil)
+        })
+    }
+    
+    func showStatisticsView(tap: UITapGestureRecognizer) {
+        UIView.animateWithDuration(0.3, animations: {
+            self.topBar!.frame.origin.y = -110
+            self.listView?.frame.origin.y = self.view.frame.height
+            }, completion: {_ in
+                let vc = self.storyboard?.instantiateViewControllerWithIdentifier("statisticsView") as! StatisticsViewController
+                self.presentViewController(vc, animated: false, completion: nil)
+        })
+    }
+    
     func newItemFromAddView(item: Item) {
         if item.id != "" {
-            saveItem(item)
+            if item.kill {
+                deleteItem(item)
+            } else {
+                saveItem(item)
+            }
         } else {
             addItem(item)
         }
     }
+    
+    @IBAction func closeNewItemView(sender: UIStoryboardSegue) {
+//        println("success")
+    }
+    
+    @IBAction func closeSetUpView(sender: UIStoryboardSegue) {
+        //        println("success")
+    }
+    
+    @IBAction func closeStatisticsView(sender: UIStoryboardSegue) {
+        //        println("success")
+    }
+    
+    func gotoToday(sender: UITapGestureRecognizer) {
+        println("reset calender")
+        let date = GDate()
+        calendarView?.setCalendarSelectedDay(date)
+    }
+ 
     
     // MARK: - Table view data source
     
@@ -329,6 +414,45 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     //MARK: - get and save data
+    func deleteItem(item: Item) {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let managedContext = appDelegate.managedObjectContext!
+        
+        var error:NSError?
+        var itemModel:ItemModel?
+        let fetchRequest = NSFetchRequest(entityName: "ItemModel")
+        fetchRequest.predicate = NSPredicate(format: "id == '\(item.id)'")
+        
+        let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
+        
+        if fetchResults != nil && fetchResults?.count > 0 {
+            itemModel = fetchResults![0]
+        }
+        if itemModel != nil {
+            let date = GDate()
+            let time = date.getTime()
+            itemModel!.price = item.price
+            itemModel!.detail = item.detail
+            itemModel!.kind = item.kind
+            itemModel!.kill = item.kill
+            itemModel!.addTime = "\(time.hour): \(time.minute): \(time.second)"
+            
+            if !managedContext.save(&error) {
+                println("Could not save\(error), \(error?.userInfo)")
+            }
+            
+            for (index, item)in enumerate(todayList) {
+                if item.id == todayList[index].id {
+                    todayList.removeAtIndex(index)
+                    break
+                }
+            }
+        }
+        
+        let total = getSum(todayList)
+        counterNumber!.scrollToNumber(total.numberBeforeDot, numberAfterDot: total.numberAfterDot)
+        todayTableView.reloadData()
+    }
     
     func saveItem(item: Item) {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -427,7 +551,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         var error:NSError?
         
-        fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && month == '\(month)' && day == '\(day)'")
+        fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && month == '\(month)' && day == '\(day)' && kill == false")
         let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
         return fetchResults
     }
@@ -440,7 +564,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         var error:NSError?
         
-        fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && weekOfYear == '\(weekOfYear)'")
+        fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && weekOfYear == '\(weekOfYear)' && kill == false")
         let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
         return fetchResults
     }
@@ -453,7 +577,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         var error:NSError?
         
-        fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && weekOfYear == '\(month)'")
+        fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && weekOfYear == '\(month)' && kill == false")
         let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
         return fetchResults
     }
@@ -466,7 +590,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         var error:NSError?
         
-        fetchRequest.predicate = NSPredicate(format: "year == '\(year)'")
+        fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && kill == false")
         let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
         return fetchResults
     }
@@ -527,6 +651,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let total = getSum(todayList)
         counterNumber!.scrollToNumber(total.numberBeforeDot, numberAfterDot: total.numberAfterDot)
         
+        setupGotoTodayIcon()
         todayTableView.reloadData()
         yesterdayTableView.reloadData()
         tomorrowTableView.reloadData()
@@ -558,6 +683,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let total = getSum(todayList)
         counterNumber!.scrollToNumber(total.numberBeforeDot, numberAfterDot: total.numberAfterDot)
         
+        setupGotoTodayIcon()
         todayTableView.reloadData()
         yesterdayTableView.reloadData()
         tomorrowTableView.reloadData()
@@ -565,6 +691,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func afterAutoScroll() {
         initDataForTableViews()
+        let total = getSum(todayList)
+        counterNumber!.scrollToNumber(total.numberBeforeDot, numberAfterDot: total.numberAfterDot)
+        
+        setupGotoTodayIcon()
     }
     
 //  MARK: CalendarWeekViewControllerDelegate
@@ -597,7 +727,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             println("month changed")
             dateLabel!.text = "\(monthName[month - 1]) \(year)"
         }
-        
         println("\(selectedDay.year), \(selectedDay.month), \(selectedDay.day) is selected!")
     }
     

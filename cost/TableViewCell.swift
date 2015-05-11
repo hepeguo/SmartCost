@@ -61,7 +61,7 @@ class TableViewCell: UITableViewCell {
         kindLabel.text = item?.kind
         
         kindImage = UIImageView()
-        kindImage.image = UIImage(named: "write")
+        kindImage.image = UIImage(named: "house1")
         
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         

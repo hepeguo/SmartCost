@@ -7,7 +7,7 @@
         <!--Main View Controller-->
         <scene sceneID="jaH-R0-xFD">
             <objects>
-                <viewController storyboardIdentifier="MainView" id="7c3-tm-RQh" customClass="MainViewController" customModule="_Mate" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MainView" id="7c3-tm-RQh" customClass="MainViewController" customModule="cost" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="wOp-27-iep"/>
                         <viewControllerLayoutGuide type="bottom" id="hF4-LZ-a63"/>
@@ -24,7 +24,7 @@
         <!--New Item View Controller-->
         <scene sceneID="4Yr-Lr-e3g">
             <objects>
-                <viewController storyboardIdentifier="AddItemView" id="MyP-zZ-Ytb" customClass="NewItemViewController" customModule="_Mate" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddItemView" id="MyP-zZ-Ytb" customClass="NewItemViewController" customModule="cost" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="876-TG-u4Q"/>
                         <viewControllerLayoutGuide type="bottom" id="8uj-6v-NYn"/>
@@ -35,22 +35,61 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="DuT-om-N6Q">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="VUt-5S-iCV">
-                            <connections>
-                                <segue destination="UQm-nV-WDa" kind="unwind" unwindAction="unWinfFromAddView:" id="VLA-e4-IVB"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="dZn-sI-e1U">
-                            <connections>
-                                <segue destination="UQm-nV-WDa" kind="unwind" unwindAction="unWinfFromAddView:" id="9Nt-Ea-rjr"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="VUt-5S-iCV"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="dZn-sI-e1U"/>
                     </navigationItem>
+                    <connections>
+                        <segue destination="UQm-nV-WDa" kind="unwind" identifier="closeNewItemView" unwindAction="closeNewItemView:" id="nGp-sd-59C"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bGU-Yo-rXb" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="UQm-nV-WDa" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2357" y="646"/>
+            <point key="canvasLocation" x="1928" y="624"/>
+        </scene>
+        <!--Set Up View Controller-->
+        <scene sceneID="iBY-d1-Dfd">
+            <objects>
+                <viewController storyboardIdentifier="setUpView" id="NzN-k5-ZHG" customClass="SetUpViewController" customModule="cost" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Vub-6U-Ozp"/>
+                        <viewControllerLayoutGuide type="bottom" id="j8b-dh-mvj"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="q4f-gs-eOu">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <segue destination="29l-3P-cmo" kind="unwind" identifier="closeSetUpView" unwindAction="closeSetUpView:" id="64n-ZB-7sS"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5wi-HT-TIQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="29l-3P-cmo" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="2590" y="596"/>
+        </scene>
+        <!--Statistics View Controller-->
+        <scene sceneID="mW2-Qd-w3T">
+            <objects>
+                <viewController storyboardIdentifier="statisticsView" id="iq1-Ut-Ocq" customClass="StatisticsViewController" customModule="cost" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Bx1-az-gQG"/>
+                        <viewControllerLayoutGuide type="bottom" id="hxc-3Z-1wd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Mo6-JT-KGM">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <segue destination="MSx-O8-IdU" kind="unwind" identifier="closeStatisticsView" unwindAction="closeStatisticsView:" id="HaW-N0-QgG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="M28-Vh-W90" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="MSx-O8-IdU" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="3214" y="596"/>
         </scene>
     </scenes>
 </document>

@@ -61,19 +61,6 @@ class CalendarWeekView: UIView, CalendarDayViewDelegate {
         }
     }
     
-    func selectedDay(dayView: CalendarDayView) {
-        for view in dayViewOfWeek {
-            if view.date != dayView.date {
-                view.isSelectedDay = false
-            }
-        }
-        delegate?.selectedDay(dayView)
-    }
-    
-    func unSelectedDay(dayView: CalendarDayView) {
-        
-    }
-    
     func selectFirstDayOfWeek() {
         dayViewOfWeek[0].isSelectedDay = true
     }
@@ -92,6 +79,20 @@ class CalendarWeekView: UIView, CalendarDayViewDelegate {
                 view.isSelectedDay = false
             }
         }
+    }
+    
+    //MARK: CalendarDayViewDelegate
+    func selectedDay(dayView: CalendarDayView) {
+        for view in dayViewOfWeek {
+            if view.date != dayView.date {
+                view.isSelectedDay = false
+            }
+        }
+        delegate?.selectedDay(dayView)
+    }
+    
+    func unSelectedDay(dayView: CalendarDayView) {
+        
     }
 }
 
