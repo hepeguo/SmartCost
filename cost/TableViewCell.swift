@@ -23,6 +23,7 @@ class TableViewCell: UITableViewCell {
             detailLabel.text = item?.detail
             kindLabel.text = item?.kind
             timeLabel.text = item?.time
+            kindImage.image = UIImage(named: item!.kind)
         }
     }
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -60,8 +61,7 @@ class TableViewCell: UITableViewCell {
         kindLabel.textAlignment = .Left
         kindLabel.text = item?.kind
         
-        kindImage = UIImageView()
-        kindImage.image = UIImage(named: "house1")
+        kindImage = UIImageView()     
         
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         

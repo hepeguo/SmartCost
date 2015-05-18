@@ -107,7 +107,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         statusLabel.backgroundColor = UIColor.whiteColor()
         
         dateLabel = UILabel(frame: CGRectMake(10, 20, 100, 22))
-        let totalLabel = UILabel(frame: CGRectMake(10, 42, 70, 22))
+        dateLabel!.text = "\(monthName[month - 1]) \(year)"
+        dateLabel!.font = fontSmall
+        dateLabel!.textColor = color
         
         let setUpIcon = UIImageView(frame: CGRectMake(view.bounds.width - 75, 34, 18, 18))
         setUpIcon.image = UIImage(named: "setUp")
@@ -120,14 +122,12 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         addLabel.text = "+"
         addLabel.font = fontBigger
         
-        dateLabel!.text = "\(monthName[month - 1]) \(year)"
-        dateLabel!.font = fontSmall
-        dateLabel!.textColor = color
+        let totalLabel = UILabel(frame: CGRectMake(10, 42, 70, 22))
         totalLabel.text = "TOTAL: "
         totalLabel.font = fontBig
         totalLabel.textColor = color
         
-        counterNumber = CounterNumber(frame: CGRectMake(80, 36, 200, 22))
+        counterNumber = CounterNumber(frame: CGRectMake(80, 36, view.frame.width - 155, 22))
         let total = getSum(todayList)
         counterNumber!.startNumber = total.numberBeforeDot
         counterNumber!.startNumberAfterDot = total.numberAfterDot
@@ -325,6 +325,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 saveItem(item)
             }
         } else {
+            println(item.kind)
             addItem(item)
         }
     }
@@ -555,7 +556,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
         return fetchResults
     }
-    
+/*
     func getWeekDataFromDatabase(year: Int, weekOfYear: Int) -> [ItemModel]? {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         let managedContext = appDelegate.managedObjectContext!
@@ -594,7 +595,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
         return fetchResults
     }
-    
+*/
     func comboData(data: [ItemModel]) -> [String: Float] {
         var sumKind: [String: Float] = [String: Float]()
         for itemModel in data {

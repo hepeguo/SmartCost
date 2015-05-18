@@ -48,7 +48,7 @@ class PageView: UIView, UIScrollViewDelegate {
         
         //title
         
-        var noteView = UIView(frame: CGRectMake(0, self.bounds.size.height - 33.0, frame.width, 33))
+        var noteView = UIView(frame: CGRectMake(0, self.bounds.size.height - 30.0, frame.width, 20))
         
         let pageControlWidth = CGFloat(count - 2) * 10.0 + 40.0
         let pageControlHeight = CGFloat(20.0)
@@ -70,5 +70,9 @@ class PageView: UIView, UIScrollViewDelegate {
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func scrollTo(point: CGPoint) {
+        scrollView.setContentOffset(point, animated: false)        
     }
 }

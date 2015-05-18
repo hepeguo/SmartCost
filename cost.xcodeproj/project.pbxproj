@@ -38,6 +38,7 @@
 		B14CB6421B00DEF5003D9C8F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B14CB6411B00DEF5003D9C8F /* Main.storyboard */; };
 		B14CB6441B010D33003D9C8F /* SetUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14CB6431B010D33003D9C8F /* SetUpViewController.swift */; };
 		B14CB6461B010E4D003D9C8F /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14CB6451B010E4D003D9C8F /* StatisticsViewController.swift */; };
+		B163B5B51B039EA200D7E46D /* KindItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B163B5B41B039EA200D7E46D /* KindItemView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +87,7 @@
 		B14CB6411B00DEF5003D9C8F /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		B14CB6431B010D33003D9C8F /* SetUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetUpViewController.swift; sourceTree = "<group>"; };
 		B14CB6451B010E4D003D9C8F /* StatisticsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
+		B163B5B41B039EA200D7E46D /* KindItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KindItemView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,9 +185,9 @@
 		B14CB61A1AFF8545003D9C8F /* Main View Controller */ = {
 			isa = PBXGroup;
 			children = (
-				B14CB6161AFF8533003D9C8F /* NewItemViewController.swift */,
 				B14CB6431B010D33003D9C8F /* SetUpViewController.swift */,
 				B14CB6451B010E4D003D9C8F /* StatisticsViewController.swift */,
+				B14CB6161AFF8533003D9C8F /* NewItemViewController.swift */,
 				B14CB6171AFF8533003D9C8F /* MainViewController.swift */,
 			);
 			name = "Main View Controller";
@@ -194,6 +196,7 @@
 		B14CB62F1AFF858E003D9C8F /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B163B5B41B039EA200D7E46D /* KindItemView.swift */,
 				B14CB61B1AFF8579003D9C8F /* NumberPad.swift */,
 				B14CB61C1AFF8579003D9C8F /* CounterNumber.swift */,
 				B14CB61D1AFF8579003D9C8F /* PushButtonView.swift */,
@@ -324,6 +327,7 @@
 				B14CB6251AFF8579003D9C8F /* NumberPad.swift in Sources */,
 				B14CB6321AFF85AC003D9C8F /* Kind.swift in Sources */,
 				B14CB6111AFF8511003D9C8F /* GAuxiliaryView.swift in Sources */,
+				B163B5B51B039EA200D7E46D /* KindItemView.swift in Sources */,
 				B14CB63C1AFF8A2A003D9C8F /* BookModel.swift in Sources */,
 				B14CB6441B010D33003D9C8F /* SetUpViewController.swift in Sources */,
 				B14CB60F1AFF8511003D9C8F /* CalendarWeekView.swift in Sources */,

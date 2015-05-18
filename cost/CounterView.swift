@@ -17,7 +17,12 @@ class CounterView: UIView {
         }
     }
     var label: UILabel?
-    var colors = [UIColor.purpleColor(), UIColor.blueColor(), UIColor.brownColor(), UIColor.yellowColor()]
+//    var colors = [UIColor.purpleColor(), UIColor.blueColor(), UIColor.brownColor(), UIColor.yellowColor()]
+    var colors = [0xeed9678, 0xee7dac9, 0xecb8e85, 0xef3f39d, 0xec8e49c,
+                    0xef16d7a, 0xef3d999, 0xed3758f, 0xedcc392, 0xe2e4783,
+                    0xe82b6e9, 0xeff6347, 0xea092f1, 0xe0a915d, 0xeeaf889,
+                    0xe6699FF, 0xeff6666, 0xe3cb371, 0xed5b158, 0xe38b6b6
+                ]
 
     override func drawRect(rect: CGRect) {
         self.layer.sublayers = nil
@@ -64,7 +69,7 @@ class CounterView: UIView {
                 var path = UIBezierPath(arcCenter: center, radius: radius, startAngle: angles[i], endAngle: angles[i + 1], clockwise: true)
                 var calyer = CAShapeLayer()
                 calyer.path = path.CGPath
-                calyer.strokeColor = colors[i].CGColor
+                calyer.strokeColor = UIColor.colorFromCode(colors[i]).CGColor
                 calyer.strokeStart = 0
                 calyer.strokeEnd = 0
                 calyer.fillColor = UIColor.clearColor().CGColor
