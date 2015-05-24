@@ -596,18 +596,18 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         return fetchResults
     }
 */
-    func comboData(data: [ItemModel]) -> [String: Float] {
-        var sumKind: [String: Float] = [String: Float]()
-        for itemModel in data {
-            if sumKind[itemModel.kind] == nil {
-                sumKind.updateValue(itemModel.price.floatValue, forKey: itemModel.kind)
-            } else {
-                sumKind[itemModel.kind]! += itemModel.price.floatValue
-            }
-        }
-        println(sumKind)
-        return sumKind
-    }
+//    func comboData(data: [ItemModel]) -> [String: Float] {
+//        var sumKind: [String: Float] = [String: Float]()
+//        for itemModel in data {
+//            if sumKind[itemModel.kind] == nil {
+//                sumKind.updateValue(itemModel.price.floatValue, forKey: itemModel.kind)
+//            } else {
+//                sumKind[itemModel.kind]! += itemModel.price.floatValue
+//            }
+//        }
+//        println(sumKind)
+//        return sumKind
+//    }
     
     func getSum (data: [ItemModel]) -> (numberBeforeDot: Int, numberAfterDot: Int) {
         var sum: Float = 0.0

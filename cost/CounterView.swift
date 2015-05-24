@@ -11,7 +11,7 @@ import UIKit
 let PI:CGFloat = CGFloat(M_PI)
 
 class CounterView: UIView {
-    var numbers: [String: Float] = ["movie" : 0] {
+    var numbers: [Kind] = [Kind()] {
         didSet {
             setNeedsDisplay()
         }
@@ -44,8 +44,8 @@ class CounterView: UIView {
         if numbers.count > 0 {
             var beforeAll = [Float]()
             var num = [Float]()
-            for (kind, price) in numbers {
-                num.append(price)
+            for number in numbers {
+                num.append(number.sum)
             }
             for var i = num.count - 1; i >= 0 ; i-- {
                 var before = num[i]

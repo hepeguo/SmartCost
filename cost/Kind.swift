@@ -8,5 +8,17 @@
 
 import Foundation
 
-var Kind  = ["movie" : 0, "dinner" : 0, "phone" : 0]
+class Kind: NSObject {
+    var name: String = ""
+    var sum: Float = 0.0
+    
+    override init() {
+        super.init()
+    }
+    
+    init(name: String, price: Float) {
+        self.name = name
+        self.sum = price
+    }
+}
     
