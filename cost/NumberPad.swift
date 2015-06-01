@@ -9,6 +9,7 @@
 import UIKit
 protocol NumberPadDelegate {
     func tappedNumber(text: String)
+    func tappedOK()
 }
 
 class NumberPad: UIView {
@@ -28,6 +29,10 @@ class NumberPad: UIView {
         super.init(frame: frame)
         initNumberView()
     }
+    
+    var string: String = ""
+    var dotTapped: Bool = false
+    var afterDotTappedTapNumber: Int = 0
 
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -74,11 +79,81 @@ class NumberPad: UIView {
     }
     
     func tappedNumber(sender: UITapGestureRecognizer) {
+        if string == "0" {
+            string = ""
+        }
         if let label = sender.view as? UILabel{
             if let text = label.text {
-                delegate?.tappedNumber(text)
+                if dotTapped {
+                    if text == "." {
+                        
+                    } else if text == "⌫" {
+                        afterDotTappedTapNumber--
+                        let index = advance(string.endIndex, -1);
+                        string = string.substringToIndex(index)
+                        if afterDotTappedTapNumber < 0 {
+                            afterDotTappedTapNumber = 0
+                            dotTapped = false
+                        }
+                    } else if text == "C" {
+                        dotTapped = false
+                        afterDotTappedTapNumber = 0
+                        string = "0"
+                    } else if text == "OK" {
+                        delegate!.tappedOK()
+                    }else {
+                        afterDotTappedTapNumber++
+                        if afterDotTappedTapNumber > 2 {
+                            afterDotTappedTapNumber = 2
+                            let index = advance(string.endIndex, -1);
+                            let newstring = string.substringToIndex(index)
+                            string = newstring + text
+                        } else {
+                            string = string + text
+                        }
+                    }
+                } else {
+                    switch text {
+                    case "0": string = string + text
+                    case "1": string = string + text
+                    case "2": string = string + text
+                    case "3": string = string + text
+                    case "4": string = string + text
+                    case "5": string = string + text
+                    case "6": string = string + text
+                    case "7": string = string + text
+                    case "8": string = string + text
+                    case "9": string = string + text
+                    case "C": string = "0"
+                    case ".":
+                        dotTapped = true
+                        if string.isEmpty {
+                            string = "0" + text
+                        } else {
+                            string = string + text
+                        }
+                    case "⌫":
+                        if string == "0" || string == "" {
+                            return
+                        }
+                        let index = advance(string.endIndex, -1);
+                        let newstring = string.substringToIndex(index)
+                        if newstring.isEmpty {
+                            string = "0"
+                        } else {
+                            string = newstring
+                        }
+                    case "OK":
+                        delegate!.tappedOK()
+                    default: return
+                    }
+                }
             }
         }
+        if string == "" {
+            string == "0"
+        }
+        delegate?.tappedNumber(string)
     }
 }
 

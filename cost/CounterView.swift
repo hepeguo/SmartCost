@@ -84,7 +84,7 @@ class CounterView: UIView {
             var path = UIBezierPath(arcCenter: center, radius: radius, startAngle: 0, endAngle: 2 * PI, clockwise: true)
             var calyer = CAShapeLayer()
             calyer.path = path.CGPath
-            calyer.strokeColor = UIColor.grayColor().CGColor
+            calyer.strokeColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5).CGColor
             calyer.strokeStart = 0
             calyer.strokeEnd = 0
             calyer.fillColor = UIColor.clearColor().CGColor
@@ -111,6 +111,10 @@ class CounterView: UIView {
         label!.textColor = UIColor.whiteColor()
 //        label!.backgroundColor = UIColor.redColor()
         addSubview(label!)
-        label!.text = "\(total)"
+        if total == 0.0 {
+            label!.text = "0.00"
+        } else {
+            label!.text = "\(total)"
+        }
     }
 }

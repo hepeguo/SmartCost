@@ -14,12 +14,10 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
     var addButton: UILabel?
     var priceLabel: UILabel?
     var detailTextView: UITextView?
+    var deleteButton: UILabel?
     var numberPad: NumberPad?
     var contentView: UIView?
-    var kind = [
-        "en": ["Film", "Food", "Snacks", "Clothing", "Shopping", "Gifts", "Home", "Study", "Traffic", "Fun", "Net Bill", "Visa", "Investment", "Medical", "Other"],
-        "ch": ["电影", "餐饮", "零食", "服饰", "购物", "礼物", "居家", "学习", "交通", "娱乐", "通信", "信用卡", "理财", "医疗", "其他"]
-    ]
+    var kind = ["Film", "Food", "Snacks", "Clothing", "Shopping", "Gifts", "Digital", "Home", "Study", "Traffic", "Travel", "Entertainment", "Net Fee", "Visa", "Investment", "Medical", "Social", "Transfer", "Fine", "Other"]
     var kindViews: [KindItemView] = [KindItemView]()
     var kindViewsPageView: PageView?
     
@@ -32,9 +30,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         contentView = UIView(frame: view.frame)
         view.addSubview(contentView!)
         
-        let language = NSBundle.mainBundle().preferredLocalizations.first as! String
-        println(language)
-//        println(kind[language as String])
+//        let language = NSBundle.mainBundle().preferredLocalizations.first as! String
         
         initTopBar()
         initKindView()
@@ -60,6 +56,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         return UIStatusBarStyle.LightContent
     }
     
+//MARK: init views
     func initTopBar() {
         let closeTap = UITapGestureRecognizer(target: self, action: "JustCloseAddItemView:")
         
@@ -121,6 +118,17 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         detailTextViewBg.addSubview(detailTextView!)
         contentView?.addSubview(detailTextViewBg)
         
+        deleteButton = UILabel(frame: CGRectMake(10, view.frame.height - 64, view.frame.width - 20, 44))
+        deleteButton?.text = "DELETE"
+        deleteButton?.textColor = UIColor.redColor()
+        deleteButton?.textAlignment = .Center
+        deleteButton?.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+        deleteButton?.userInteractionEnabled = true
+        let deleteTap = UITapGestureRecognizer(target: self, action: "deleteItem:")
+        deleteButton?.addGestureRecognizer(deleteTap)
+        deleteButton?.hidden = true
+        contentView?.addSubview(deleteButton!)
+        
         numberPad = NumberPad(frame: CGRectMake(0, view.frame.height - 300, view.frame.width, 300))
         numberPad?.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.3)
         numberPad?.layer.zPosition = 2
@@ -135,7 +143,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         var kindViewContentFirst = UIView(frame: CGRectMake(0, 0, view.frame.width, height * CGFloat(2)))
         var kindViewContentSecond = UIView(frame: CGRectMake(view.frame.width, 0, view.frame.width, height * CGFloat(2)))
         
-        for (index, item) in enumerate(kind["ch"]!) {
+        for (index, item) in enumerate(kind) {
             var rect: CGRect = CGRectZero
             if index <= 9 {
                 rect = CGRectMake(CGFloat(index % 5) * width, CGFloat(index / 5) * height, width, height)
@@ -168,6 +176,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         numberPad?.frame.origin.y = view.frame.height
         numberPad?.hidden = true
         detailTextView?.text = item.detail
+        deleteButton?.hidden = false
         for (index, kindView) in enumerate(kindViews) {
             if kindView.kind == item.kind {
                 if index >= 10 {
@@ -179,7 +188,6 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
     }
     
 //MARK: actions
-    
     func JustCloseAddItemView(sender: UITapGestureRecognizer) {
         detailTextView?.resignFirstResponder()
         UIView.animateWithDuration(0.3, animations: {
@@ -196,6 +204,18 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         item.price = (price as NSString).floatValue
         item.detail = detailTextView!.text
         item.kill = false
+        
+        UIView.animateWithDuration(0.3, animations: {
+            self.contentView!.alpha = 0
+            self.contentView!.transform = CGAffineTransformMakeScale(0.9, 0.9)
+            }, completion: {_ in
+                self.performSegueWithIdentifier("closeNewItemView", sender: self)
+        })
+    }
+    
+    func deleteItem(sender: UITapGestureRecognizer) {
+        detailTextView?.resignFirstResponder()
+        item.kill = true
         
         UIView.animateWithDuration(0.3, animations: {
             self.contentView!.alpha = 0
@@ -222,68 +242,6 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         }
     }
     
-    func tappedNumber(text: String) {
-        var price = "";
-        if priceLabel!.text != nil && priceLabel!.text != "0" {
-            price = priceLabel!.text!
-        }
-        switch text {
-            case "0": priceLabel!.text = price + text
-            case "1": priceLabel!.text = price + text
-            case "2": priceLabel!.text = price + text
-            case "3": priceLabel!.text = price + text
-            case "4": priceLabel!.text = price + text
-            case "5": priceLabel!.text = price + text
-            case "6": priceLabel!.text = price + text
-            case "7": priceLabel!.text = price + text
-            case "8": priceLabel!.text = price + text
-            case "9": priceLabel!.text = price + text
-            case "C": priceLabel!.text = "0"
-            case ".":
-                let NSPrice = price as NSString
-                if [NSPrice .rangeOfString(".")].first?.location == NSNotFound {
-                    if price.isEmpty {
-                        priceLabel!.text = "0" + text
-                    } else {
-                        priceLabel!.text = price + text
-                    }
-                }
-            case "⌫":
-                if price == "0" || price == "" {
-                    return
-                }
-                let index = advance(price.endIndex, -1);
-                let newPrice = price.substringToIndex(index)
-                if newPrice.isEmpty {
-                    priceLabel!.text = "0"
-                } else {
-                    priceLabel!.text = newPrice
-                }
-            case "OK":
-                UIView.animateWithDuration(0.3, animations: {
-                    numberPad?.frame.origin.y = view.frame.height
-                    }, completion: { _ in
-                     numberPad?.hidden = true
-                })
-            default: return
-        }
-        if priceLabel?.text != "0" && priceLabel?.text != "" {
-            if addButton?.alpha == 1 {
-                return
-            }
-            UIView.animateWithDuration(0.3, animations: {
-                addButton?.alpha = 1
-            }, completion: nil)
-        } else {
-            if addButton?.alpha == 0 {
-                return
-            }
-            UIView.animateWithDuration(0.3, animations: {
-                addButton?.alpha = 0
-                }, completion: nil)
-        }
-    }
-    
     func selectKind(sender: UITapGestureRecognizer) {
         detailTextView?.resignFirstResponder()
         let view = sender.view as! KindItemView
@@ -303,7 +261,36 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
                 self.detailTextView?.becomeFirstResponder()
         })
     }
+
+//MARK: numberPad delegate
+    func tappedNumber(text: String) {
+        priceLabel?.text = text
+        if priceLabel?.text != "0" && priceLabel?.text != "" {
+            if addButton?.alpha == 1 {
+                return
+            }
+            UIView.animateWithDuration(0.3, animations: {
+                addButton?.alpha = 1
+            }, completion: nil)
+        } else {
+            if addButton?.alpha == 0 {
+                return
+            }
+            UIView.animateWithDuration(0.3, animations: {
+                addButton?.alpha = 0
+                }, completion: nil)
+        }
+    }
     
+    func tappedOK() {
+        UIView.animateWithDuration(0.3, animations: {
+            numberPad?.frame.origin.y = view.frame.height
+            }, completion: { _ in
+                numberPad?.hidden = true
+        })
+    }
+    
+//MARK: press done hide keyboard
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {
             textView.resignFirstResponder()

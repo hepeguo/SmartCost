@@ -27,6 +27,8 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
     var monthSelectView: UIScrollView?
     var yearsView: [UILabel] = [UILabel]()
     var monthsView: [UILabel] = [UILabel]()
+    var year: Int = 2015
+    var month: Int = 0
     
     var colors = [0xeed9678, 0xee7dac9, 0xecb8e85, 0xef3f39d, 0xec8e49c,
         0xef16d7a, 0xef3d999, 0xed3758f, 0xedcc392, 0xe2e4783,
@@ -80,7 +82,9 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
     func initStatisticsView() {
         let date = GDate()
         let day = date.getDay()
-        var todayList = getMonthDataFromDatabase(day.year, month: day.month)
+        year = day.year
+        month = day.month
+        
         
         /*折现图
         let graphRect:CGRect = CGRectMake(0, 0, view.frame.width, 200)
@@ -93,7 +97,8 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         
         let counterRect: CGRect = CGRectMake(view.frame.width / 2 - 100, 20, 200, 200)
         counterView = CounterView(frame: counterRect)
-        kindAndSum = comboData(todayList!)
+        var dataList = getMonthDataFromDatabase(year, month: month)
+        kindAndSum = comboData(dataList!)
         counterView!.numbers = kindAndSum!
         counterView!.backgroundColor = UIColor.clearColor()
         
@@ -252,6 +257,10 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
             self.yearSelectView?.frame.size = CGSizeMake(0, 0)
             }, completion: {_ in
                 self.yearLabel?.text = "YEAR: " + label.text!
+                self.year = label.text!.toInt()!
+                var dataList = self.getMonthDataFromDatabase(self.year, month: self.month)
+                self.kindAndSum = self.comboData(dataList!)
+                self.counterView!.numbers = self.kindAndSum!
         })
     }
     
@@ -266,6 +275,10 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
             self.monthSelectView?.frame = CGRectMake(self.view.frame.width - 10, 200, 0, 0)
             }, completion: {_ in
                 self.monthLabel?.text = "MONTH: " + label.text!
+                self.month = label.text!.toInt()!
+                var dataList = self.getMonthDataFromDatabase(self.year, month: self.month)
+                self.kindAndSum = self.comboData(dataList!)
+                self.counterView!.numbers = self.kindAndSum!
         })
     }
     
@@ -359,16 +372,6 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         return (numberBeforeDot, numberAfterDot)
     }
 
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 //MARK: tableView delegate
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -383,12 +386,20 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
         let cell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: "cell")
         let kind: Kind = kindAndSum![indexPath.row];
+        cell.textLabel?.frame.origin = CGPointMake(50, 0)
         cell.textLabel?.text = kind.name
+        
+        let view = UIView(frame: CGRectMake(10, 10, 40, 40))
+        view.backgroundColor = UIColor.colorFromCode(colors[indexPath.row])
+        let imageView = UIImageView(frame: CGRectMake(5, 5, 30, 30))
+        imageView.image = UIImage(named: kind.name)
+        view.addSubview(imageView)
+        view.layer.cornerRadius = 10
+        cell.addSubview(view)
+        
         cell.imageView?.image = UIImage(named: kind.name)
-        cell.imageView?.backgroundColor = UIColor.colorFromCode(colors[indexPath.row])
         cell.detailTextLabel?.text = "\(kind.sum)"
         cell.detailTextLabel?.textColor = UIColor.blackColor()
         cell.selectionStyle = .None
@@ -400,13 +411,16 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        UIView.animateWithDuration(0.3, animations: {
-            self.monthSelectView?.alpha = 0
-            self.monthSelectView?.frame = CGRectMake(self.view.frame.width - 10, 200, 0, 0)
-            }, completion: nil)
-        UIView.animateWithDuration(0.3, animations: {
-            self.yearSelectView?.alpha = 0
-            self.yearSelectView?.frame.size = CGSizeMake(0, 0)
-            }, completion: nil)
+        if (scrollView == tableView) {
+            UIView.animateWithDuration(0.3, animations: {
+                self.monthSelectView?.alpha = 0
+                self.monthSelectView?.frame = CGRectMake(self.view.frame.width - 10, 200, 0, 0)
+                }, completion: nil)
+            UIView.animateWithDuration(0.3, animations: {
+                self.yearSelectView?.alpha = 0
+                self.yearSelectView?.frame.size = CGSizeMake(0, 0)
+                }, completion: nil)
+        }
+        
     }
 }
