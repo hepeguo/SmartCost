@@ -109,9 +109,6 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         detailTextView?.font = UIFont(name: "Avenir-Heavy", size: 18)!
         detailTextView?.userInteractionEnabled = true
         detailTextView?.returnKeyType = .Done
-//        detailTextView?.autocapitalizationType = .None
-//        detailTextView?.autocorrectionType = .No
-//        detailTextView?.spellCheckingType = .No
         detailTextView?.delegate = self
         let detailTap = UITapGestureRecognizer(target: self, action: "detailTapped:")
         detailTextView?.addGestureRecognizer(detailTap)
@@ -170,7 +167,8 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
     }
     
     func setUpViews() {
-        priceLabel?.text = "\(item.price)"
+        let priceString = NSString(format: "%.2f", item.price)
+        priceLabel?.text = priceString as String
         addButton?.text = "SAVE"
         addButton?.alpha = 1
         numberPad?.frame.origin.y = view.frame.height
@@ -250,7 +248,14 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         }
         view.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.3)
         item.kind = view.kind!
-        println(view.kind)
+        if priceLabel?.text != "0" && priceLabel?.text != "" {
+            if addButton?.alpha == 1 {
+                return
+            }
+            UIView.animateWithDuration(0.3, animations: {
+                addButton?.alpha = 1
+                }, completion: nil)
+        }
     }
     
     func detailTapped(sender: UITapGestureRecognizer) {
@@ -269,9 +274,11 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
             if addButton?.alpha == 1 {
                 return
             }
-            UIView.animateWithDuration(0.3, animations: {
-                addButton?.alpha = 1
-            }, completion: nil)
+            if item.kind != "" {
+                UIView.animateWithDuration(0.3, animations: {
+                    addButton?.alpha = 1
+                    }, completion: nil)
+            }
         } else {
             if addButton?.alpha == 0 {
                 return

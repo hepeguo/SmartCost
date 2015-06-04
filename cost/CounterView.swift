@@ -107,6 +107,7 @@ class CounterView: UIView {
         
         label = UILabel(frame: CGRectMake(center.x - 50, center.y - 20, 100, 40))
         label!.textAlignment = .Center
+        label!.adjustsFontSizeToFitWidth = true
         label!.font = UIFont.boldSystemFontOfSize(30)
         label!.textColor = UIColor.whiteColor()
 //        label!.backgroundColor = UIColor.redColor()
@@ -114,7 +115,8 @@ class CounterView: UIView {
         if total == 0.0 {
             label!.text = "0.00"
         } else {
-            label!.text = "\(total)"
+            let priceString = NSString(format: "%.2f", total)
+            label!.text = priceString as String
         }
     }
 }

@@ -400,8 +400,9 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         cell.addSubview(view)
         
         cell.imageView?.image = UIImage(named: kind.name)
-        cell.detailTextLabel?.text = "\(kind.sum)"
-        cell.detailTextLabel?.textColor = UIColor.blackColor()
+        let priceString = NSString(format: "%.2f", kind.sum)
+        cell.detailTextLabel?.text = priceString as String
+        cell.detailTextLabel?.textColor = UIColor.grayColor()
         cell.selectionStyle = .None
         return cell
     }

@@ -12,11 +12,7 @@ class CounterNumber: UIView, UIScrollViewDelegate {
     var startNumber: Int = 0
     var startNumberAfterDot: Int = 0
     var font: UIFont = UIFont.systemFontOfSize(25.0)
-    var fontColor: UIColor = UIColor.blackColor() {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
+    var fontColor: UIColor = UIColor.redColor()
     var fontSize: CGSize?
     
     var numberArray: [Character] = [Character]()
@@ -25,18 +21,19 @@ class CounterNumber: UIView, UIScrollViewDelegate {
     var afterDotNumberScrollView: [UIView] = [UIView]()
     
     var dotView: UILabel?
-
     
-    // Only override drawRect: if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func drawRect(rect: CGRect) {
-        // Drawing code
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         getSizeOfFont()
         prepareNumberForEveryCharacter()
     }
     
-    override init(frame: CGRect) {
+    init(frame: CGRect, startNumber: Int, startNumberAfterDot: Int) {
         super.init(frame: frame)
+        self.startNumber = startNumber
+        self.startNumberAfterDot = startNumberAfterDot
+        getSizeOfFont()
+        prepareNumberForEveryCharacter()
     }
 
     required init(coder aDecoder: NSCoder) {

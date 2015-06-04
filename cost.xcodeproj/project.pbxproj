@@ -88,6 +88,7 @@
 		B14CB6431B010D33003D9C8F /* SetUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetUpViewController.swift; sourceTree = "<group>"; };
 		B14CB6451B010E4D003D9C8F /* StatisticsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
 		B163B5B41B039EA200D7E46D /* KindItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KindItemView.swift; sourceTree = "<group>"; };
+		B1CF74421B1DFE9E000AC36D /* cost.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = cost.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +130,7 @@
 		B14CB5DF1AFF7BA6003D9C8F /* cost */ = {
 			isa = PBXGroup;
 			children = (
+				B1CF74421B1DFE9E000AC36D /* cost.entitlements */,
 				B14CB61A1AFF8545003D9C8F /* Main View Controller */,
 				B14CB6151AFF851B003D9C8F /* Calendar */,
 				B14CB6341AFF85B1003D9C8F /* Models */,
@@ -271,6 +273,12 @@
 				TargetAttributes = {
 					B14CB5DC1AFF7BA6003D9C8F = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = SS929F32ZE;
+						SystemCapabilities = {
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
 					};
 					B14CB5F41AFF7BA6003D9C8F = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -469,9 +477,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = cost/cost.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = cost/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -481,9 +493,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = cost/cost.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = cost/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

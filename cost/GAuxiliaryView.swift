@@ -130,8 +130,6 @@ extension GAuxiliaryView {
         
         let offset:CGFloat = 5.0
         
-        println("offset = \(offset)")
-        
         let path = UIBezierPath(rect: CGRectMake(0 - offset, midY - radius, bounds.width + offset / 2, radius * 2))
         
         return path

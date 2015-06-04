@@ -19,7 +19,10 @@ class TableViewCell: UITableViewCell {
     
     var item: Item? {
         didSet {
-            priceLabel.text = "\(item!.price)"
+            if item?.price != nil {
+                let priceString = NSString(format: "%.2f", item!.price)
+                priceLabel.text = priceString as String
+            }
             detailLabel.text = item?.detail
             kindLabel.text = item?.kind
             timeLabel.text = item?.time
@@ -32,6 +35,7 @@ class TableViewCell: UITableViewCell {
         priceLabel.textColor = UIColor.whiteColor()
         priceLabel.font = UIFont.boldSystemFontOfSize(25)
         priceLabel.backgroundColor = UIColor.clearColor()
+        priceLabel.adjustsFontSizeToFitWidth = true
         priceLabel.textAlignment = .Right
         priceLabel.text = "\(item?.price)"
         

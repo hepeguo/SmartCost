@@ -56,11 +56,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         var width: CGFloat = view.frame.width / 2 - 10
         var height: CGFloat = 54
         var marginBetweenButton:CGFloat = 4
-        
-//        let autoSyncSwitcher = UISwitch(frame: CGRectZero)
-//        let size = autoSyncSwitcher.frame.size
-//        autoSyncSwitcher.frame.origin = CGPointMake(view.frame.width - 20 - size.width, 22 - size.height / 2)
-//        autoSyncSwitcher.addTarget(self, action: "toggleAutoSync:", forControlEvents: UIControlEvents.ValueChanged)
+/*set sync
         autoSyncTip = UILabel(frame: CGRectMake(width * 2 - 40, 0, 40, height))
         autoSyncTip?.text = "YES"
         autoSyncTip?.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
@@ -91,37 +87,31 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
 //        syncNowView.layer.borderColor = UIColor.whiteColor().CGColor
 //        syncNowView.layer.borderWidth = 2
         syncNowView.addSubview(syncNowLabel)
-        
+*/
         let exportToExcelLabel = UILabel(frame: CGRectMake(0, 0, width * 2, height))
         exportToExcelLabel.text = "Export through Email"
         exportToExcelLabel.textColor = UIColor.whiteColor()
-//        exportToExcelLabel.textAlignment = .Center
         exportToExcelLabel.font = font
         exportToExcelLabel.userInteractionEnabled = true
         let exportExcelTap = UITapGestureRecognizer(target: self, action: "exportExcel:")
         exportToExcelLabel.addGestureRecognizer(exportExcelTap)
         
-        let exportToExcelView = UIView(frame: CGRectMake(10, 64 + height * 2 + marginBetweenButton, width * 2, height))
-//        exportToExcelView.layer.borderColor = UIColor.whiteColor().CGColor
-//        exportToExcelView.layer.borderWidth = 2
+        let exportToExcelView = UIView(frame: CGRectMake(10, 64 + marginBetweenButton, width * 2, height))
         exportToExcelView.addSubview(exportToExcelLabel)
         
         let suggestionToMeLabel = UILabel(frame: CGRectMake(0, 0, width * 2, height))
         suggestionToMeLabel.text = "Suggestions"
         suggestionToMeLabel.textColor = UIColor.whiteColor()
-//        suggestionToMeLabel.textAlignment = .Center
         suggestionToMeLabel.font = font
         suggestionToMeLabel.userInteractionEnabled = true
         let suggestionToMeTap = UITapGestureRecognizer(target: self, action: "suggestionToMe:")
         suggestionToMeLabel.addGestureRecognizer(suggestionToMeTap)
         
-        let suggestionToMeView = UIView(frame: CGRectMake(10, 64 + height * 3 + marginBetweenButton * 2, width * 2, height))
-//        suggestionToMeView.layer.borderColor = UIColor.whiteColor().CGColor
-//        suggestionToMeView.layer.borderWidth = 2
+        let suggestionToMeView = UIView(frame: CGRectMake(10, 64 + height + marginBetweenButton * 2, width * 2, height))
         suggestionToMeView.addSubview(suggestionToMeLabel)
         
-        contentView!.addSubview(autoSyncView)
-        contentView!.addSubview(syncNowView)
+//        contentView!.addSubview(autoSyncView)
+//        contentView!.addSubview(syncNowView)
         contentView!.addSubview(exportToExcelView)
         contentView!.addSubview(suggestionToMeView)
     }
@@ -177,7 +167,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         
         mailComposerVC.setToRecipients(["hepeguo@gmail.com"])
         mailComposerVC.setSubject("Some suggestions for you")
-        mailComposerVC.setMessageBody("Sending e-mail in-app is not so bad!", isHTML: false)
+        mailComposerVC.setMessageBody("Some suggestions...", isHTML: false)
         
         return mailComposerVC
     }
@@ -224,13 +214,12 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
     
     func compileDataToExcel() -> String {
         let items = getAllDataFromDatabase()
-        var data = ""
+        var data = "Index,Price,Kind,Detail\n"
         if items != nil {
             for (index, item) in enumerate(items!) {
-                data += "\(index),\(item.price),\(item.kind),\(item.description)"
+                data += "\(index),\(item.price),\(item.kind),\(item.detail)\n"
             }
         }
-        println(data)
         return data
     }
     

@@ -41,12 +41,18 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var listName = "Mate"
     var monthName = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
     
+    var moc: NSManagedObjectContext!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.automaticallyAdjustsScrollViewInsets = false
         view.layer.cornerRadius = 5
         view.backgroundColor = UIColor(red: 244 / 255, green: 111 / 255, blue: 102 / 255, alpha: 1)
+        
+        if let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext {
+            moc = context
+        }
         
         initYearMonthDay()
         
@@ -62,19 +68,54 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func timeChanged(notification: NSNotification) {
-        let date = GDate()
-        let time = date.getTime()
-        println("time changed \(time.hour): \(time.minute): \(time.second)")
-        calendarView?.backgroundColor = UIColor.redColor()
+        var date = GDate()
+        calendarView?.setCurrentDay(date)
     }
     
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         self.topBar!.frame.origin.y = -130
         self.listView?.frame.origin.y = self.view.frame.height
+        
         UIView.animateWithDuration(0.3, animations: {
             self.topBar!.frame.origin.y = 0
             self.listView?.frame.origin.y = 130
             }, completion: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "persistentStoreDidChange", name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "persistentStoreWillChange:", name: NSPersistentStoreCoordinatorStoresWillChangeNotification, object: moc.persistentStoreCoordinator)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveICloudChanges:", name: NSPersistentStoreDidImportUbiquitousContentChangesNotification, object: moc.persistentStoreCoordinator)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSPersistentStoreCoordinatorStoresWillChangeNotification, object: moc.persistentStoreCoordinator)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSPersistentStoreDidImportUbiquitousContentChangesNotification, object: moc.persistentStoreCoordinator)
+    }
+    
+    func persistentStoreDidChange() {
+        initDataForTableViews()
+    }
+    
+    func persistentStoreWillChange(notifaction: NSNotification) {
+        moc.performBlock({ () -> Void in
+            if self.moc.hasChanges {
+                var error: NSError? = nil
+                self.moc.save(&error)
+                if error != nil {
+                    println("save error: \(error)")
+                } else {
+                    self.moc.reset()
+                }
+            }
+        })
+    }
+    
+    func receiveICloudChanges(notifaction: NSNotification) {
+        moc.performBlock { () -> Void in
+            self.moc.mergeChangesFromContextDidSaveNotification(notifaction)
+            self.initDataForTableViews()
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -127,12 +168,12 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         totalLabel.font = fontBig
         totalLabel.textColor = color
         
-        counterNumber = CounterNumber(frame: CGRectMake(80, 36, view.frame.width - 155, 22))
         let total = getSum(todayList)
-        counterNumber!.startNumber = total.numberBeforeDot
-        counterNumber!.startNumberAfterDot = total.numberAfterDot
-        counterNumber!.backgroundColor = UIColor.clearColor()
+//        counterNumber!.startNumber = total.numberBeforeDot
+//        counterNumber!.startNumberAfterDot = total.numberAfterDot
+        counterNumber = CounterNumber(frame: CGRectMake(80, 36, view.frame.width - 155, 22), startNumber: total.numberBeforeDot, startNumberAfterDot: total.numberAfterDot)
         counterNumber!.fontColor = UIColor.redColor()
+        counterNumber!.backgroundColor = UIColor.clearColor()
         
         let tap = UITapGestureRecognizer(target: self, action: "showAddItemView:")
         addLabel.userInteractionEnabled = true
@@ -260,31 +301,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         tomorrowTableView.reloadData()
     }
     
-    /*
-    func initStatisticsView() {
-    let counterRect: CGRect = CGRectMake(0, 0, view.bounds.width, 200)
-    counterView = CounterView(frame: counterRect)
-    counterView!.numbers = comboData(todayList)
-    counterView!.backgroundColor = UIColor.clearColor()
-    
-    let graphRect:CGRect = CGRectMake(0, 0, view.bounds.width, 200)
-    graphView = GraphView(frame: graphRect)
-    graphView!.startColor = UIColor(red: 250 / 255, green: 233 / 255, blue: 222 / 255, alpha: 1)
-    graphView!.endColor = UIColor(red: 252 / 255, green: 79 / 255, blue: 8 / 255, alpha: 1)
-    graphView!.backgroundColor = UIColor.clearColor()
-    
-    var views = [UIView]();
-    views.append(counterView!)
-    views.append(graphView!)
-    
-    var frame = CGRectMake(0, 0, view.bounds.width, 200)
-    
-    var page = PageView(frame: frame, views: views)
-    statisticsView.addSubview(page)
-    statisticsView.backgroundColor = UIColor(red: 244 / 255, green: 111 / 255, blue: 102 / 255, alpha: 0.9)
-    }
-    */
-    
     //MARK: - action
     
     func showAddItemView(tap: UITapGestureRecognizer) {
@@ -325,7 +341,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 saveItem(item)
             }
         } else {
-            println(item.kind)
             addItem(item)
         }
     }
@@ -343,7 +358,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func gotoToday(sender: UITapGestureRecognizer) {
-        println("reset calender")
         let date = GDate()
         calendarView?.setCalendarSelectedDay(date)
     }
@@ -416,15 +430,15 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     //MARK: - get and save data
     func deleteItem(item: Item) {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext!
+//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//        let managedContext = appDelegate.managedObjectContext!
         
         var error:NSError?
         var itemModel:ItemModel?
         let fetchRequest = NSFetchRequest(entityName: "ItemModel")
         fetchRequest.predicate = NSPredicate(format: "id == '\(item.id)'")
         
-        let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
+        let fetchResults = moc.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
         
         if fetchResults != nil && fetchResults?.count > 0 {
             itemModel = fetchResults![0]
@@ -438,7 +452,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             itemModel!.kill = item.kill
             itemModel!.addTime = "\(time.hour): \(time.minute): \(time.second)"
             
-            if !managedContext.save(&error) {
+            if !moc.save(&error) {
                 println("Could not save\(error), \(error?.userInfo)")
             }
             
@@ -456,15 +470,15 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func saveItem(item: Item) {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext!
+//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//        let managedContext = appDelegate.managedObjectContext!
         
         var error:NSError?
         var itemModel:ItemModel?
         let fetchRequest = NSFetchRequest(entityName: "ItemModel")
         fetchRequest.predicate = NSPredicate(format: "id == '\(item.id)'")
         
-        let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
+        let fetchResults = moc.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
 
         if fetchResults != nil && fetchResults?.count > 0 {
             itemModel = fetchResults![0]
@@ -478,7 +492,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             itemModel!.kill = item.kill
             itemModel!.addTime = "\(time.hour): \(time.minute): \(time.second)"
             
-            if !managedContext.save(&error) {
+            if !moc.save(&error) {
                 println("Could not save\(error), \(error?.userInfo)")
             }
             
@@ -496,8 +510,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func addItem(item: Item) {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext!
+//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//        let managedContext = appDelegate.managedObjectContext!
         
         let fetchRequest = NSFetchRequest(entityName: "BookModel")
         fetchRequest.predicate = NSPredicate(format: "name == '\(listName)'")
@@ -505,18 +519,18 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         var error:NSError?
         var book: BookModel?
         
-        let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [BookModel]?
+        let fetchResults = moc.executeFetchRequest(fetchRequest, error: &error) as! [BookModel]?
         
         if fetchResults != nil && fetchResults?.count > 0 {
             book = fetchResults![0]
         }
         
         if book == nil{
-            book = NSEntityDescription.insertNewObjectForEntityForName("BookModel", inManagedObjectContext: managedContext) as? BookModel
+            book = NSEntityDescription.insertNewObjectForEntityForName("BookModel", inManagedObjectContext: moc) as? BookModel
             book!.name = "\(listName)"
         }
         
-        var itemModel: ItemModel = NSEntityDescription.insertNewObjectForEntityForName("ItemModel", inManagedObjectContext: managedContext) as! ItemModel
+        var itemModel: ItemModel = NSEntityDescription.insertNewObjectForEntityForName("ItemModel", inManagedObjectContext: moc) as! ItemModel
         
         let date = GDate()
         let time = date.getTime()
@@ -533,7 +547,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         itemModel.weekOfYear = "\(weekOfYear)"
         itemModel.dayOfWeek = "\(dayOfWeek)"
         
-        if !managedContext.save(&error) {
+        if !moc.save(&error) {
             println("Could not save\(error), \(error?.userInfo)")
         }
         
@@ -545,82 +559,34 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func getDayDataFromDatabase(year: Int, month: Int, day: Int) -> [ItemModel]? {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext!
+//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//        let managedContext = appDelegate.managedObjectContext!
         
         let fetchRequest = NSFetchRequest(entityName: "ItemModel")
         
         var error:NSError?
         
         fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && month == '\(month)' && day == '\(day)' && kill == false")
-        let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
+        let fetchResults = moc.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
         return fetchResults
     }
-/*
-    func getWeekDataFromDatabase(year: Int, weekOfYear: Int) -> [ItemModel]? {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext!
-        
-        let fetchRequest = NSFetchRequest(entityName: "ItemModel")
-        
-        var error:NSError?
-        
-        fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && weekOfYear == '\(weekOfYear)' && kill == false")
-        let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
-        return fetchResults
-    }
-    
-    func getMonthDataFromDatabase(year: Int, month: Int) -> [ItemModel]? {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext!
-        
-        let fetchRequest = NSFetchRequest(entityName: "ItemModel")
-        
-        var error:NSError?
-        
-        fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && weekOfYear == '\(month)' && kill == false")
-        let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
-        return fetchResults
-    }
-    
-    func getYearDataFromDatabase(year: Int) -> [ItemModel]? {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext!
-        
-        let fetchRequest = NSFetchRequest(entityName: "ItemModel")
-        
-        var error:NSError?
-        
-        fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && kill == false")
-        let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
-        return fetchResults
-    }
-*/
-//    func comboData(data: [ItemModel]) -> [String: Float] {
-//        var sumKind: [String: Float] = [String: Float]()
-//        for itemModel in data {
-//            if sumKind[itemModel.kind] == nil {
-//                sumKind.updateValue(itemModel.price.floatValue, forKey: itemModel.kind)
-//            } else {
-//                sumKind[itemModel.kind]! += itemModel.price.floatValue
-//            }
-//        }
-//        println(sumKind)
-//        return sumKind
-//    }
     
     func getSum (data: [ItemModel]) -> (numberBeforeDot: Int, numberAfterDot: Int) {
-        var sum: Float = 0.0
+        var sum: Double = 0.0
         var numberBeforeDot = 0
         var numberAfterDot = 0
         for itemModel in data {
-            sum += itemModel.price.floatValue
+            sum += itemModel.price.doubleValue
         }
         numberBeforeDot = Int(sum)
-        let totalString = "\(sum)" as NSString
+        let totalString = NSString(format: "%.2f", sum)
         let location = [totalString .rangeOfString(".")].first?.location
         let stringAfterDot = totalString.substringFromIndex(location! + 1)
-        numberAfterDot = stringAfterDot.toInt()!
+        if stringAfterDot == "0" {
+            numberAfterDot = 0
+        } else {
+            numberAfterDot = stringAfterDot.toInt()!
+        }
         return (numberBeforeDot, numberAfterDot)
     }
     
@@ -725,10 +691,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             pageScrollView!.autoScrollRight()
         }
         if "\(monthName[month - 1]) \(year)" != dateLabel!.text {
-            println("month changed")
             dateLabel!.text = "\(monthName[month - 1]) \(year)"
         }
-        println("\(selectedDay.year), \(selectedDay.month), \(selectedDay.day) is selected!")
     }
     
     func nextWeekView() {
@@ -742,15 +706,4 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func CalenderAfterAutoScroll(){
         
     }
-    
-    /*
-    // MARK: - Navigation
-    
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    // Get the new view controller using segue.destinationViewController.
-    // Pass the selected object to the new view controller.
-    }
-    */
-    
 }

@@ -57,7 +57,6 @@ class ListPageScrollView: UIView, UIScrollViewDelegate {
     }
     
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
-        println("scrolled")
         if(scrollView.contentOffset.x > frame.width) {
             delegate?.next()
         } else if (scrollView.contentOffset.x < frame.width) {
