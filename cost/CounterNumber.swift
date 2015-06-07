@@ -68,7 +68,6 @@ class CounterNumber: UIView, UIScrollViewDelegate {
         dotView!.textColor = fontColor
         dotView!.font = font
         dotView!.text = "."
-//        numberScrollView.append(dotView!)
         addSubview(dotView!)
         
         if startNumberAfterDot == 0 {

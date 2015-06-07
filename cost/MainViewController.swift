@@ -169,8 +169,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         totalLabel.textColor = color
         
         let total = getSum(todayList)
-//        counterNumber!.startNumber = total.numberBeforeDot
-//        counterNumber!.startNumberAfterDot = total.numberAfterDot
         counterNumber = CounterNumber(frame: CGRectMake(80, 36, view.frame.width - 155, 22), startNumber: total.numberBeforeDot, startNumberAfterDot: total.numberAfterDot)
         counterNumber!.fontColor = UIColor.redColor()
         counterNumber!.backgroundColor = UIColor.clearColor()
@@ -231,18 +229,25 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         listView!.addSubview(pageScrollView!)
         
-        let statistics = UIImageView(frame: CGRectMake(frame.width - 28, frame.height - 48, 18, 18))
-        statistics.image = UIImage(named: "pan")
-        statistics.userInteractionEnabled = true
+        let statisticsIconView = UIView(frame: CGRectMake(frame.width - 48, frame.height - 66, 36, 36))
+        statisticsIconView.userInteractionEnabled = true
         let showStatisticsViewTap = UITapGestureRecognizer(target: self, action: "showStatisticsView:")
-        statistics.addGestureRecognizer(showStatisticsViewTap)
-        listView?.addSubview(statistics)
+        statisticsIconView.addGestureRecognizer(showStatisticsViewTap)
         
-        gotoTodayIcon = UIImageView(frame: CGRectMake(10, frame.height - 50, 22, 22))
-        gotoTodayIcon?.userInteractionEnabled = true
+        let statistics = UIImageView(frame: CGRectMake(8, 8, 18, 18))
+        statistics.image = UIImage(named: "pan")
+        
+        statisticsIconView.addSubview(statistics)
+        listView?.addSubview(statisticsIconView)
+        
+        let gotoTodayIconView = UIView(frame: CGRectMake(10, frame.height - 66, 36, 36))
+        gotoTodayIconView.userInteractionEnabled = true
         let gotoTodayTap = UITapGestureRecognizer(target: self, action: "gotoToday:")
-        gotoTodayIcon?.addGestureRecognizer(gotoTodayTap)
-        listView?.addSubview(gotoTodayIcon!)
+        gotoTodayIconView.addGestureRecognizer(gotoTodayTap)
+        
+        gotoTodayIcon = UIImageView(frame: CGRectMake(7, 7, 22, 22))
+        gotoTodayIconView.addSubview(gotoTodayIcon!)
+        listView?.addSubview(gotoTodayIconView)
     }
     
     func setupGotoTodayIcon() {
