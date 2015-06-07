@@ -412,6 +412,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             item.weekOfYear = itemModel!.weekOfYear.toInt()!
             item.time = itemModel!.addTime
             item.dayOfWeek = itemModel!.dayOfWeek.toInt()!
+            println(itemModel?.isSpend)
             cell.item = item
         }
         cell.backgroundColor = UIColor.clearColor()        
@@ -494,6 +495,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             itemModel!.price = item.price
             itemModel!.detail = item.detail
             itemModel!.kind = item.kind
+            itemModel!.isSpend = item.isSpend
             itemModel!.kill = item.kill
             itemModel!.addTime = "\(time.hour): \(time.minute): \(time.second)"
             
@@ -542,6 +544,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         itemModel.id = "\(date.timeInterval)"
         itemModel.price = item.price
         itemModel.book = book!
+        itemModel.isSpend = item.isSpend
         itemModel.detail = item.detail
         itemModel.kind = item.kind
         itemModel.kill = item.kill

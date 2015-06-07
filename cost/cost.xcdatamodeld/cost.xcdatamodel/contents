@@ -12,6 +12,7 @@
         <attribute name="dayOfWeek" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="detail" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isSpend" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="kill" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="kind" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="month" optional="YES" attributeType="String" syncable="YES"/>
@@ -22,6 +23,6 @@
     </entity>
     <elements>
         <element name="BookModel" positionX="-47" positionY="0" width="128" height="103"/>
-        <element name="ItemModel" positionX="162" positionY="18" width="128" height="223"/>
+        <element name="ItemModel" positionX="162" positionY="18" width="128" height="240"/>
     </elements>
 </model>

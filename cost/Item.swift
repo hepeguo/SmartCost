@@ -19,5 +19,6 @@ class Item: NSObject {
     var dayOfWeek: Int = 0
     var kill: Bool = false
     var time: String = ""
+    var isSpend: Bool = true
     var id: String = ""
 }
