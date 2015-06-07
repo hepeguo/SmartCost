@@ -412,7 +412,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             item.weekOfYear = itemModel!.weekOfYear.toInt()!
             item.time = itemModel!.addTime
             item.dayOfWeek = itemModel!.dayOfWeek.toInt()!
-            println(itemModel?.isSpend)
             cell.item = item
         }
         cell.backgroundColor = UIColor.clearColor()        

@@ -483,7 +483,7 @@
 				INFOPLIST_FILE = cost/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "1883ce6b-5808-4411-9a63-8206c1c490e6";
+				PROVISIONING_PROFILE = "ab752023-baf4-406f-bae5-1803ff41bd87";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -499,7 +499,7 @@
 				INFOPLIST_FILE = cost/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "1883ce6b-5808-4411-9a63-8206c1c490e6";
+				PROVISIONING_PROFILE = "ab752023-baf4-406f-bae5-1803ff41bd87";
 			};
 			name = Release;
 		};
