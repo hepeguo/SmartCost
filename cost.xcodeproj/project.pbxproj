@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B146B2AC1B3E732200C07B05 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146B2AB1B3E732200C07B05 /* Theme.swift */; };
+		B146B2AE1B3E810D00C07B05 /* ThemeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146B2AD1B3E810D00C07B05 /* ThemeViewController.swift */; };
+		B146B2B01B3E88BB00C07B05 /* ThemeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146B2AF1B3E88BB00C07B05 /* ThemeView.swift */; };
 		B14CB5E31AFF7BA6003D9C8F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14CB5E21AFF7BA6003D9C8F /* AppDelegate.swift */; };
 		B14CB5E61AFF7BA6003D9C8F /* cost.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B14CB5E41AFF7BA6003D9C8F /* cost.xcdatamodeld */; };
 		B14CB5ED1AFF7BA6003D9C8F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B14CB5EC1AFF7BA6003D9C8F /* Images.xcassets */; };
@@ -52,6 +55,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B146B2AB1B3E732200C07B05 /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		B146B2AD1B3E810D00C07B05 /* ThemeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeViewController.swift; sourceTree = "<group>"; };
+		B146B2AF1B3E88BB00C07B05 /* ThemeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeView.swift; sourceTree = "<group>"; };
 		B14CB5DD1AFF7BA6003D9C8F /* cost.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cost.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B14CB5E11AFF7BA6003D9C8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B14CB5E21AFF7BA6003D9C8F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -188,6 +194,7 @@
 			isa = PBXGroup;
 			children = (
 				B14CB6431B010D33003D9C8F /* SetUpViewController.swift */,
+				B146B2AD1B3E810D00C07B05 /* ThemeViewController.swift */,
 				B14CB6451B010E4D003D9C8F /* StatisticsViewController.swift */,
 				B14CB6161AFF8533003D9C8F /* NewItemViewController.swift */,
 				B14CB6171AFF8533003D9C8F /* MainViewController.swift */,
@@ -199,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				B163B5B41B039EA200D7E46D /* KindItemView.swift */,
+				B146B2AF1B3E88BB00C07B05 /* ThemeView.swift */,
 				B14CB61B1AFF8579003D9C8F /* NumberPad.swift */,
 				B14CB61C1AFF8579003D9C8F /* CounterNumber.swift */,
 				B14CB61D1AFF8579003D9C8F /* PushButtonView.swift */,
@@ -217,6 +225,7 @@
 			isa = PBXGroup;
 			children = (
 				B14CB63B1AFF8A2A003D9C8F /* BookModel.swift */,
+				B146B2AB1B3E732200C07B05 /* Theme.swift */,
 				B1CF74EB1B249157000AC36D /* ItemModel.swift */,
 				B14CB6301AFF85AC003D9C8F /* Kind.swift */,
 				B14CB6311AFF85AC003D9C8F /* Item.swift */,
@@ -282,6 +291,7 @@
 					};
 					B14CB5F41AFF7BA6003D9C8F = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = SS929F32ZE;
 						TestTargetID = B14CB5DC1AFF7BA6003D9C8F;
 					};
 				};
@@ -330,8 +340,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B146B2AE1B3E810D00C07B05 /* ThemeViewController.swift in Sources */,
 				B14CB6281AFF8579003D9C8F /* TableViewCell.swift in Sources */,
 				B14CB6291AFF8579003D9C8F /* DashLine.swift in Sources */,
+				B146B2B01B3E88BB00C07B05 /* ThemeView.swift in Sources */,
 				B14CB6251AFF8579003D9C8F /* NumberPad.swift in Sources */,
 				B14CB6321AFF85AC003D9C8F /* Kind.swift in Sources */,
 				B14CB6111AFF8511003D9C8F /* GAuxiliaryView.swift in Sources */,
@@ -352,6 +364,7 @@
 				B14CB6101AFF8511003D9C8F /* CalendarDayView.swift in Sources */,
 				B14CB6181AFF8533003D9C8F /* NewItemViewController.swift in Sources */,
 				B14CB62A1AFF8579003D9C8F /* GraphView.swift in Sources */,
+				B146B2AC1B3E732200C07B05 /* Theme.swift in Sources */,
 				B14CB5E31AFF7BA6003D9C8F /* AppDelegate.swift in Sources */,
 				B14CB60E1AFF8511003D9C8F /* CalendarWeekViewControllerView.swift in Sources */,
 				B14CB6141AFF8511003D9C8F /* CalendarMenuView.swift in Sources */,
@@ -408,7 +421,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: zhenyong guo (SS929F32ZE)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: zhenyong guo (SS929F32ZE)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -430,6 +444,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "1883ce6b-5808-4411-9a63-8206c1c490e6";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -452,7 +467,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: zhenyong guo (SS929F32ZE)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: zhenyong guo (SS929F32ZE)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -467,6 +483,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "1883ce6b-5808-4411-9a63-8206c1c490e6";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -478,13 +495,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = cost/cost.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: zhenyong guo (SS929F32ZE)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: zhenyong guo (SS929F32ZE)";
+				CURRENT_PROJECT_VERSION = "";
 				INFOPLIST_FILE = cost/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ab752023-baf4-406f-bae5-1803ff41bd87";
+				PROVISIONING_PROFILE = "1883ce6b-5808-4411-9a63-8206c1c490e6";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "";
 			};
 			name = Debug;
 		};
@@ -494,12 +513,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = cost/cost.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: zhenyong guo (SS929F32ZE)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: zhenyong guo (SS929F32ZE)";
+				CURRENT_PROJECT_VERSION = "";
 				INFOPLIST_FILE = cost/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ab752023-baf4-406f-bae5-1803ff41bd87";
+				PROVISIONING_PROFILE = "1883ce6b-5808-4411-9a63-8206c1c490e6";
+				VERSIONING_SYSTEM = "";
 			};
 			name = Release;
 		};
@@ -507,6 +528,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -518,6 +541,7 @@
 				INFOPLIST_FILE = costTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/cost.app/cost";
 			};
 			name = Debug;
@@ -526,6 +550,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -533,6 +559,7 @@
 				INFOPLIST_FILE = costTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/cost.app/cost";
 			};
 			name = Release;

@@ -21,12 +21,29 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
     var kindViews: [KindItemView] = [KindItemView]()
     var kindViewsPageView: PageView?
     
+    let theme = Theme()
+    var theTheme: String {
+        get {
+            var returnValue: String? = NSUserDefaults.standardUserDefaults().objectForKey("theme") as? String
+            if returnValue == nil
+            {
+                returnValue = "origin"
+            }
+            return returnValue!
+        }
+        set (newValue) {
+            NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: "theme")
+            NSUserDefaults.standardUserDefaults().synchronize()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //prevent VerticalScroll
         self.automaticallyAdjustsScrollViewInsets = false
         view.layer.cornerRadius = 5
-        view.backgroundColor = UIColor(red: 244 / 255, green: 111 / 255, blue: 102 / 255, alpha: 1)
+//        view.backgroundColor = UIColor(red: 244 / 255, green: 111 / 255, blue: 102 / 255, alpha: 1)
+        view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
         contentView = UIView(frame: view.frame)
         view.addSubview(contentView!)
         
@@ -126,7 +143,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         deleteButton?.hidden = true
         contentView?.addSubview(deleteButton!)
         
-        numberPad = NumberPad(frame: CGRectMake(0, view.frame.height - 300, view.frame.width, 300))
+        numberPad = NumberPad(frame: CGRectMake(0, view.frame.height / 2 + 20, view.frame.width, view.frame.height / 2 - 20))
         numberPad?.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.3)
         numberPad?.layer.zPosition = 2
         numberPad?.delegate = self

@@ -15,12 +15,28 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
     var contentView: UIView?
     var autoSyncTip: UILabel?
     var font: UIFont = UIFont(name: "Avenir", size: 18)!
+    let theme = Theme()
+    var theTheme: String {
+        get {
+            var returnValue: String? = NSUserDefaults.standardUserDefaults().objectForKey("theme") as? String
+            if returnValue == nil
+            {
+                returnValue = "origin"
+            }
+            return returnValue!
+        }
+        set (newValue) {
+            NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: "theme")
+            NSUserDefaults.standardUserDefaults().synchronize()
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.automaticallyAdjustsScrollViewInsets = false
         view.layer.cornerRadius = 5
-        view.backgroundColor = UIColor(red: 244 / 255, green: 111 / 255, blue: 102 / 255, alpha: 1)
+//        view.backgroundColor = UIColor(red: 244 / 255, green: 111 / 255, blue: 102 / 255, alpha: 1)
+        view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
         contentView = UIView(frame: view.frame)
         view.addSubview(contentView!)
         
@@ -29,6 +45,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
     }
     
     override func viewWillAppear(animated: Bool) {
+        view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
         contentView!.transform = CGAffineTransformMakeScale(0.9, 0.9)
         UIView.animateWithDuration(0.3, animations: {
             self.contentView!.transform = CGAffineTransformMakeScale(1, 1)
@@ -38,6 +55,10 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return UIStatusBarStyle.LightContent
     }
     
     func initTopBar() {
@@ -56,38 +77,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         var width: CGFloat = view.frame.width / 2 - 10
         var height: CGFloat = 54
         var marginBetweenButton:CGFloat = 4
-/*set sync
-        autoSyncTip = UILabel(frame: CGRectMake(width * 2 - 40, 0, 40, height))
-        autoSyncTip?.text = "YES"
-        autoSyncTip?.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
-        autoSyncTip?.font = UIFont(name: "Avenir", size: 16)!
         
-        let autoSyncLabel = UILabel(frame: CGRectMake(0, 0, width * 2 - 40, height))
-        autoSyncLabel.text = "Auto sync to iCloud"
-        autoSyncLabel.textColor = UIColor.whiteColor()
-        autoSyncLabel.font = font
-        
-        let autoSyncView = UIView(frame: CGRectMake(10, 64, width * 2 , height))
-        let autoSyncTap = UITapGestureRecognizer(target: self, action: "toggleAutoSync:")
-        autoSyncView.userInteractionEnabled = true
-        autoSyncView.addGestureRecognizer(autoSyncTap)
-        autoSyncView.addSubview(autoSyncTip!)
-        autoSyncView.addSubview(autoSyncLabel)
-        
-        let syncNowLabel = UILabel(frame: CGRectMake(0, 0, width * 2, height))
-        syncNowLabel.text = "Sync to iCloud Now"
-        syncNowLabel.textColor = UIColor.whiteColor()
-//        syncNowLabel.textAlignment = .Center
-        syncNowLabel.font = font
-        syncNowLabel.userInteractionEnabled = true
-        let syncNowTap = UITapGestureRecognizer(target: self, action: "syncNow:")
-        syncNowLabel.addGestureRecognizer(syncNowTap)
-        
-        let syncNowView = UIView(frame: CGRectMake(10, 64 + height, width * 2, height))
-//        syncNowView.layer.borderColor = UIColor.whiteColor().CGColor
-//        syncNowView.layer.borderWidth = 2
-        syncNowView.addSubview(syncNowLabel)
-*/
         let exportToExcelLabel = UILabel(frame: CGRectMake(0, 0, width * 2, height))
         exportToExcelLabel.text = "Export through Email"
         exportToExcelLabel.textColor = UIColor.whiteColor()
@@ -110,10 +100,17 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         let suggestionToMeView = UIView(frame: CGRectMake(10, 64 + height + marginBetweenButton * 2, width * 2, height))
         suggestionToMeView.addSubview(suggestionToMeLabel)
         
-//        contentView!.addSubview(autoSyncView)
-//        contentView!.addSubview(syncNowView)
+        let themeLabel = UILabel(frame: CGRectMake(10, 64 + height * 2 + marginBetweenButton * 3, width * 2, height))
+        themeLabel.text = "Themes"
+        themeLabel.textColor = UIColor.whiteColor()
+        themeLabel.font = font
+        themeLabel.userInteractionEnabled = true
+        let themeTap = UITapGestureRecognizer(target: self, action: "showThemeView:")
+        themeLabel.addGestureRecognizer(themeTap)
+        
         contentView!.addSubview(exportToExcelView)
         contentView!.addSubview(suggestionToMeView)
+        contentView!.addSubview(themeLabel)
     }
     
 //MARK: action
@@ -124,6 +121,11 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
             }, completion: {_ in
                 self.performSegueWithIdentifier("closeSetUpView", sender: self)
         })
+    }
+    
+    func showThemeView(sender: UITapGestureRecognizer) {
+        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("themeView") as! ThemeViewController
+        self.presentViewController(vc, animated: true, completion: nil)
     }
     
     func toggleAutoSync(sender: UITapGestureRecognizer) {

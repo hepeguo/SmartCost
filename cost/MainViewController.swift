@@ -43,12 +43,29 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     var moc: NSManagedObjectContext!
     
+    let theme = Theme()
+    var theTheme: String {
+        get {
+            var returnValue: String? = NSUserDefaults.standardUserDefaults().objectForKey("theme") as? String
+            if returnValue == nil
+            {
+                returnValue = "origin"
+            }
+            return returnValue!
+        }
+        set (newValue) {
+            NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: "theme")
+            NSUserDefaults.standardUserDefaults().synchronize()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.automaticallyAdjustsScrollViewInsets = false
         view.layer.cornerRadius = 5
-        view.backgroundColor = UIColor(red: 244 / 255, green: 111 / 255, blue: 102 / 255, alpha: 1)
+//        view.backgroundColor = UIColor(red: 244 / 255, green: 111 / 255, blue: 102 / 255, alpha: 1)
+        view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
         
         if let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext {
             moc = context
@@ -74,6 +91,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
         self.topBar!.frame.origin.y = -130
         self.listView?.frame.origin.y = self.view.frame.height
         
@@ -95,6 +113,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func persistentStoreDidChange() {
         initDataForTableViews()
+        let total = getSum(todayList)
+        counterNumber!.scrollToNumber(total.numberBeforeDot, numberAfterDot: total.numberAfterDot)
     }
     
     func persistentStoreWillChange(notifaction: NSNotification) {
@@ -115,6 +135,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         moc.performBlock { () -> Void in
             self.moc.mergeChangesFromContextDidSaveNotification(notifaction)
             self.initDataForTableViews()
+            let total = self.getSum(self.todayList)
+            self.counterNumber!.scrollToNumber(total.numberBeforeDot, numberAfterDot: total.numberAfterDot)
         }
     }
     

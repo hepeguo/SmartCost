@@ -36,12 +36,29 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         0xe6699FF, 0xeff6666, 0xe3cb371, 0xed5b158, 0xe38b6b6
     ]
     
+    let theme = Theme()
+    var theTheme: String {
+        get {
+            var returnValue: String? = NSUserDefaults.standardUserDefaults().objectForKey("theme") as? String
+            if returnValue == nil
+            {
+                returnValue = "origin"
+            }
+            return returnValue!
+        }
+        set (newValue) {
+            NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: "theme")
+            NSUserDefaults.standardUserDefaults().synchronize()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.automaticallyAdjustsScrollViewInsets = false
         view.layer.cornerRadius = 5
-        view.backgroundColor = UIColor(red: 244 / 255, green: 111 / 255, blue: 102 / 255, alpha: 1)
+//        view.backgroundColor = UIColor(red: 244 / 255, green: 111 / 255, blue: 102 / 255, alpha: 1)
+        view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
         contentView = UIView(frame: view.frame)
         view.addSubview(contentView!)
         let tap = UITapGestureRecognizer(target: self, action: "hideDateSelectView:")

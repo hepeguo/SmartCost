@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="7c3-tm-RQh">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="7c3-tm-RQh">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <scenes>
         <!--Main View Controller-->
@@ -45,7 +45,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bGU-Yo-rXb" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="UQm-nV-WDa" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1928" y="624"/>
+            <point key="canvasLocation" x="1452" y="591"/>
         </scene>
         <!--Set Up View Controller-->
         <scene sceneID="iBY-d1-Dfd">
@@ -67,7 +67,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5wi-HT-TIQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="29l-3P-cmo" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2590" y="596"/>
+            <point key="canvasLocation" x="2106" y="591"/>
         </scene>
         <!--Statistics View Controller-->
         <scene sceneID="mW2-Qd-w3T">
@@ -89,7 +89,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="M28-Vh-W90" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="MSx-O8-IdU" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="3214" y="596"/>
+            <point key="canvasLocation" x="2774" y="591"/>
+        </scene>
+        <!--Theme View Controller-->
+        <scene sceneID="akJ-oS-Vn6">
+            <objects>
+                <viewController storyboardIdentifier="themeView" id="8Km-Ot-NYr" customClass="ThemeViewController" customModule="cost" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Ke2-7N-jHp"/>
+                        <viewControllerLayoutGuide type="bottom" id="4eO-Xs-5tc"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="6X0-k5-agr">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Hdg-q2-bhl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3422" y="591"/>
         </scene>
     </scenes>
 </document>
