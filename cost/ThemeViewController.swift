@@ -34,8 +34,8 @@ class ThemeViewController: UIViewController {
         
         self.automaticallyAdjustsScrollViewInsets = false
         view.layer.cornerRadius = 5
-//        view.backgroundColor = UIColor(red: 244 / 255, green: 111 / 255, blue: 102 / 255, alpha: 1)
-        view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
+        let themeColor = theme.valueForKey(theTheme) as? UIColor
+        view.backgroundColor = themeColor?.colorWithAlphaComponent(0.9)
         contentView = UIView(frame: view.frame)
         view.addSubview(contentView!)
         
@@ -108,7 +108,11 @@ class ThemeViewController: UIViewController {
         }
         let themeView: ThemeView = sender.view as! ThemeView
         themeView.addBorder()
-        self.view.backgroundColor = themeView.color
+        
+        UIView.animateWithDuration(0.3, animations: {
+            self.view.backgroundColor = themeView.color.colorWithAlphaComponent(0.9)
+            }, completion: nil)
+        
         theTheme = themeView.name
     }
     
