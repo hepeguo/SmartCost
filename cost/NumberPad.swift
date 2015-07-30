@@ -27,6 +27,12 @@ class NumberPad: UIView {
     var delegate: NumberPadDelegate?
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        let blurEffect = UIBlurEffect(style: .Light)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = CGRectMake(0, 0, frame.width, frame.height)
+        self.addSubview(blurEffectView)
+        
         initNumberView()
     }
     

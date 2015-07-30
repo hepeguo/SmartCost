@@ -42,12 +42,9 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         //prevent VerticalScroll
         self.automaticallyAdjustsScrollViewInsets = false
         view.layer.cornerRadius = 5
-//        view.backgroundColor = UIColor(red: 244 / 255, green: 111 / 255, blue: 102 / 255, alpha: 1)
         view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
         contentView = UIView(frame: view.frame)
         view.addSubview(contentView!)
-        
-//        let language = NSBundle.mainBundle().preferredLocalizations.first as! String
         
         initTopBar()
         initKindView()
@@ -144,7 +141,6 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         contentView?.addSubview(deleteButton!)
         
         numberPad = NumberPad(frame: CGRectMake(0, view.frame.height / 2 + 20, view.frame.width, view.frame.height / 2 - 20))
-        numberPad?.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.3)
         numberPad?.layer.zPosition = 2
         numberPad?.delegate = self
         contentView!.addSubview(numberPad!)
@@ -252,7 +248,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         if numberPad?.hidden == true {
             numberPad?.hidden = false
             UIView.animateWithDuration(0.3, delay: 0, usingSpringWithDamping: 0.55, initialSpringVelocity: 0.1, options: UIViewAnimationOptions.BeginFromCurrentState, animations: {
-                numberPad?.frame.origin.y = view.frame.height - 300
+                numberPad?.frame.origin.y = view.frame.height / 2 + 20
                 }, completion: nil)
         }
     }
@@ -310,7 +306,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         UIView.animateWithDuration(0.3, animations: {
             numberPad?.frame.origin.y = view.frame.height
             }, completion: { _ in
-                numberPad?.hidden = true
+                self.numberPad?.hidden = true
         })
     }
     
