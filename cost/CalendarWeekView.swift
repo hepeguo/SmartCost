@@ -40,7 +40,7 @@ class CalendarWeekView: UIView, CalendarDayViewDelegate {
         initDayViewsInWeek()
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -49,7 +49,7 @@ class CalendarWeekView: UIView, CalendarDayViewDelegate {
         let width = (frame.width - padding * 6) / 7
         var rect = CGRectMake(0, 0, width, height)
         
-        for (index, day) in enumerate(dayOfWeek!) {
+        for (index, day) in (dayOfWeek!).enumerate() {
             rect.origin.x =  CGFloat(index) * (width + padding)
             let dayView = CalendarDayView(frame: rect, date: day)
             if day == GDate() {

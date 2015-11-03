@@ -36,7 +36,7 @@ class ListPageScrollView: UIView, UIScrollViewDelegate {
         
         let count = views.count
         
-        var scrollView = UIScrollView(frame: CGRectMake(0, 0, frame.width, frame.height))
+        let scrollView = UIScrollView(frame: CGRectMake(0, 0, frame.width, frame.height))
         scrollView.contentSize = CGSizeMake(frame.width * CGFloat(count), frame.height)
         scrollView.setContentOffset(CGPointMake(frame.width, 0), animated: false)
         
@@ -65,7 +65,7 @@ class ListPageScrollView: UIView, UIScrollViewDelegate {
         scrollView.setContentOffset(CGPointMake(frame.width, 0), animated: false)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     

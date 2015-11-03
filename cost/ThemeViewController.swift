@@ -65,7 +65,7 @@ class ThemeViewController: UIViewController {
     func initTopBar() {
         let closeTap = UITapGestureRecognizer(target: self, action: "JustCloseThemeView:")
         
-        var closeButton = UILabel(frame: CGRectMake(10, 27, 30, 30))
+        let closeButton = UILabel(frame: CGRectMake(10, 27, 30, 30))
         closeButton.userInteractionEnabled = true
         closeButton.text = "✕"
         closeButton.textColor = UIColor.whiteColor()
@@ -78,7 +78,7 @@ class ThemeViewController: UIViewController {
         let margin: CGFloat = 10
         let width: CGFloat = (view.frame.width - margin * 4) / 2
         let height: CGFloat = width / 1.5
-        var themeContent = UIScrollView(frame: CGRectMake(0, 64, view.frame.width, view.frame.height - 64))
+        let themeContent = UIScrollView(frame: CGRectMake(0, 64, view.frame.width, view.frame.height - 64))
         themeContent.contentSize = CGSizeMake(view.frame.width, (height + margin * 2) * 5)
         themeContent.setContentOffset(CGPointMake(0, 0), animated: false)
         themeContent.showsHorizontalScrollIndicator = false
@@ -88,7 +88,7 @@ class ThemeViewController: UIViewController {
         
         contentView!.addSubview(themeContent)
         
-        for (index, color) in enumerate(themes) {
+        for (index, color) in themes.enumerate() {
             var x: CGFloat = margin
             if index % 2 == 1 {
                 x = margin * 3 + width

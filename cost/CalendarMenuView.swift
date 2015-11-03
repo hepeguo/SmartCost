@@ -26,7 +26,7 @@ class CalendarMenuView: UIView {
         initDayLabel()
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -35,7 +35,7 @@ class CalendarMenuView: UIView {
         let width = (frame.width - padding * 6) / 7
         var rect = CGRectMake(0, 0, width, height)
         
-        for (index, name) in  enumerate(weekDayName) {
+        for (index, name) in  weekDayName.enumerate() {
             rect.origin.x =  CGFloat(index) * (width + padding)
             let label = UILabel(frame: rect)
             label.text = name

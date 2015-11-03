@@ -63,8 +63,8 @@ struct GDate {
 
 // MARK: - 输出
 extension GDate {
-    func stringWithFormat(_ format:String = "yyyy-MM-dd HH:mm:ss") -> String {
-        var formatter = NSDateFormatter()
+    func stringWithFormat(format:String = "yyyy-MM-dd HH:mm:ss") -> String {
+        let formatter = NSDateFormatter()
         formatter.dateFormat = format
         return formatter.stringFromDate(NSDate(timeIntervalSince1970: timeInterval))
     }
@@ -170,7 +170,7 @@ extension GDate {
 
 extension GDate {
     init(_ v: String, style: NSDateFormatterStyle = .NoStyle) {
-        var formatter = NSDateFormatter()
+        let formatter = NSDateFormatter()
         formatter.dateStyle = style
         if let date = formatter.dateFromString(v) {
             self.timeInterval = date.timeIntervalSince1970
@@ -178,7 +178,7 @@ extension GDate {
     }
     
     init(_ v: String, dateFormat:String = "yyyy-MM-dd HH:mm:ss") {
-        var formatter = NSDateFormatter()
+        let formatter = NSDateFormatter()
         formatter.dateFormat = dateFormat
         if let date = formatter.dateFromString(v) {
             self.timeInterval = date.timeIntervalSince1970
@@ -205,12 +205,12 @@ extension GDate {
 }
 
 // MARK: - 可以直接输出
-extension GDate : Printable {
+extension GDate : CustomStringConvertible {
     var description: String {
         return NSDate(timeIntervalSince1970: timeInterval).description
     }
 }
-extension GDate : DebugPrintable {
+extension GDate : CustomDebugStringConvertible {
     var debugDescription: String {
         return NSDate(timeIntervalSince1970: timeInterval).debugDescription
     }
@@ -231,11 +231,11 @@ extension GDate : DebugPrintable {
 //}
 
 // MARK: - 可反射
-extension GDate : Reflectable {
-    func getMirror() -> MirrorType {
-        return reflect(self)
-    }
-}
+//extension GDate : Reflectable {
+//    func getMirror() -> MirrorType {
+//        return reflect(self)
+//    }
+//}
 
 // MARK: - 可哈希
 extension GDate : Hashable {

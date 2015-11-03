@@ -35,7 +35,6 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         
         self.automaticallyAdjustsScrollViewInsets = false
         view.layer.cornerRadius = 5
-//        view.backgroundColor = UIColor(red: 244 / 255, green: 111 / 255, blue: 102 / 255, alpha: 1)
         view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
         contentView = UIView(frame: view.frame)
         view.addSubview(contentView!)
@@ -54,7 +53,6 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -64,7 +62,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
     func initTopBar() {
         let closeTap = UITapGestureRecognizer(target: self, action: "JustCloseSetUpView:")
         
-        var closeButton = UILabel(frame: CGRectMake(10, 27, 30, 30))
+        let closeButton = UILabel(frame: CGRectMake(10, 27, 30, 30))
         closeButton.userInteractionEnabled = true
         closeButton.text = "✕"
         closeButton.textColor = UIColor.whiteColor()
@@ -74,9 +72,9 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
     }
     
     func initViews() {
-        var width: CGFloat = view.frame.width / 2 - 10
-        var height: CGFloat = 54
-        var marginBetweenButton:CGFloat = 4
+        let width: CGFloat = view.frame.width / 2 - 10
+        let height: CGFloat = 54
+        let marginBetweenButton:CGFloat = 4
         
         let exportToExcelLabel = UILabel(frame: CGRectMake(0, 0, width * 2, height))
         exportToExcelLabel.text = "Export through Email"
@@ -129,13 +127,12 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
     }
     
     func toggleAutoSync(sender: UITapGestureRecognizer) {
-//        let view: UILabel = sender.view!
         if autoSyncTip!.text == "YES" {
             autoSyncTip?.text = "NO"
-            println("open auto sync")
+            print("open auto sync")
         } else {
             autoSyncTip?.text = "YES"
-            println("close auto sync")
+            print("close auto sync")
         }
     }
     
@@ -184,18 +181,22 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         
         let data = compileDataToExcel()
         
-        let fileManager = (NSFileManager.defaultManager())
-        let directorys : [String]? = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory,NSSearchPathDomainMask.AllDomainsMask, true) as? [String]
+        _ = (NSFileManager.defaultManager())
+        let directorys : [String]? = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory,NSSearchPathDomainMask.AllDomainsMask, true) as [String]
         
         if ((directorys) != nil) {
             
             let directories:[String] = directorys!;
             let dictionary = directories[0];
             let plistfile = "cost-data.csv"
-            let plistpath = dictionary.stringByAppendingPathComponent(plistfile);
+            let plistpath = dictionary.stringByAppendingString(plistfile)
             
-            data.writeToFile(plistpath, atomically: true, encoding: NSUTF8StringEncoding, error: nil)
-            var costData: NSData = NSData(contentsOfFile: plistpath)!
+            do {
+                try data.writeToFile(plistpath, atomically: true, encoding: NSUTF8StringEncoding)
+            } catch let error as NSError  {
+                print(error)
+            }
+            let costData: NSData = NSData(contentsOfFile: plistpath)!
             mailComposerVC.addAttachmentData(costData, mimeType: "text/csv", fileName: "cost-data.csv")
         }
         
@@ -209,7 +210,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
     
     // MARK: MFMailComposeViewControllerDelegate
     
-    func mailComposeController(controller: MFMailComposeViewController!, didFinishWithResult result: MFMailComposeResult, error: NSError!) {
+    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
         controller.dismissViewControllerAnimated(true, completion: nil)
         
     }
@@ -218,7 +219,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         let items = getAllDataFromDatabase()
         var data = "Index,Price,Kind,Detail\n"
         if items != nil {
-            for (index, item) in enumerate(items!) {
+            for (index, item) in items!.enumerate() {
                 data += "\(index),\(item.price),\(item.kind),\(item.detail)\n"
             }
         }
@@ -232,10 +233,14 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         
         let fetchRequest = NSFetchRequest(entityName: "ItemModel")
         
-        var error:NSError?
-        
         fetchRequest.predicate = NSPredicate(format: "kill == false")
-        let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
+        
+        var fetchResults: [ItemModel]?
+        do {
+            fetchResults = try managedContext.executeFetchRequest(fetchRequest) as? [ItemModel]
+        } catch let error as NSError {
+            print(error)
+        }
         return fetchResults
     }
 }

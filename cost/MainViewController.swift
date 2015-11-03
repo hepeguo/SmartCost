@@ -64,7 +64,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         self.automaticallyAdjustsScrollViewInsets = false
         view.layer.cornerRadius = 5
-//        view.backgroundColor = UIColor(red: 244 / 255, green: 111 / 255, blue: 102 / 255, alpha: 1)
         view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
         
         if let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext {
@@ -85,7 +84,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func timeChanged(notification: NSNotification) {
-        var date = GDate()
+        let date = GDate()
         calendarView?.setCurrentDay(date)
     }
     
@@ -120,10 +119,15 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func persistentStoreWillChange(notifaction: NSNotification) {
         moc.performBlock({ () -> Void in
             if self.moc.hasChanges {
-                var error: NSError? = nil
-                self.moc.save(&error)
+                let error: NSError? = nil
+                
+                do {
+                    try self.moc.save()
+                } catch let error as NSError {
+                    print(error)
+                }
                 if error != nil {
-                    println("save error: \(error)")
+                    print("save error: \(error)")
                 } else {
                     self.moc.reset()
                 }
@@ -174,13 +178,16 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         dateLabel!.font = fontSmall
         dateLabel!.textColor = color
         
-        let setUpIcon = UIImageView(frame: CGRectMake(view.bounds.width - 75, 34, 18, 18))
-        setUpIcon.image = UIImage(named: "setUp")
-        setUpIcon.userInteractionEnabled = true
-        let setUpTap = UITapGestureRecognizer(target: self, action: "showSetUpView:")
-        setUpIcon.addGestureRecognizer(setUpTap)
         
-        let addLabel = UILabel(frame: CGRectMake(view.bounds.width - 42, 25, 32, 32))
+        let setUpView = UIView(frame: CGRectMake(view.frame.width - 98, 20, 44, 44))
+        setUpView.userInteractionEnabled = true
+        let setUpTap = UITapGestureRecognizer(target: self, action: "showSetUpView:")
+        setUpView.addGestureRecognizer(setUpTap)
+        let setUpIcon = UIImageView(frame: CGRectMake(13, 13, 18, 18))
+        setUpIcon.image = UIImage(named: "setUp")
+        setUpView.addSubview(setUpIcon)
+        
+        let addLabel = UILabel(frame: CGRectMake(view.bounds.width - 54, 20, 44, 44))
         addLabel.textAlignment = .Center
         addLabel.text = "+"
         addLabel.font = fontBigger
@@ -191,7 +198,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         totalLabel.textColor = color
         
         let total = getSum(todayList)
-        counterNumber = CounterNumber(frame: CGRectMake(80, 36, view.frame.width - 155, 22), startNumber: total.numberBeforeDot, startNumberAfterDot: total.numberAfterDot)
+        counterNumber = CounterNumber(frame: CGRectMake(80, 36, view.frame.width - 178, 22), startNumber: total.numberBeforeDot, startNumberAfterDot: total.numberAfterDot)
         counterNumber!.fontColor = UIColor.redColor()
         counterNumber!.backgroundColor = UIColor.clearColor()
         
@@ -199,14 +206,14 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         addLabel.userInteractionEnabled = true
         addLabel.addGestureRecognizer(tap)
         
-        var calenderMenu = CalendarMenuView(frame: CGRectMake(0, 64, view.frame.width, 22))
+        let calenderMenu = CalendarMenuView(frame: CGRectMake(0, 64, view.frame.width, 22))
         calendarView = CalendarWeekViewControllerView(frame: CGRectMake(0, 86, view.bounds.width, 44))
         calendarView!.backgroundColor = UIColor.whiteColor()
         calendarView!.layer.zPosition = 2
         calendarView!.delegate = self
         
         topBar!.addSubview(statusLabel)
-        topBar!.addSubview(setUpIcon)
+        topBar!.addSubview(setUpView)
         topBar!.addSubview(addLabel)
         topBar!.addSubview(dateLabel!)
         topBar!.addSubview(totalLabel)
@@ -313,7 +320,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func initDataFromLeft() {
-        var date = GDate(year: year, month: month, day: day, hour: 0, minute: 0, second: 0)
+//        _ = GDate(year: year, month: month, day: day, hour: 0, minute: 0, second: 0)
         let yesterdayFetchResults = getDayDataFromDatabase(year, month: month, day: day)
         
         yesterdayList = yesterdayFetchResults!
@@ -321,7 +328,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func initDataFromRight() {
-        var date = GDate(year: year, month: month, day: day, hour: 0, minute: 0, second: 0)
+//        var date = GDate(year: year, month: month, day: day, hour: 0, minute: 0, second: 0)
         let tomorrowFetchResults = getDayDataFromDatabase(year, month: month, day: day)
         
         tomorrowList = tomorrowFetchResults!
@@ -373,7 +380,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     @IBAction func closeNewItemView(sender: UIStoryboardSegue) {
-//        println("success")
+        //        println("success")
     }
     
     @IBAction func closeSetUpView(sender: UIStoryboardSegue) {
@@ -422,18 +429,18 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         } else if tableView == tomorrowTableView {
             itemModel = tomorrowList[indexPath.row]
         }
-        var item = Item()
+        let item = Item()
         if itemModel != nil {
             item.price = itemModel!.price as Float
             item.detail = itemModel!.detail
             item.kind = itemModel!.kind
             item.kill = itemModel!.kill as Bool
-            item.year = itemModel!.year.toInt()!
-            item.month = itemModel!.month.toInt()!
-            item.day = itemModel!.day.toInt()!
-            item.weekOfYear = itemModel!.weekOfYear.toInt()!
+            item.year = Int(itemModel!.year)!
+            item.month = Int(itemModel!.month)!
+            item.day = Int(itemModel!.day)!
+            item.weekOfYear = Int(itemModel!.weekOfYear)!
             item.time = itemModel!.addTime
-            item.dayOfWeek = itemModel!.dayOfWeek.toInt()!
+            item.dayOfWeek = Int(itemModel!.dayOfWeek)!
             cell.item = item
         }
         cell.backgroundColor = UIColor.clearColor()        
@@ -460,12 +467,16 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
 //        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 //        let managedContext = appDelegate.managedObjectContext!
         
-        var error:NSError?
         var itemModel:ItemModel?
         let fetchRequest = NSFetchRequest(entityName: "ItemModel")
         fetchRequest.predicate = NSPredicate(format: "id == '\(item.id)'")
         
-        let fetchResults = moc.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
+        var fetchResults: [ItemModel]?
+        do {
+            try fetchResults = (moc.executeFetchRequest(fetchRequest) as! [ItemModel])
+        } catch let error as NSError {
+            print(error)
+        }
         
         if fetchResults != nil && fetchResults?.count > 0 {
             itemModel = fetchResults![0]
@@ -479,11 +490,14 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             itemModel!.kill = item.kill
             itemModel!.addTime = "\(time.hour): \(time.minute): \(time.second)"
             
-            if !moc.save(&error) {
-                println("Could not save\(error), \(error?.userInfo)")
+            
+            do {
+                try moc.save()
+            } catch let error as NSError {
+                print(error)
             }
             
-            for (index, item)in enumerate(todayList) {
+            for (index, item)in todayList.enumerate() {
                 if item.id == todayList[index].id {
                     todayList.removeAtIndex(index)
                     break
@@ -497,15 +511,16 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func saveItem(item: Item) {
-//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-//        let managedContext = appDelegate.managedObjectContext!
-        
-        var error:NSError?
         var itemModel:ItemModel?
         let fetchRequest = NSFetchRequest(entityName: "ItemModel")
         fetchRequest.predicate = NSPredicate(format: "id == '\(item.id)'")
         
-        let fetchResults = moc.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
+        var fetchResults: [ItemModel]?
+        do {
+            try fetchResults = (moc.executeFetchRequest(fetchRequest) as! [ItemModel])
+        } catch let error as NSError {
+            print(error)
+        }
 
         if fetchResults != nil && fetchResults?.count > 0 {
             itemModel = fetchResults![0]
@@ -520,11 +535,13 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             itemModel!.kill = item.kill
             itemModel!.addTime = "\(time.hour): \(time.minute): \(time.second)"
             
-            if !moc.save(&error) {
-                println("Could not save\(error), \(error?.userInfo)")
+            do {
+                try moc.save()
+            } catch let error as NSError {
+                print(error)
             }
             
-            for (index, item)in enumerate(todayList) {
+            for (index, item)in todayList.enumerate() {
                 if item.id == todayList[index].id {
                     todayList[index] = item
                     break
@@ -538,16 +555,17 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func addItem(item: Item) {
-//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-//        let managedContext = appDelegate.managedObjectContext!
-        
         let fetchRequest = NSFetchRequest(entityName: "BookModel")
         fetchRequest.predicate = NSPredicate(format: "name == '\(listName)'")
         
-        var error:NSError?
         var book: BookModel?
         
-        let fetchResults = moc.executeFetchRequest(fetchRequest, error: &error) as! [BookModel]?
+        var fetchResults: [BookModel]?
+        do {
+            try fetchResults = (moc.executeFetchRequest(fetchRequest) as! [BookModel])
+        } catch let error as NSError {
+            print(error)
+        }
         
         if fetchResults != nil && fetchResults?.count > 0 {
             book = fetchResults![0]
@@ -558,7 +576,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             book!.name = "\(listName)"
         }
         
-        var itemModel: ItemModel = NSEntityDescription.insertNewObjectForEntityForName("ItemModel", inManagedObjectContext: moc) as! ItemModel
+        let itemModel: ItemModel = NSEntityDescription.insertNewObjectForEntityForName("ItemModel", inManagedObjectContext: moc) as! ItemModel
         
         let date = GDate()
         let time = date.getTime()
@@ -576,8 +594,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         itemModel.weekOfYear = "\(weekOfYear)"
         itemModel.dayOfWeek = "\(dayOfWeek)"
         
-        if !moc.save(&error) {
-            println("Could not save\(error), \(error?.userInfo)")
+        do {
+            try moc.save()
+        } catch let error as NSError {
+            print(error)
         }
         
         todayList.append(itemModel)
@@ -588,15 +608,16 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func getDayDataFromDatabase(year: Int, month: Int, day: Int) -> [ItemModel]? {
-//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-//        let managedContext = appDelegate.managedObjectContext!
-        
         let fetchRequest = NSFetchRequest(entityName: "ItemModel")
         
-        var error:NSError?
-        
         fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && month == '\(month)' && day == '\(day)' && kill == false")
-        let fetchResults = moc.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
+        
+        var fetchResults: [ItemModel]?
+        do {
+            try fetchResults = (moc.executeFetchRequest(fetchRequest) as! [ItemModel])
+        } catch let error as NSError {
+            print(error)
+        }
         return fetchResults
     }
     
@@ -614,7 +635,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         if stringAfterDot == "0" {
             numberAfterDot = 0
         } else {
-            numberAfterDot = stringAfterDot.toInt()!
+            numberAfterDot = Int(stringAfterDot)!
         }
         return (numberBeforeDot, numberAfterDot)
     }
@@ -634,7 +655,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         weekOfYear = weekTemp.weekOfYear
         dayOfWeek = weekTemp.dayOfWeek
         
-        var dateForGetData = date.addDay(numberOfDayFromToday + 1)
+        let dateForGetData = date.addDay(numberOfDayFromToday + 1)
         let dateForGetDataTemp = dateForGetData.getDay()
         let yearTemp = dateForGetDataTemp.year
         let monthTemp = dateForGetDataTemp.month

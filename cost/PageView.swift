@@ -27,7 +27,7 @@ class PageView: UIView, UIScrollViewDelegate {
         
         let count = views.count
         
-        var scrollView = UIScrollView(frame: CGRectMake(0, 0, frame.width, frame.height))
+        let scrollView = UIScrollView(frame: CGRectMake(0, 0, frame.width, frame.height))
         scrollView.contentSize = CGSizeMake(frame.width * CGFloat(count), frame.height)
         scrollView.setContentOffset(CGPointMake(0, 0), animated: false)
         
@@ -48,11 +48,11 @@ class PageView: UIView, UIScrollViewDelegate {
         
         //title
         
-        var noteView = UIView(frame: CGRectMake(0, self.bounds.size.height - 30.0, frame.width, 20))
+        let noteView = UIView(frame: CGRectMake(0, self.bounds.size.height - 30.0, frame.width, 20))
         
         let pageControlWidth = CGFloat(count - 2) * 10.0 + 40.0
         let pageControlHeight = CGFloat(20.0)
-        var pageControl = UIPageControl(frame: CGRectMake((frame.width - pageControlWidth) / 2, 6, pageControlWidth, pageControlHeight))
+        let pageControl = UIPageControl(frame: CGRectMake((frame.width - pageControlWidth) / 2, 6, pageControlWidth, pageControlHeight))
         pageControl.currentPage = 0;
         pageControl.numberOfPages = count
         self.pageControl = pageControl
@@ -68,7 +68,7 @@ class PageView: UIView, UIScrollViewDelegate {
         pageControl.currentPage = page
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     

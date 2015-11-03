@@ -31,7 +31,7 @@ class TableViewCell: UITableViewCell {
     }
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         
-        priceLabel = UILabel(frame: CGRect.nullRect)
+        priceLabel = UILabel(frame: CGRect.null)
         priceLabel.textColor = UIColor.whiteColor()
         priceLabel.font = UIFont.boldSystemFontOfSize(25)
         priceLabel.backgroundColor = UIColor.clearColor()
@@ -39,7 +39,7 @@ class TableViewCell: UITableViewCell {
         priceLabel.textAlignment = .Right
         priceLabel.text = "\(item?.price)"
         
-        detailLabel = UILabel(frame: CGRect.nullRect)
+        detailLabel = UILabel(frame: CGRect.null)
         detailLabel.textColor = UIColor.whiteColor()
         detailLabel.font = UIFont.boldSystemFontOfSize(16)
         detailLabel.backgroundColor = UIColor.clearColor()
@@ -47,7 +47,7 @@ class TableViewCell: UITableViewCell {
         detailLabel.numberOfLines = 2
         detailLabel.text = item?.detail
         
-        timeLabel = UILabel(frame: CGRect.nullRect)
+        timeLabel = UILabel(frame: CGRect.null)
         timeLabel.textColor = UIColor.whiteColor()
         timeLabel.font = UIFont.systemFontOfSize(16)
         timeLabel.backgroundColor = UIColor.clearColor()
@@ -58,7 +58,7 @@ class TableViewCell: UITableViewCell {
         dotLine.backgroundColor = UIColor.clearColor()
         
         
-        kindLabel = UILabel(frame: CGRect.nullRect)
+        kindLabel = UILabel(frame: CGRect.null)
         kindLabel.textColor = UIColor.whiteColor()
         kindLabel.font = UIFont.systemFontOfSize(16)
         kindLabel.backgroundColor = UIColor.clearColor()
@@ -82,7 +82,7 @@ class TableViewCell: UITableViewCell {
         selectionStyle = .None
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     

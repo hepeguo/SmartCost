@@ -40,7 +40,7 @@ class NumberPad: UIView {
     var dotTapped: Bool = false
     var afterDotTappedTapNumber: Int = 0
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -59,7 +59,7 @@ class NumberPad: UIView {
             addSubview(label)
         }
         let labelName = [".", "0", "⌫"]
-        for (index, name) in enumerate(labelName) {
+        for (index, name) in labelName.enumerate() {
             let label: UILabel = UILabel(frame: CGRectMake(width * CGFloat(index), height * CGFloat(3), width, height))
             label.text = "\(name)"
             label.font = font
@@ -71,7 +71,7 @@ class NumberPad: UIView {
             addSubview(label)
         }
         let controllerName = ["C", "OK"]
-        for (index, name) in enumerate(controllerName) {
+        for (index, name) in controllerName.enumerate() {
             let label: UILabel = UILabel(frame: CGRectMake(width * CGFloat(3), height * CGFloat(2 * index), width, height * CGFloat(2)))
             label.text = "\(name)"
             label.font = font
@@ -95,7 +95,7 @@ class NumberPad: UIView {
                         
                     } else if text == "⌫" {
                         afterDotTappedTapNumber--
-                        let index = advance(string.endIndex, -1);
+                        let index = string.endIndex.advancedBy(-1);
                         string = string.substringToIndex(index)
                         if afterDotTappedTapNumber < 0 {
                             afterDotTappedTapNumber = 0
@@ -111,7 +111,7 @@ class NumberPad: UIView {
                         afterDotTappedTapNumber++
                         if afterDotTappedTapNumber > 2 {
                             afterDotTappedTapNumber = 2
-                            let index = advance(string.endIndex, -1);
+                            let index = string.endIndex.advancedBy(-1);
                             let newstring = string.substringToIndex(index)
                             string = newstring + text
                         } else {
@@ -142,7 +142,7 @@ class NumberPad: UIView {
                         if string == "0" || string == "" {
                             return
                         }
-                        let index = advance(string.endIndex, -1);
+                        let index = string.endIndex.advancedBy(-1);
                         let newstring = string.substringToIndex(index)
                         if newstring.isEmpty {
                             string = "0"
@@ -157,9 +157,12 @@ class NumberPad: UIView {
             }
         }
         if string == "" {
-            string == "0"
+            string = "0"
         }
-        delegate?.tappedNumber(string)
+        let label = sender.view as? UILabel
+        if label?.text != "OK" {
+            delegate?.tappedNumber(string)
+        }
     }
 }
 

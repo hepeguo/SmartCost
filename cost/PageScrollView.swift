@@ -30,7 +30,7 @@ class PageScrollView: UIView, UIScrollViewDelegate {
         
         let count = views.count
         
-        var scrollView = UIScrollView(frame: CGRectMake(0, 0, frame.width, frame.height))
+        let scrollView = UIScrollView(frame: CGRectMake(0, 0, frame.width, frame.height))
         scrollView.contentSize = CGSizeMake(frame.width * CGFloat(count), frame.height)
         scrollView.setContentOffset(CGPointMake(frame.width, 0), animated: false)
         
@@ -49,18 +49,18 @@ class PageScrollView: UIView, UIScrollViewDelegate {
         self.addSubview(scrollView)
         
         //title
-        var noteView = UIView(frame: CGRectMake(0, self.bounds.size.height - 33.0, frame.width, 33))
+        let noteView = UIView(frame: CGRectMake(0, self.bounds.size.height - 33.0, frame.width, 33))
         noteView.backgroundColor = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 0.5)
         
         let pageControlWidth = CGFloat(count - 2) * 10.0 + 40.0
         let pageControlHeight = CGFloat(20.0)
-        var pageControl = UIPageControl(frame: CGRectMake(frame.width - pageControlWidth, 6, pageControlWidth, pageControlHeight))
+        let pageControl = UIPageControl(frame: CGRectMake(frame.width - pageControlWidth, 6, pageControlWidth, pageControlHeight))
         pageControl.currentPage = 0;
         pageControl.numberOfPages = count - 2
         self.pageControl = pageControl
         noteView.addSubview(pageControl)
         
-        var noteTitle = UILabel(frame: CGRectMake(5, 6, frame.width - pageControlWidth, 20))
+        let noteTitle = UILabel(frame: CGRectMake(5, 6, frame.width - pageControlWidth, 20))
         noteTitle.text = titles[0]
         noteTitle.backgroundColor = UIColor.clearColor()
         noteTitle.font = UIFont.systemFontOfSize(13)
@@ -98,7 +98,7 @@ class PageScrollView: UIView, UIScrollViewDelegate {
         
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 

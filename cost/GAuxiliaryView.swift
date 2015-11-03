@@ -44,12 +44,12 @@ class GAuxiliaryView: UIView {
         setNeedsDisplay()
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     override func drawRect(rect: CGRect) {
-        let context = UIGraphicsGetCurrentContext()
+        _ = UIGraphicsGetCurrentContext()
         var path: UIBezierPath!
         
         if let shape = shape {
@@ -103,7 +103,7 @@ extension GAuxiliaryView {
         flag.addLineToPoint(CGPointMake(bounds.width, bounds.height / 2 + radius ))
         flag.addLineToPoint(CGPointMake(bounds.width / 2, bounds.height / 2 + radius))
         
-        var path = CGPathCreateMutable()
+        let path = CGPathCreateMutable()
         CGPathAddPath(path, nil, circlePath().CGPath)
         CGPathAddPath(path, nil, flag.CGPath)
         
@@ -117,7 +117,7 @@ extension GAuxiliaryView {
         flag.addLineToPoint(CGPointMake(0, bounds.height / 2 - radius))
         flag.addLineToPoint(CGPointMake(bounds.width / 2, bounds.height / 2 - radius))
         
-        var path = CGPathCreateMutable()
+        let path = CGPathCreateMutable()
         CGPathAddPath(path, nil, circlePath().CGPath)
         CGPathAddPath(path, nil, flag.CGPath)
         
@@ -125,7 +125,7 @@ extension GAuxiliaryView {
     }
     
     func rectPath() -> UIBezierPath {
-        let midX = bounds.width / 2
+        _ = bounds.width / 2
         let midY = bounds.height / 2
         
         let offset:CGFloat = 5.0

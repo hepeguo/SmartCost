@@ -49,7 +49,7 @@ class CalendarWeekViewControllerView: UIView, UIScrollViewDelegate, CalendarWeek
         presentWeekView?.selectDayFromWeek(selectedDay)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -210,7 +210,7 @@ class CalendarWeekViewControllerView: UIView, UIScrollViewDelegate, CalendarWeek
             delegate?.prevWeekView()
             scrollView!.setContentOffset(CGPointMake(0, 0), animated: true)
         } else {
-            for (index, dayView) in enumerate(presentWeekView!.dayViewOfWeek) {
+            for (_, dayView) in presentWeekView!.dayViewOfWeek.enumerate() {
                 if dayView.date == nextSelectDay {
                     dayView.isSelectedDay = true
                 }
@@ -235,7 +235,7 @@ class CalendarWeekViewControllerView: UIView, UIScrollViewDelegate, CalendarWeek
             delegate?.nextWeekView()
             scrollView!.setContentOffset(CGPointMake(frame.width * 2, 0), animated: true)
         } else {
-            for (index, dayView) in enumerate(presentWeekView!.dayViewOfWeek) {
+            for (_, dayView) in presentWeekView!.dayViewOfWeek.enumerate() {
                 if dayView.date == nextSelectDay {
                     dayView.isSelectedDay = true
                 }

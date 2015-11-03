@@ -31,7 +31,7 @@ class CounterView: UIView {
         let arcWidth: CGFloat = 20
         //inner radius of corcle
         let radius:CGFloat = 70
-        var animation: CABasicAnimation = CABasicAnimation(keyPath: "strokeEnd")
+        let animation: CABasicAnimation = CABasicAnimation(keyPath: "strokeEnd")
         animation.duration = 0.4
         animation.fromValue = 0.0
         animation.toValue = 1.0
@@ -42,7 +42,7 @@ class CounterView: UIView {
 //        get every angle of data
         var total: Float = 0.0
         if numbers.count > 0 {
-            var beforeAll = [Float]()
+//            var beforeAll = [Float]()
             var num = [Float]()
             for number in numbers {
                 num.append(number.sum)
@@ -60,14 +60,14 @@ class CounterView: UIView {
             var angles = [CGFloat]()
             angles.append(0.0)
             for var i = 0; i < num.count - 1; i++ {
-                var angle = CGFloat(num[i]) / CGFloat(total) * CGFloat(2) * PI
+                let angle = CGFloat(num[i]) / CGFloat(total) * CGFloat(2) * PI
                 angles.append(angle)
             }
             angles.append(2 * PI)
             
             for var i = 0; i < numbers.count; i++ {
-                var path = UIBezierPath(arcCenter: center, radius: radius, startAngle: angles[i], endAngle: angles[i + 1], clockwise: true)
-                var calyer = CAShapeLayer()
+                let path = UIBezierPath(arcCenter: center, radius: radius, startAngle: angles[i], endAngle: angles[i + 1], clockwise: true)
+                let calyer = CAShapeLayer()
                 calyer.path = path.CGPath
                 calyer.strokeColor = UIColor.colorFromCode(colors[i]).CGColor
                 calyer.strokeStart = 0
@@ -81,8 +81,8 @@ class CounterView: UIView {
                 self.layer.addSublayer(calyer)
             }
         } else {
-            var path = UIBezierPath(arcCenter: center, radius: radius, startAngle: 0, endAngle: 2 * PI, clockwise: true)
-            var calyer = CAShapeLayer()
+            let path = UIBezierPath(arcCenter: center, radius: radius, startAngle: 0, endAngle: 2 * PI, clockwise: true)
+            let calyer = CAShapeLayer()
             calyer.path = path.CGPath
             calyer.strokeColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5).CGColor
             calyer.strokeStart = 0

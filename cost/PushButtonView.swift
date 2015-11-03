@@ -17,7 +17,7 @@ class PushButtonView: UIButton {
     // An empty implementation adversely affects performance during animation.
     override func drawRect(rect: CGRect) {
         // Drawing code
-        var path = UIBezierPath(ovalInRect: rect)
+        let path = UIBezierPath(ovalInRect: rect)
         fillColor.setFill()
         path.fill()
         
@@ -27,7 +27,7 @@ class PushButtonView: UIButton {
         let plusWidth: CGFloat = 45.0
         
         //create the path
-        var plusPath = UIBezierPath()
+        let plusPath = UIBezierPath()
         
         //set the path's line width to the height of the stroke
         plusPath.lineWidth = plusHeight

@@ -73,7 +73,7 @@ class CalendarDayView: UIView {
         dateLabel!.layer.zPosition = 2
         addSubview(dateLabel!)
         
-        var tapGesture = UITapGestureRecognizer(target: self, action: "selectDay:")
+        let tapGesture = UITapGestureRecognizer(target: self, action: "selectDay:")
         tapGesture.numberOfTapsRequired = 1
         self.addGestureRecognizer(tapGesture)
     }
@@ -82,7 +82,7 @@ class CalendarDayView: UIView {
         super.init(frame: frame)
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -97,7 +97,7 @@ class CalendarDayView: UIView {
     func setPresentDay() {
         if isSelectedDay {
             if selectedCircleView == nil {
-                var rect = CGRectMake(0, 0, frame.width, frame.height)
+                let rect = CGRectMake(0, 0, frame.width, frame.height)
                 selectedCircleView = GAuxiliaryView(rect: rect, shape: .Circle)
             }
             selectedCircleView!.fillColor = presentDayFillColor
@@ -130,7 +130,7 @@ class CalendarDayView: UIView {
     
     func setSelectedDay() {
         if selectedCircleView == nil {
-            var rect = CGRectMake(0, 0, frame.width, frame.height)
+            let rect = CGRectMake(0, 0, frame.width, frame.height)
             selectedCircleView = GAuxiliaryView(rect: rect, shape: .Circle)
         }
         if isPresentDay {
@@ -174,7 +174,7 @@ class CalendarDayView: UIView {
     }
     
     func setTips() {
-        var rect = CGRectMake((frame.width - 5) / 2, frame.height - 5.0, 5.0, 5.0)
+        let rect = CGRectMake((frame.width - 5) / 2, frame.height - 5.0, 5.0, 5.0)
         let circleView = GAuxiliaryView(rect: rect, shape: .Circle)
         circleView.fillColor = UIColor.blueColor()
         addSubview(circleView)

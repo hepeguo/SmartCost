@@ -57,7 +57,6 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         
         self.automaticallyAdjustsScrollViewInsets = false
         view.layer.cornerRadius = 5
-//        view.backgroundColor = UIColor(red: 244 / 255, green: 111 / 255, blue: 102 / 255, alpha: 1)
         view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
         contentView = UIView(frame: view.frame)
         view.addSubview(contentView!)
@@ -79,7 +78,6 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
 //MARK: init views
@@ -87,7 +85,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
     func initTopBar() {
         let closeTap = UITapGestureRecognizer(target: self, action: "JustCloseStatisticsView:")
         
-        var closeButton = UILabel(frame: CGRectMake(10, 27, 30, 30))
+        let closeButton = UILabel(frame: CGRectMake(10, 27, 30, 30))
         closeButton.userInteractionEnabled = true
         closeButton.text = "✕"
         closeButton.textColor = UIColor.whiteColor()
@@ -114,7 +112,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         
         let counterRect: CGRect = CGRectMake(view.frame.width / 2 - 100, 20, 200, 200)
         counterView = CounterView(frame: counterRect)
-        var dataList = getMonthDataFromDatabase(year, month: month)
+        let dataList = getMonthDataFromDatabase(year, month: month)
         kindAndSum = comboData(dataList!)
         counterView!.numbers = kindAndSum!
         counterView!.backgroundColor = UIColor.clearColor()
@@ -264,7 +262,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func selectYear(sender: UITapGestureRecognizer) {
-        for (index, view) in enumerate(yearsView) {
+        for (_, view) in yearsView.enumerate() {
             view.backgroundColor = UIColor.clearColor()
         }
         let label = sender.view as! UILabel
@@ -274,15 +272,15 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
             self.yearSelectView?.frame.size = CGSizeMake(0, 0)
             }, completion: {_ in
                 self.yearLabel?.text = "YEAR: " + label.text!
-                self.year = label.text!.toInt()!
-                var dataList = self.getMonthDataFromDatabase(self.year, month: self.month)
+                self.year = Int(label.text!)!
+                let dataList = self.getMonthDataFromDatabase(self.year, month: self.month)
                 self.kindAndSum = self.comboData(dataList!)
                 self.counterView!.numbers = self.kindAndSum!
         })
     }
     
     func selectMonth(sender: UITapGestureRecognizer) {
-        for (index, view) in enumerate(monthsView) {
+        for (_, view) in monthsView.enumerate() {
             view.backgroundColor = UIColor.clearColor()
         }
         let label = sender.view as! UILabel
@@ -292,8 +290,8 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
             self.monthSelectView?.frame = CGRectMake(self.view.frame.width - 10, 200, 0, 0)
             }, completion: {_ in
                 self.monthLabel?.text = "MONTH: " + label.text!
-                self.month = label.text!.toInt()!
-                var dataList = self.getMonthDataFromDatabase(self.year, month: self.month)
+                self.month = Int(label.text!)!
+                let dataList = self.getMonthDataFromDatabase(self.year, month: self.month)
                 self.kindAndSum = self.comboData(dataList!)
                 self.counterView!.numbers = self.kindAndSum!
         })
@@ -318,10 +316,14 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         
         let fetchRequest = NSFetchRequest(entityName: "ItemModel")
         
-        var error:NSError?
-        
         fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && weekOfYear == '\(weekOfYear)' && kill == false")
-        let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
+        
+        var fetchResults: [ItemModel]?
+        do {
+            try fetchResults = (managedContext.executeFetchRequest(fetchRequest) as! [ItemModel])
+        } catch let error as NSError {
+            print(error)
+        }
         return fetchResults
     }
     
@@ -331,10 +333,15 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         
         let fetchRequest = NSFetchRequest(entityName: "ItemModel")
         
-        var error:NSError?
-        
         fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && month == '\(month)' && kill == false")
-        let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
+        
+        var fetchResults: [ItemModel]?
+        do {
+            try fetchResults = (managedContext.executeFetchRequest(fetchRequest) as! [ItemModel])
+        } catch let error as NSError {
+            print(error)
+        }
+        
         return fetchResults
     }
     
@@ -344,10 +351,14 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         
         let fetchRequest = NSFetchRequest(entityName: "ItemModel")
         
-        var error:NSError?
-        
         fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && kill == false")
-        let fetchResults = managedContext.executeFetchRequest(fetchRequest, error: &error) as! [ItemModel]?
+        
+        var fetchResults: [ItemModel]?
+        do {
+            try fetchResults = (managedContext.executeFetchRequest(fetchRequest) as! [ItemModel])
+        } catch let error as NSError {
+            print(error)
+        }
         return fetchResults
     }
     
@@ -385,7 +396,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         let totalString = "\(sum)" as NSString
         let location = [totalString .rangeOfString(".")].first?.location
         let stringAfterDot = totalString.substringFromIndex(location! + 1)
-        numberAfterDot = stringAfterDot.toInt()!
+        numberAfterDot = Int(stringAfterDot)!
         return (numberBeforeDot, numberAfterDot)
     }
 
