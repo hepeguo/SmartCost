@@ -30,11 +30,13 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
     var year: Int = 2015
     var month: Int = 0
     
-    var colors = [0xeed9678, 0xee7dac9, 0xecb8e85, 0xef3f39d, 0xec8e49c,
-        0xef16d7a, 0xef3d999, 0xed3758f, 0xedcc392, 0xe2e4783,
-        0xe82b6e9, 0xeff6347, 0xea092f1, 0xe0a915d, 0xeeaf889,
-        0xe6699FF, 0xeff6666, 0xe3cb371, 0xed5b158, 0xe38b6b6
+    var colors = [0xe44B7D3, 0xeE42B6D, 0xeF4E24E, 0xeFE9616, 0xe8AED35,
+        0xeff69b4, 0xeba55d3, 0xecd5c5c, 0xeffa500, 0xe40e0d0,
+        0xeE95569, 0xeff6347, 0xe7b68ee, 0xe00fa9a, 0xeffd700,
+        0xe6699FF, 0xeff6666, 0xe3cb371, 0xeb8860b, 0xe30e0e0, 0xee52c3c, 0xef7b1ab, 0xefa506c, 0xef59288, 0xef8c4d8,
+        0xee54f5c, 0xef06d5c, 0xee54f80, 0xef29c9f, 0xeeeb5b7
     ]
+
     
     let theme = Theme()
     var theTheme: String {
@@ -42,7 +44,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
             var returnValue: String? = NSUserDefaults.standardUserDefaults().objectForKey("theme") as? String
             if returnValue == nil
             {
-                returnValue = "origin"
+                returnValue = "blue"
             }
             return returnValue!
         }
@@ -51,17 +53,26 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
             NSUserDefaults.standardUserDefaults().synchronize()
         }
     }
+    var kinds: [CatagoriesModel] = [CatagoriesModel]()
+    
+    var moc: NSManagedObjectContext!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.automaticallyAdjustsScrollViewInsets = false
         view.layer.cornerRadius = 5
+        view.clipsToBounds = true
         view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
         contentView = UIView(frame: view.frame)
         view.addSubview(contentView!)
         let tap = UITapGestureRecognizer(target: self, action: "hideDateSelectView:")
         view.addGestureRecognizer(tap)
+        
+        if let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext {
+            moc = context
+        }
+        getKinds()
         
         initTopBar()
         initStatisticsView()
@@ -120,7 +131,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         contentView?.addSubview(counterView!)
         
         yearLabel = UILabel(frame: CGRectMake(10, 180, 100, 20))
-        yearLabel?.text = "YEAR: \(day.year)"
+        yearLabel?.text = "Y: \(day.year)"
         yearLabel?.textColor = UIColor.whiteColor()
         yearLabel?.font = UIFont(name: "Avenir-Heavy", size: 18)!
         yearLabel?.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.3)
@@ -133,7 +144,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         contentView?.addSubview(yearLabel!)
         
         monthLabel = UILabel(frame: CGRectMake(view.frame.width - 110, 180, 100, 20))
-        monthLabel?.text = "MONTH: \(day.month)"
+        monthLabel?.text = "M: \(day.month)"
         monthLabel?.layer.cornerRadius = 4
         monthLabel?.layer.masksToBounds = true
         monthLabel?.textAlignment = .Center
@@ -181,6 +192,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
             label.userInteractionEnabled = true
             let tap = UITapGestureRecognizer(target: self, action: "selectYear:")
             label.addGestureRecognizer(tap)
+            
             if i == day.year {
                 label.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
                 yearSelectView?.setContentOffset(CGPointMake(0, CGFloat(i - startYear) * 30), animated: false)
@@ -271,7 +283,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
             self.yearSelectView?.alpha = 0
             self.yearSelectView?.frame.size = CGSizeMake(0, 0)
             }, completion: {_ in
-                self.yearLabel?.text = "YEAR: " + label.text!
+                self.yearLabel?.text = "Y: " + label.text!
                 self.year = Int(label.text!)!
                 let dataList = self.getMonthDataFromDatabase(self.year, month: self.month)
                 self.kindAndSum = self.comboData(dataList!)
@@ -289,7 +301,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
             self.monthSelectView?.alpha = 0
             self.monthSelectView?.frame = CGRectMake(self.view.frame.width - 10, 200, 0, 0)
             }, completion: {_ in
-                self.monthLabel?.text = "MONTH: " + label.text!
+                self.monthLabel?.text = "M: " + label.text!
                 self.month = Int(label.text!)!
                 let dataList = self.getMonthDataFromDatabase(self.year, month: self.month)
                 self.kindAndSum = self.comboData(dataList!)
@@ -311,8 +323,8 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
 //MARK: get data from database
     
     func getWeekDataFromDatabase(year: Int, weekOfYear: Int) -> [ItemModel]? {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext!
+//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//        let managedContext = appDelegate.managedObjectContext!
         
         let fetchRequest = NSFetchRequest(entityName: "ItemModel")
         
@@ -320,7 +332,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         
         var fetchResults: [ItemModel]?
         do {
-            try fetchResults = (managedContext.executeFetchRequest(fetchRequest) as! [ItemModel])
+            try fetchResults = (moc.executeFetchRequest(fetchRequest) as! [ItemModel])
         } catch let error as NSError {
             print(error)
         }
@@ -328,8 +340,8 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func getMonthDataFromDatabase(year: Int, month: Int) -> [ItemModel]? {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext!
+//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//        let managedContext = appDelegate.managedObjectContext!
         
         let fetchRequest = NSFetchRequest(entityName: "ItemModel")
         
@@ -337,7 +349,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         
         var fetchResults: [ItemModel]?
         do {
-            try fetchResults = (managedContext.executeFetchRequest(fetchRequest) as! [ItemModel])
+            try fetchResults = (moc.executeFetchRequest(fetchRequest) as! [ItemModel])
         } catch let error as NSError {
             print(error)
         }
@@ -346,8 +358,8 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func getYearDataFromDatabase(year: Int) -> [ItemModel]? {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext!
+//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//        let managedContext = appDelegate.managedObjectContext!
         
         let fetchRequest = NSFetchRequest(entityName: "ItemModel")
         
@@ -355,7 +367,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         
         var fetchResults: [ItemModel]?
         do {
-            try fetchResults = (managedContext.executeFetchRequest(fetchRequest) as! [ItemModel])
+            try fetchResults = (moc.executeFetchRequest(fetchRequest) as! [ItemModel])
         } catch let error as NSError {
             print(error)
         }
@@ -399,6 +411,70 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         numberAfterDot = Int(stringAfterDot)!
         return (numberBeforeDot, numberAfterDot)
     }
+    
+    func getKinds() {
+        let fetchRequest = NSFetchRequest(entityName: "Catagories")
+        
+        var fetchResults: [Catagories]?
+        do {
+            try fetchResults = (moc.executeFetchRequest(fetchRequest) as? [Catagories])
+        } catch let error as NSError {
+            print(error)
+        }
+        
+        var kinds = [CatagoriesModel]()
+        
+        if fetchResults != nil && fetchResults?.count > 0 {
+            for (_, item) in fetchResults!.enumerate() {
+                let catagory: CatagoriesModel = CatagoriesModel()
+                catagory.kind = item.kind!
+                catagory.imageName = item.imageName!
+                kinds.append(catagory)
+            }
+            self.kinds = kinds
+        } else {
+            let items = [
+                ["kind": "Film","imageName": "Film"],
+                ["kind": "Food","imageName": "Food"],
+                ["kind": "Snacks","imageName": "Snacks"],
+                ["kind": "Clothing","imageName": "Clothing"],
+                ["kind": "Shopping","imageName": "Shopping"],
+                ["kind": "Gifts","imageName": "Gifts"],
+                ["kind": "Digital","imageName": "Digital"],
+                ["kind": "Home","imageName": "Home"],
+                ["kind": "Study","imageName": "Study"],
+                ["kind": "Traffic","imageName": "Traffic"],
+                ["kind": "Travel","imageName": "Travel"],
+                ["kind": "Entertainment","imageName": "Entertainment"],
+                ["kind": "Net Fee","imageName": "Net Fee"],
+                ["kind": "Visa","imageName": "Visa"],
+                ["kind": "Investment","imageName": "Investment"],
+                ["kind": "Medicine","imageName": "Medicine"],
+                ["kind": "Social","imageName": "Social"],
+                ["kind": "Transfer","imageName": "Transfer"],
+                ["kind": "Fine","imageName": "Fine"],
+                ["kind": "Other","imageName": "Other"]
+            ]
+            
+            for (_, item) in items.enumerate() {
+                let kind: CatagoriesModel = CatagoriesModel()
+                kind.kind = item["kind"]!
+                kind.imageName = item["imageName"]!
+                self.kinds.append(kind)
+            }
+        }
+    }
+    
+    func getKingIamgeName(kind: String) -> String {
+        var imageName = ""
+        for (_, item) in kinds.enumerate() {
+            if kind == item.kind {
+                imageName = item.imageName
+            }
+        }
+        
+        return imageName
+    }
 
 //MARK: tableView delegate
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -416,19 +492,18 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: "cell")
         let kind: Kind = kindAndSum![indexPath.row];
-        cell.textLabel?.frame.origin = CGPointMake(50, 0)
         cell.textLabel?.text = kind.name
         
         let view = UIView(frame: CGRectMake(10, 10, 40, 40))
         view.backgroundColor = UIColor.colorFromCode(colors[indexPath.row])
         let imageView = UIImageView(frame: CGRectMake(5, 5, 30, 30))
-        imageView.image = UIImage(named: kind.name)
+        imageView.image = UIImage(named: getKingIamgeName(kind.name))
         view.addSubview(imageView)
         view.layer.cornerRadius = 10
         cell.addSubview(view)
         
-        cell.imageView?.image = UIImage(named: kind.name)
-        let priceString = NSString(format: "%.2f", kind.sum)
+        cell.imageView?.image = UIImage(named: "Film")
+        let priceString = String(format: "%.2f", kind.sum)
         cell.detailTextLabel?.text = priceString as String
         cell.detailTextLabel?.textColor = UIColor.grayColor()
         cell.selectionStyle = .None

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="7c3-tm-RQh">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="7c3-tm-RQh">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
         <!--Main View Controller-->
         <scene sceneID="jaH-R0-xFD">
             <objects>
-                <viewController storyboardIdentifier="MainView" id="7c3-tm-RQh" customClass="MainViewController" customModule="cost" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MainView" id="7c3-tm-RQh" customClass="MainViewController" customModule="SmartCost_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="wOp-27-iep"/>
                         <viewControllerLayoutGuide type="bottom" id="hF4-LZ-a63"/>
@@ -24,7 +25,7 @@
         <!--New Item View Controller-->
         <scene sceneID="4Yr-Lr-e3g">
             <objects>
-                <viewController storyboardIdentifier="AddItemView" id="MyP-zZ-Ytb" customClass="NewItemViewController" customModule="cost" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddItemView" id="MyP-zZ-Ytb" customClass="NewItemViewController" customModule="SmartCost_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="876-TG-u4Q"/>
                         <viewControllerLayoutGuide type="bottom" id="8uj-6v-NYn"/>
@@ -50,7 +51,7 @@
         <!--Set Up View Controller-->
         <scene sceneID="iBY-d1-Dfd">
             <objects>
-                <viewController storyboardIdentifier="setUpView" id="NzN-k5-ZHG" customClass="SetUpViewController" customModule="cost" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="setUpView" id="NzN-k5-ZHG" customClass="SetUpViewController" customModule="SmartCost_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Vub-6U-Ozp"/>
                         <viewControllerLayoutGuide type="bottom" id="j8b-dh-mvj"/>
@@ -72,7 +73,7 @@
         <!--Statistics View Controller-->
         <scene sceneID="mW2-Qd-w3T">
             <objects>
-                <viewController storyboardIdentifier="statisticsView" id="iq1-Ut-Ocq" customClass="StatisticsViewController" customModule="cost" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="statisticsView" id="iq1-Ut-Ocq" customClass="StatisticsViewController" customModule="SmartCost_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Bx1-az-gQG"/>
                         <viewControllerLayoutGuide type="bottom" id="hxc-3Z-1wd"/>
@@ -94,7 +95,7 @@
         <!--Theme View Controller-->
         <scene sceneID="akJ-oS-Vn6">
             <objects>
-                <viewController storyboardIdentifier="themeView" id="8Km-Ot-NYr" customClass="ThemeViewController" customModule="cost" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="themeView" id="8Km-Ot-NYr" customClass="ThemeViewController" customModule="SmartCost_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ke2-7N-jHp"/>
                         <viewControllerLayoutGuide type="bottom" id="4eO-Xs-5tc"/>

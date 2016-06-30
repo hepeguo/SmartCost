@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDelegate {
     
@@ -17,9 +18,17 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
     var deleteButton: UILabel?
     var numberPad: NumberPad?
     var contentView: UIView?
-    var kind = ["Film", "Food", "Snacks", "Clothing", "Shopping", "Gifts", "Digital", "Home", "Study", "Traffic", "Travel", "Entertainment", "Net Fee", "Visa", "Investment", "Medical", "Social", "Transfer", "Fine", "Other"]
+    
+    var kinds: [CatagoriesModel] = [CatagoriesModel]()
     var kindViews: [KindItemView] = [KindItemView]()
     var kindViewsPageView: PageView?
+    
+    var priceLabelBorder: UIView?
+    var detailTextViewBg: UIView?
+    
+    var detailTap: UIGestureRecognizer?
+    
+    var justClose: Bool = false
     
     let theme = Theme()
     var theTheme: String {
@@ -27,7 +36,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
             var returnValue: String? = NSUserDefaults.standardUserDefaults().objectForKey("theme") as? String
             if returnValue == nil
             {
-                returnValue = "origin"
+                returnValue = "blue"
             }
             return returnValue!
         }
@@ -37,6 +46,8 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         }
     }
     
+    var moc: NSManagedObjectContext!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //prevent VerticalScroll
@@ -45,6 +56,11 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
         contentView = UIView(frame: view.frame)
         view.addSubview(contentView!)
+        
+        if let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext {
+            moc = context
+        }
+        getKinds()
         
         initTopBar()
         initKindView()
@@ -95,10 +111,10 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
     }
     
     func initFormViews() {
-        let priceLabelBorder = UILabel(frame: CGRectMake(10, 84, view.frame.width - 20, 44))
-        priceLabelBorder.userInteractionEnabled = true
-        priceLabelBorder.layer.borderWidth = 2
-        priceLabelBorder.layer.borderColor = UIColor.whiteColor().CGColor
+        priceLabelBorder = UILabel(frame: CGRectMake(10, 84, view.frame.width - 20, 44))
+        priceLabelBorder?.userInteractionEnabled = true
+        priceLabelBorder?.layer.borderWidth = 2
+        priceLabelBorder?.layer.borderColor = UIColor.whiteColor().CGColor
         
         priceLabel = UILabel(frame: CGRectMake(5, 0, view.frame.width - 30, 44))
         priceLabel?.text = "0"
@@ -110,12 +126,12 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         let tap = UITapGestureRecognizer(target: self, action: "showNumberPad:")
         priceLabel?.addGestureRecognizer(tap)
         
-        priceLabelBorder.addSubview(priceLabel!)
-        contentView!.addSubview(priceLabelBorder)
+        priceLabelBorder?.addSubview(priceLabel!)
+        contentView!.addSubview(priceLabelBorder!)
         
-        let detailTextViewBg = UILabel(frame: CGRectMake(10, 140 + kindViewsPageView!.frame.height, view.frame.width - 20, 88))
-        detailTextViewBg.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
-        detailTextViewBg.userInteractionEnabled = true
+        detailTextViewBg = UILabel(frame: CGRectMake(10, 140 + kindViewsPageView!.frame.height, view.frame.width - 20, 88))
+        detailTextViewBg?.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
+        detailTextViewBg?.userInteractionEnabled = true
         
         detailTextView = UITextView(frame: CGRectMake(5, 0, view.frame.width - 30, 88))
         detailTextView?.textColor = UIColor.whiteColor()
@@ -124,10 +140,10 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         detailTextView?.userInteractionEnabled = true
         detailTextView?.returnKeyType = .Done
         detailTextView?.delegate = self
-        let detailTap = UITapGestureRecognizer(target: self, action: "detailTapped:")
-        detailTextView?.addGestureRecognizer(detailTap)
-        detailTextViewBg.addSubview(detailTextView!)
-        contentView?.addSubview(detailTextViewBg)
+        detailTap = UITapGestureRecognizer(target: self, action: "detailTapped:")
+        detailTextView?.addGestureRecognizer(detailTap!)
+        detailTextViewBg?.addSubview(detailTextView!)
+        contentView?.addSubview(detailTextViewBg!)
         
         deleteButton = UILabel(frame: CGRectMake(10, view.frame.height - 64, view.frame.width - 20, 44))
         deleteButton?.text = "DELETE"
@@ -150,32 +166,28 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         let width = view.frame.width / 5
         let height = width - 15
         
-        let kindViewContentFirst = UIView(frame: CGRectMake(0, 0, view.frame.width, height * CGFloat(2)))
-        let kindViewContentSecond = UIView(frame: CGRectMake(view.frame.width, 0, view.frame.width, height * CGFloat(2)))
-        
-        for (index, item) in kind.enumerate() {
+        var kindViewContentFirst = UIView(frame: CGRectMake(0, 0, view.frame.width, height * CGFloat(2)))
+        var views = [UIView]()
+        views.append(kindViewContentFirst)
+        for (index, item) in kinds.enumerate() {
             var rect: CGRect = CGRectZero
-            if index <= 9 {
-                rect = CGRectMake(CGFloat(index % 5) * width, CGFloat(index / 5) * height, width, height)
-            } else {
-                let newIndex = index - 10
-                rect = CGRectMake(CGFloat(newIndex % 5) * width, CGFloat(newIndex / 5) * height, width, height)
-            }
+            let newIndex = index - 10 * (index / 10)
+            rect = CGRectMake(CGFloat(newIndex % 5) * width, CGFloat(newIndex / 5) * height, width, height)
             
-            let itemView = KindItemView(frame: rect, kind: item)
+            let itemView = KindItemView(frame: rect, kind: item.kind, imageName: item.imageName)
             
             let tapKind = UITapGestureRecognizer(target: self, action: "selectKind:")
             itemView.addGestureRecognizer(tapKind)
             
             kindViews.append(itemView)
-            if index <= 9 {
-                kindViewContentFirst.addSubview(itemView)
-            } else {
-                kindViewContentSecond.addSubview(itemView)
+            
+            kindViewContentFirst.addSubview(itemView)
+            if kindViewContentFirst.subviews.count >= 10 && index < kinds.count - 1 {
+                kindViewContentFirst = UIView(frame: CGRectMake(view.frame.width * CGFloat(index / 10), 0, view.frame.width, height * CGFloat(2)))
+                views.append(kindViewContentFirst)
             }
         }
-        let views = [kindViewContentFirst, kindViewContentSecond]
-        kindViewsPageView = PageView(frame: CGRectMake(0, 135, view.frame.width, kindViewContentSecond.frame.height + CGFloat(20) ), views: views)
+        kindViewsPageView = PageView(frame: CGRectMake(0, 135, view.frame.width, kindViewContentFirst.frame.height + CGFloat(20) ), views: views)
         contentView!.addSubview(kindViewsPageView!)
     }
     
@@ -190,9 +202,8 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         deleteButton?.hidden = false
         for (index, kindView) in kindViews.enumerate() {
             if kindView.kind == item.kind {
-                if index >= 10 {
-                    kindViewsPageView?.scrollTo(CGPointMake(view.frame.width, 0))
-                }
+                let pages = index / 10
+                kindViewsPageView?.scrollTo(CGPointMake(view.frame.width * CGFloat(pages), 0))
                 kindView.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.3)
             }
         }
@@ -200,7 +211,9 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
     
 //MARK: actions
     func JustCloseAddItemView(sender: UITapGestureRecognizer) {
+        justClose = true
         detailTextView?.resignFirstResponder()
+        self.numberPad?.frame.origin.y = self.view.frame.height
         UIView.animateWithDuration(0.3, animations: {
             self.contentView!.alpha = 0
             self.contentView!.transform = CGAffineTransformMakeScale(0.9, 0.9)
@@ -239,7 +252,9 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if item.price != 0 {
             let mainViewController = segue.destinationViewController as! MainViewController
-            mainViewController.newItemFromAddView(self.item)
+            if (!justClose) {
+                mainViewController.newItemFromAddView(self.item)
+            }
         }
     }
     
@@ -274,9 +289,13 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
     func detailTapped(sender: UITapGestureRecognizer) {
         UIView.animateWithDuration(0.3, animations: {
             self.numberPad?.frame.origin.y = self.view.frame.height
+            self.priceLabelBorder?.frame.origin.y = -(140 + self.kindViewsPageView!.frame.height + 135)
+            self.kindViewsPageView?.frame.origin.y = -(140 + self.kindViewsPageView!.frame.height)
+            self.detailTextViewBg?.frame.origin.y = 84
             }, completion: { _ in
                 self.numberPad?.hidden = true
                 self.detailTextView?.becomeFirstResponder()
+                self.detailTextView?.removeGestureRecognizer(self.detailTap!)
         })
     }
 
@@ -314,8 +333,71 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {
             textView.resignFirstResponder()
+            UIView.animateWithDuration(0.3, animations: {
+                self.priceLabelBorder?.frame.origin.y = 84
+                self.kindViewsPageView?.frame.origin.y = 135
+                self.detailTextViewBg?.frame.origin.y = 140 + self.kindViewsPageView!.frame.height
+                }, completion: { _ in
+//                    self.numberPad?.hidden = true
+//                    self.detailTextView?.becomeFirstResponder()
+                    self.detailTextView?.addGestureRecognizer(self.detailTap!)
+            })
+
             return false;
         }
         return true;
+    }
+    
+    func getKinds() {
+        let fetchRequest = NSFetchRequest(entityName: "Catagories")
+        
+        var fetchResults: [Catagories]?
+        do {
+            try fetchResults = (moc.executeFetchRequest(fetchRequest) as? [Catagories])
+        } catch let error as NSError {
+            print(error)
+        }
+        
+        var kinds = [CatagoriesModel]()
+        
+        if fetchResults != nil && fetchResults?.count > 0 {
+            for (_, item) in fetchResults!.enumerate() {
+                let catagory: CatagoriesModel = CatagoriesModel()
+                catagory.kind = item.kind!
+                catagory.imageName = item.imageName!
+                kinds.append(catagory)
+            }
+            self.kinds = kinds
+        } else {
+            let items = [
+                ["kind": "Film","imageName": "Film"],
+                ["kind": "Food","imageName": "Food"],
+                ["kind": "Snacks","imageName": "Snacks"],
+                ["kind": "Clothing","imageName": "Clothing"],
+                ["kind": "Shopping","imageName": "Shopping"],
+                ["kind": "Gifts","imageName": "Gifts"],
+                ["kind": "Digital","imageName": "Digital"],
+                ["kind": "Home","imageName": "Home"],
+                ["kind": "Study","imageName": "Study"],
+                ["kind": "Traffic","imageName": "Traffic"],
+                ["kind": "Travel","imageName": "Travel"],
+                ["kind": "Entertainment","imageName": "Entertainment"],
+                ["kind": "Net Fee","imageName": "Net Fee"],
+                ["kind": "Visa","imageName": "Visa"],
+                ["kind": "Investment","imageName": "Investment"],
+                ["kind": "Medicine","imageName": "Medicine"],
+                ["kind": "Social","imageName": "Social"],
+                ["kind": "Transfer","imageName": "Transfer"],
+                ["kind": "Fine","imageName": "Fine"],
+                ["kind": "Other","imageName": "Other"]
+            ]
+            
+            for (_, item) in items.enumerate() {
+                let kind: CatagoriesModel = CatagoriesModel()
+                kind.kind = item["kind"]!
+                kind.imageName = item["imageName"]!
+                self.kinds.append(kind)
+            }
+        }
     }
 }

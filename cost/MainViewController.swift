@@ -49,7 +49,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             var returnValue: String? = NSUserDefaults.standardUserDefaults().objectForKey("theme") as? String
             if returnValue == nil
             {
-                returnValue = "origin"
+                returnValue = "blue"
             }
             return returnValue!
         }
@@ -58,12 +58,14 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             NSUserDefaults.standardUserDefaults().synchronize()
         }
     }
+    var kinds: [CatagoriesModel] = [CatagoriesModel]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.automaticallyAdjustsScrollViewInsets = false
         view.layer.cornerRadius = 5
+        view.clipsToBounds = true
         view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
         
         if let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext {
@@ -71,7 +73,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         
         initYearMonthDay()
-        
         initTableViews(CGRectMake(0, 130, view.bounds.width, view.bounds.height - 130))
         initDataForTableViews()
         initTopBar()
@@ -93,6 +94,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
         self.topBar!.frame.origin.y = -130
         self.listView?.frame.origin.y = self.view.frame.height
+        getKinds()
+        todayTableView.reloadData()
         
         UIView.animateWithDuration(0.3, animations: {
             self.topBar!.frame.origin.y = 0
@@ -441,6 +444,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             item.weekOfYear = Int(itemModel!.weekOfYear)!
             item.time = itemModel!.addTime
             item.dayOfWeek = Int(itemModel!.dayOfWeek)!
+            item.imageName = getKingIamgeName(item.kind)
             cell.item = item
         }
         cell.backgroundColor = UIColor.clearColor()        
@@ -464,9 +468,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     //MARK: - get and save data
     func deleteItem(item: Item) {
-//        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-//        let managedContext = appDelegate.managedObjectContext!
-        
         var itemModel:ItemModel?
         let fetchRequest = NSFetchRequest(entityName: "ItemModel")
         fetchRequest.predicate = NSPredicate(format: "id == '\(item.id)'")
@@ -482,14 +483,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             itemModel = fetchResults![0]
         }
         if itemModel != nil {
-            let date = GDate()
-            let time = date.getTime()
-            itemModel!.price = item.price
-            itemModel!.detail = item.detail
-            itemModel!.kind = item.kind
             itemModel!.kill = item.kill
-            itemModel!.addTime = "\(time.hour): \(time.minute): \(time.second)"
-            
             
             do {
                 try moc.save()
@@ -497,8 +491,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 print(error)
             }
             
-            for (index, item)in todayList.enumerate() {
-                if item.id == todayList[index].id {
+            for (index, data) in todayList.enumerate() {
+                if item.id == data.id {
                     todayList.removeAtIndex(index)
                     break
                 }
@@ -639,6 +633,71 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         return (numberBeforeDot, numberAfterDot)
     }
+    
+    func getKinds() {
+        let fetchRequest = NSFetchRequest(entityName: "Catagories")
+        
+        var fetchResults: [Catagories]?
+        do {
+            try fetchResults = (moc.executeFetchRequest(fetchRequest) as? [Catagories])
+        } catch let error as NSError {
+            print(error)
+        }
+        
+        var kinds = [CatagoriesModel]()
+        
+        if fetchResults != nil && fetchResults?.count > 0 {
+            for (_, item) in fetchResults!.enumerate() {
+                let catagory: CatagoriesModel = CatagoriesModel()
+                catagory.kind = item.kind!
+                catagory.imageName = item.imageName!
+                kinds.append(catagory)
+            }
+            self.kinds = kinds
+        } else {
+            let items = [
+                ["kind": "Film","imageName": "Film"],
+                ["kind": "Food","imageName": "Food"],
+                ["kind": "Snacks","imageName": "Snacks"],
+                ["kind": "Clothing","imageName": "Clothing"],
+                ["kind": "Shopping","imageName": "Shopping"],
+                ["kind": "Gifts","imageName": "Gifts"],
+                ["kind": "Digital","imageName": "Digital"],
+                ["kind": "Home","imageName": "Home"],
+                ["kind": "Study","imageName": "Study"],
+                ["kind": "Traffic","imageName": "Traffic"],
+                ["kind": "Travel","imageName": "Travel"],
+                ["kind": "Entertainment","imageName": "Entertainment"],
+                ["kind": "Net Fee","imageName": "Net Fee"],
+                ["kind": "Visa","imageName": "Visa"],
+                ["kind": "Investment","imageName": "Investment"],
+                ["kind": "Medicine","imageName": "Medicine"],
+                ["kind": "Social","imageName": "Social"],
+                ["kind": "Transfer","imageName": "Transfer"],
+                ["kind": "Fine","imageName": "Fine"],
+                ["kind": "Other","imageName": "Other"]
+            ]
+            
+            for (_, item) in items.enumerate() {
+                let kind: CatagoriesModel = CatagoriesModel()
+                kind.kind = item["kind"]!
+                kind.imageName = item["imageName"]!
+                self.kinds.append(kind)
+//                saveKind(item["kind"]!, oldKind: item["kind"]!, imageName: item["imageName"]!)
+            }
+        }
+    }
+    
+    func getKingIamgeName(kind: String) -> String {
+        var imageName = ""
+        for (_, item) in kinds.enumerate() {
+            if kind == item.kind {
+                imageName = item.imageName
+            }
+        }
+        
+        return imageName
+     }
     
 //  MARK: - delegate for ListPageScrollView
     

@@ -21,7 +21,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
             var returnValue: String? = NSUserDefaults.standardUserDefaults().objectForKey("theme") as? String
             if returnValue == nil
             {
-                returnValue = "origin"
+                returnValue = "blue"
             }
             return returnValue!
         }
@@ -30,6 +30,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
             NSUserDefaults.standardUserDefaults().synchronize()
         }
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -106,9 +107,18 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         let themeTap = UITapGestureRecognizer(target: self, action: "showThemeView:")
         themeLabel.addGestureRecognizer(themeTap)
         
+        let categoriesLabel = UILabel(frame: CGRectMake(10, 64 + height * 3 + marginBetweenButton * 4, width * 2, height))
+        categoriesLabel.text = "Categories"
+        categoriesLabel.textColor = UIColor.whiteColor()
+        categoriesLabel.font = font
+        categoriesLabel.userInteractionEnabled = true
+        let categoriesTap = UITapGestureRecognizer(target: self, action: "showCatagoriesView:")
+        categoriesLabel.addGestureRecognizer(categoriesTap)
+        
         contentView!.addSubview(exportToExcelView)
         contentView!.addSubview(suggestionToMeView)
         contentView!.addSubview(themeLabel)
+        contentView!.addSubview(categoriesLabel)
     }
     
 //MARK: action
@@ -123,6 +133,11 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
     
     func showThemeView(sender: UITapGestureRecognizer) {
         let vc = self.storyboard?.instantiateViewControllerWithIdentifier("themeView") as! ThemeViewController
+        self.presentViewController(vc, animated: true, completion: nil)
+    }
+    
+    func showCatagoriesView(sender: UITapGestureRecognizer) {
+        let vc = CatagoriesViewController()
         self.presentViewController(vc, animated: true, completion: nil)
     }
     
@@ -188,7 +203,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
             
             let directories:[String] = directorys!;
             let dictionary = directories[0];
-            let plistfile = "cost-data.csv"
+            let plistfile = "/cost-data.csv"
             let plistpath = dictionary.stringByAppendingString(plistfile)
             
             do {
@@ -217,10 +232,10 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
     
     func compileDataToExcel() -> String {
         let items = getAllDataFromDatabase()
-        var data = "Index,Price,Kind,Detail\n"
+        var data = "Index,Price,Kind,Detail,Time\n"
         if items != nil {
             for (index, item) in items!.enumerate() {
-                data += "\(index),\(item.price),\(item.kind),\(item.detail)\n"
+                data += "\(index),\(String(format: "%.2f", Float(item.price))),\(item.kind),\(item.detail),\(item.year)-\(item.month)-\(item.day) \(item.addTime)\n"
             }
         }
         return data

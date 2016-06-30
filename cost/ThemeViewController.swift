@@ -19,7 +19,7 @@ class ThemeViewController: UIViewController {
             var returnValue: String? = NSUserDefaults.standardUserDefaults().objectForKey("theme") as? String
             if returnValue == nil
             {
-                returnValue = "origin"
+                returnValue = "blue"
             }
             return returnValue!
         }

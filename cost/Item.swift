@@ -21,4 +21,5 @@ class Item: NSObject {
     var time: String = ""
     var isSpend: Bool = true
     var id: String = ""
+    var imageName: String = ""
 }

@@ -26,7 +26,7 @@ class TableViewCell: UITableViewCell {
             detailLabel.text = item?.detail
             kindLabel.text = item?.kind
             timeLabel.text = item?.time
-            kindImage.image = UIImage(named: item!.kind)
+            kindImage.image = UIImage(named: item!.imageName)
         }
     }
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
