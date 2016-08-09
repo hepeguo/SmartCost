@@ -26,6 +26,10 @@ xcuserdata/
 *.ipa
 *.dSYM.zip
 *.dSYM
+.DS_Store
+.idea
+*.sublime-project
+*.sublime-workspace
 
 ## Playgrounds
 timeline.xctimeline
