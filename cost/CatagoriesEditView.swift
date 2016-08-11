@@ -84,7 +84,7 @@ class CatagoriesEditView: UIView {
             
             let itemView = KindItemView(frame: rect, imageName: item)
             
-            let tapKind = UITapGestureRecognizer(target: self, action: "selectImage:")
+            let tapKind = UITapGestureRecognizer(target: self, action: #selector(CatagoriesEditView.selectImage(_:)))
             itemView.addGestureRecognizer(tapKind)
             
             kindViews.append(itemView)
@@ -102,9 +102,9 @@ class CatagoriesEditView: UIView {
         kindLabel?.userInteractionEnabled = true
         kindLabel?.returnKeyType = .Done
         kindLabel?.textColor = UIColor.whiteColor()
-        kindLabel?.addTarget(self, action: "doneClicked:", forControlEvents: UIControlEvents.EditingDidEndOnExit)
-        kindLabel?.addTarget(self, action: "kindLabelTapped:", forControlEvents: .EditingDidBegin)
-        kindLabelTap = UITapGestureRecognizer(target: self, action: "kindLabelTapped:")
+        kindLabel?.addTarget(self, action: #selector(CatagoriesEditView.doneClicked(_:)), forControlEvents: UIControlEvents.EditingDidEndOnExit)
+        kindLabel?.addTarget(self, action: #selector(CatagoriesEditView.kindLabelTapped(_:)), forControlEvents: .EditingDidBegin)
+        kindLabelTap = UITapGestureRecognizer(target: self, action: #selector(CatagoriesEditView.kindLabelTapped(_:)))
         kindLabel?.addGestureRecognizer(kindLabelTap!)
         
         let spacerView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height:10))
@@ -121,14 +121,14 @@ class CatagoriesEditView: UIView {
         deleteButton?.font = UIFont(name: "Avenir-Heavy", size: 18)!
         deleteButton?.userInteractionEnabled = true
         deleteButton?.hidden = true
-        let deleteKindLabelTap = UITapGestureRecognizer(target: self, action: "deleteKind:")
+        let deleteKindLabelTap = UITapGestureRecognizer(target: self, action: #selector(CatagoriesEditView.deleteKind(_:)))
         deleteButton?.addGestureRecognizer(deleteKindLabelTap)
         
         self.addSubview(deleteButton!)
     }
     
     func initTopBar() {
-        let closeTap = UITapGestureRecognizer(target: self, action: "JustCloseEditView:")
+        let closeTap = UITapGestureRecognizer(target: self, action: #selector(CatagoriesEditView.JustCloseEditView(_:)))
         
         closeButton = UILabel(frame: CGRectMake(10, 10, 30, 30))
         closeButton?.userInteractionEnabled = true
@@ -138,7 +138,7 @@ class CatagoriesEditView: UIView {
         closeButton?.addGestureRecognizer(closeTap)
         self.addSubview(closeButton!)
         
-        let addTap = UITapGestureRecognizer(target: self, action: "closeEditWithNewer:")
+        let addTap = UITapGestureRecognizer(target: self, action: #selector(CatagoriesEditView.closeEditWithNewer(_:)))
         addButton = UILabel(frame: CGRectZero)
         addButton?.userInteractionEnabled = true
         addButton?.text = "SAVE"

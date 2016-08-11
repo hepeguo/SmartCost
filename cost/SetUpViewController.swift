@@ -61,7 +61,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
     }
     
     func initTopBar() {
-        let closeTap = UITapGestureRecognizer(target: self, action: "JustCloseSetUpView:")
+        let closeTap = UITapGestureRecognizer(target: self, action: #selector(SetUpViewController.JustCloseSetUpView(_:)))
         
         let closeButton = UILabel(frame: CGRectMake(10, 27, 30, 30))
         closeButton.userInteractionEnabled = true
@@ -82,7 +82,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         exportToExcelLabel.textColor = UIColor.whiteColor()
         exportToExcelLabel.font = font
         exportToExcelLabel.userInteractionEnabled = true
-        let exportExcelTap = UITapGestureRecognizer(target: self, action: "exportExcel:")
+        let exportExcelTap = UITapGestureRecognizer(target: self, action: #selector(SetUpViewController.exportExcel(_:)))
         exportToExcelLabel.addGestureRecognizer(exportExcelTap)
         
         let exportToExcelView = UIView(frame: CGRectMake(10, 64 + marginBetweenButton, width * 2, height))
@@ -93,7 +93,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         suggestionToMeLabel.textColor = UIColor.whiteColor()
         suggestionToMeLabel.font = font
         suggestionToMeLabel.userInteractionEnabled = true
-        let suggestionToMeTap = UITapGestureRecognizer(target: self, action: "suggestionToMe:")
+        let suggestionToMeTap = UITapGestureRecognizer(target: self, action: #selector(SetUpViewController.suggestionToMe(_:)))
         suggestionToMeLabel.addGestureRecognizer(suggestionToMeTap)
         
         let suggestionToMeView = UIView(frame: CGRectMake(10, 64 + height + marginBetweenButton * 2, width * 2, height))
@@ -104,7 +104,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         themeLabel.textColor = UIColor.whiteColor()
         themeLabel.font = font
         themeLabel.userInteractionEnabled = true
-        let themeTap = UITapGestureRecognizer(target: self, action: "showThemeView:")
+        let themeTap = UITapGestureRecognizer(target: self, action: #selector(SetUpViewController.showThemeView(_:)))
         themeLabel.addGestureRecognizer(themeTap)
         
         let categoriesLabel = UILabel(frame: CGRectMake(10, 64 + height * 3 + marginBetweenButton * 4, width * 2, height))
@@ -112,7 +112,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         categoriesLabel.textColor = UIColor.whiteColor()
         categoriesLabel.font = font
         categoriesLabel.userInteractionEnabled = true
-        let categoriesTap = UITapGestureRecognizer(target: self, action: "showCatagoriesView:")
+        let categoriesTap = UITapGestureRecognizer(target: self, action: #selector(SetUpViewController.showCatagoriesView(_:)))
         categoriesLabel.addGestureRecognizer(categoriesTap)
         
         contentView!.addSubview(exportToExcelView)

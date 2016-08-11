@@ -88,7 +88,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
     
 //MARK: init views
     func initTopBar() {
-        let closeTap = UITapGestureRecognizer(target: self, action: "JustCloseAddItemView:")
+        let closeTap = UITapGestureRecognizer(target: self, action: #selector(NewItemViewController.JustCloseAddItemView(_:)))
         
         let closeButton = UILabel(frame: CGRectMake(10, 27, 30, 30))
         closeButton.userInteractionEnabled = true
@@ -98,7 +98,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         closeButton.addGestureRecognizer(closeTap)
         contentView!.addSubview(closeButton)
         
-        let addTap = UITapGestureRecognizer(target: self, action: "closeAddItemViewWithNewer:")
+        let addTap = UITapGestureRecognizer(target: self, action: #selector(NewItemViewController.closeAddItemViewWithNewer(_:)))
         addButton = UILabel(frame: CGRectMake(view.frame.width - 60, 27, 50, 30))
         addButton?.userInteractionEnabled = true
         addButton?.text = "ADD"
@@ -123,7 +123,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         priceLabel?.textAlignment = .Right
         priceLabel?.userInteractionEnabled = true
         
-        let tap = UITapGestureRecognizer(target: self, action: "showNumberPad:")
+        let tap = UITapGestureRecognizer(target: self, action: #selector(NewItemViewController.showNumberPad(_:)))
         priceLabel?.addGestureRecognizer(tap)
         
         priceLabelBorder?.addSubview(priceLabel!)
@@ -140,7 +140,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         detailTextView?.userInteractionEnabled = true
         detailTextView?.returnKeyType = .Done
         detailTextView?.delegate = self
-        detailTap = UITapGestureRecognizer(target: self, action: "detailTapped:")
+        detailTap = UITapGestureRecognizer(target: self, action: #selector(NewItemViewController.detailTapped(_:)))
         detailTextView?.addGestureRecognizer(detailTap!)
         detailTextViewBg?.addSubview(detailTextView!)
         contentView?.addSubview(detailTextViewBg!)
@@ -151,7 +151,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
         deleteButton?.textAlignment = .Center
         deleteButton?.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
         deleteButton?.userInteractionEnabled = true
-        let deleteTap = UITapGestureRecognizer(target: self, action: "deleteItem:")
+        let deleteTap = UITapGestureRecognizer(target: self, action: #selector(NewItemViewController.deleteItem(_:)))
         deleteButton?.addGestureRecognizer(deleteTap)
         deleteButton?.hidden = true
         contentView?.addSubview(deleteButton!)
@@ -176,7 +176,7 @@ class NewItemViewController: UIViewController, NumberPadDelegate, UITextViewDele
             
             let itemView = KindItemView(frame: rect, kind: item.kind, imageName: item.imageName)
             
-            let tapKind = UITapGestureRecognizer(target: self, action: "selectKind:")
+            let tapKind = UITapGestureRecognizer(target: self, action: #selector(NewItemViewController.selectKind(_:)))
             itemView.addGestureRecognizer(tapKind)
             
             kindViews.append(itemView)

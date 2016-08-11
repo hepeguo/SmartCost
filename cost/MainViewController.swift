@@ -79,7 +79,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "timeChanged:",
+            selector: #selector(MainViewController.timeChanged(_:)),
             name: UIApplicationSignificantTimeChangeNotification,
             object: nil)
     }
@@ -102,9 +102,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             self.listView?.frame.origin.y = 130
             }, completion: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "persistentStoreDidChange", name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "persistentStoreWillChange:", name: NSPersistentStoreCoordinatorStoresWillChangeNotification, object: moc.persistentStoreCoordinator)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveICloudChanges:", name: NSPersistentStoreDidImportUbiquitousContentChangesNotification, object: moc.persistentStoreCoordinator)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MainViewController.persistentStoreDidChange), name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MainViewController.persistentStoreWillChange(_:)), name: NSPersistentStoreCoordinatorStoresWillChangeNotification, object: moc.persistentStoreCoordinator)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MainViewController.receiveICloudChanges(_:)), name: NSPersistentStoreDidImportUbiquitousContentChangesNotification, object: moc.persistentStoreCoordinator)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -184,7 +184,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         let setUpView = UIView(frame: CGRectMake(view.frame.width - 98, 20, 44, 44))
         setUpView.userInteractionEnabled = true
-        let setUpTap = UITapGestureRecognizer(target: self, action: "showSetUpView:")
+        let setUpTap = UITapGestureRecognizer(target: self, action: #selector(MainViewController.showSetUpView(_:)))
         setUpView.addGestureRecognizer(setUpTap)
         let setUpIcon = UIImageView(frame: CGRectMake(13, 13, 18, 18))
         setUpIcon.image = UIImage(named: "setUp")
@@ -205,7 +205,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         counterNumber!.fontColor = UIColor.redColor()
         counterNumber!.backgroundColor = UIColor.clearColor()
         
-        let tap = UITapGestureRecognizer(target: self, action: "showAddItemView:")
+        let tap = UITapGestureRecognizer(target: self, action: #selector(MainViewController.showAddItemView(_:)))
         addLabel.userInteractionEnabled = true
         addLabel.addGestureRecognizer(tap)
         
@@ -263,7 +263,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         let statisticsIconView = UIView(frame: CGRectMake(frame.width - 48, frame.height - 66, 36, 36))
         statisticsIconView.userInteractionEnabled = true
-        let showStatisticsViewTap = UITapGestureRecognizer(target: self, action: "showStatisticsView:")
+        let showStatisticsViewTap = UITapGestureRecognizer(target: self, action: #selector(MainViewController.showStatisticsView(_:)))
         statisticsIconView.addGestureRecognizer(showStatisticsViewTap)
         
         let statistics = UIImageView(frame: CGRectMake(8, 8, 18, 18))
@@ -274,7 +274,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         let gotoTodayIconView = UIView(frame: CGRectMake(10, frame.height - 66, 36, 36))
         gotoTodayIconView.userInteractionEnabled = true
-        let gotoTodayTap = UITapGestureRecognizer(target: self, action: "gotoToday:")
+        let gotoTodayTap = UITapGestureRecognizer(target: self, action: #selector(MainViewController.gotoToday(_:)))
         gotoTodayIconView.addGestureRecognizer(gotoTodayTap)
         
         gotoTodayIcon = UIImageView(frame: CGRectMake(7, 7, 22, 22))

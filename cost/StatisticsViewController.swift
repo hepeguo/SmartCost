@@ -66,7 +66,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
         contentView = UIView(frame: view.frame)
         view.addSubview(contentView!)
-        let tap = UITapGestureRecognizer(target: self, action: "hideDateSelectView:")
+        let tap = UITapGestureRecognizer(target: self, action: #selector(StatisticsViewController.hideDateSelectView(_:)))
         view.addGestureRecognizer(tap)
         
         if let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext {
@@ -94,7 +94,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
 //MARK: init views
     
     func initTopBar() {
-        let closeTap = UITapGestureRecognizer(target: self, action: "JustCloseStatisticsView:")
+        let closeTap = UITapGestureRecognizer(target: self, action: #selector(StatisticsViewController.JustCloseStatisticsView(_:)))
         
         let closeButton = UILabel(frame: CGRectMake(10, 27, 30, 30))
         closeButton.userInteractionEnabled = true
@@ -139,7 +139,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         yearLabel?.layer.masksToBounds = true
         yearLabel?.textAlignment = .Center
         yearLabel?.userInteractionEnabled = true
-        let tap = UITapGestureRecognizer(target: self, action: "showYearSelectView:")
+        let tap = UITapGestureRecognizer(target: self, action: #selector(StatisticsViewController.showYearSelectView(_:)))
         yearLabel?.addGestureRecognizer(tap)
         contentView?.addSubview(yearLabel!)
         
@@ -152,7 +152,7 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         monthLabel?.font = UIFont(name: "Avenir-Heavy", size: 18)!
         monthLabel?.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.3)
         monthLabel?.userInteractionEnabled = true
-        let tapMonth = UITapGestureRecognizer(target: self, action: "showMonthSelectView:")
+        let tapMonth = UITapGestureRecognizer(target: self, action: #selector(StatisticsViewController.showMonthSelectView(_:)))
         monthLabel?.addGestureRecognizer(tapMonth)
         contentView?.addSubview(monthLabel!)
     }
@@ -183,14 +183,14 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         yearSelectView?.directionalLockEnabled = true
         yearSelectView?.delegate = self
         
-        for var i = startYear; i < startYear + length; i++ {
+        for i in startYear ..< startYear + length {
             let label = UILabel(frame: CGRectMake(0, CGFloat(i - startYear) * 30, 100, 30))
             label.text = "\(i)"
             label.textAlignment = .Center
             label.font = UIFont(name: "Avenir-Heavy", size: 18)!
             label.textColor = UIColor.whiteColor()
             label.userInteractionEnabled = true
-            let tap = UITapGestureRecognizer(target: self, action: "selectYear:")
+            let tap = UITapGestureRecognizer(target: self, action: #selector(StatisticsViewController.selectYear(_:)))
             label.addGestureRecognizer(tap)
             
             if i == day.year {
@@ -215,14 +215,15 @@ class StatisticsViewController: UIViewController, UITableViewDataSource, UITable
         monthSelectView?.directionalLockEnabled = true
         monthSelectView?.delegate = self
         
-        for var i = 1; i <= 12; i++ {
+//        for var i = 1; i <= 12; i += 1 {
+        for i in 1 ..< 12 {
             let label = UILabel(frame: CGRectMake(0, CGFloat(i - 1) * 30, 100, 30))
             label.text = "\(i)"
             label.textAlignment = .Center
             label.font = UIFont(name: "Avenir-Heavy", size: 18)!
             label.textColor = UIColor.whiteColor()
             label.userInteractionEnabled = true
-            let tap = UITapGestureRecognizer(target: self, action: "selectMonth:")
+            let tap = UITapGestureRecognizer(target: self, action: #selector(StatisticsViewController.selectMonth(_:)))
             label.addGestureRecognizer(tap)
             if i == day.month {
                 label.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)

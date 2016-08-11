@@ -73,7 +73,7 @@ class CalendarDayView: UIView {
         dateLabel!.layer.zPosition = 2
         addSubview(dateLabel!)
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: "selectDay:")
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(CalendarDayView.selectDay(_:)))
         tapGesture.numberOfTapsRequired = 1
         self.addGestureRecognizer(tapGesture)
     }

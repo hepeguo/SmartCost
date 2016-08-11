@@ -48,9 +48,9 @@ class CounterView: UIView {
             for number in numbers {
                 num.append(number.sum)
             }
-            for var i = num.count - 1; i >= 0 ; i-- {
+            for var i = num.count - 1; i >= 0 ; i -= 1 {
                 var before = num[i]
-                for var j = i - 1; j >= 0; j-- {
+                for var j = i - 1; j >= 0; j -= 1 {
                     before += num[j]
                 }
                 num[i] = before
@@ -60,13 +60,13 @@ class CounterView: UIView {
             
             var angles = [CGFloat]()
             angles.append(0.0)
-            for var i = 0; i < num.count - 1; i++ {
+            for i in 0 ..< num.count - 1 {
                 let angle = CGFloat(num[i]) / CGFloat(total) * CGFloat(2) * PI
                 angles.append(angle)
             }
             angles.append(2 * PI)
             
-            for var i = 0; i < numbers.count; i++ {
+            for i in 0 ..< numbers.count {
                 let path = UIBezierPath(arcCenter: center, radius: radius, startAngle: angles[i], endAngle: angles[i + 1], clockwise: true)
                 let calyer = CAShapeLayer()
                 calyer.path = path.CGPath

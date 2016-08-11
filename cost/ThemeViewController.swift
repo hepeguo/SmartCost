@@ -53,7 +53,7 @@ class ThemeViewController: UIViewController {
     }
     
     func updateTheme() {
-        for var i = 0; i < themeViews.count; i++ {
+        for i in 0 ..< themeViews.count {
             if theTheme == themeViews[i].name {
                 themeViews[i].addBorder()
             } else {
@@ -63,7 +63,7 @@ class ThemeViewController: UIViewController {
     }
 
     func initTopBar() {
-        let closeTap = UITapGestureRecognizer(target: self, action: "JustCloseThemeView:")
+        let closeTap = UITapGestureRecognizer(target: self, action: #selector(ThemeViewController.JustCloseThemeView(_:)))
         
         let closeButton = UILabel(frame: CGRectMake(10, 27, 30, 30))
         closeButton.userInteractionEnabled = true
@@ -95,7 +95,7 @@ class ThemeViewController: UIViewController {
             }
             let rect = CGRectMake(x, CGFloat(index / 2) * (height + margin), width, height)
             let view = ThemeView(frame: rect, name: color, color: theme.valueForKey(color) as! UIColor)
-            let selectTap = UITapGestureRecognizer(target: self, action: "selectTheme:")
+            let selectTap = UITapGestureRecognizer(target: self, action: #selector(ThemeViewController.selectTheme(_:)))
             view.addGestureRecognizer(selectTap)
             themeViews.append(view)
             themeContent.addSubview(view)
@@ -103,7 +103,7 @@ class ThemeViewController: UIViewController {
     }
     
     func selectTheme(sender: UITapGestureRecognizer) {
-        for var i = 0; i < themeViews.count; i++ {
+        for i in 0 ..< themeViews.count {
             themeViews[i].removeBorder()
         }
         let themeView: ThemeView = sender.view as! ThemeView

@@ -38,7 +38,7 @@ class PageView: UIView, UIScrollViewDelegate {
         scrollView.directionalLockEnabled = true
         scrollView.delegate = self
         
-        for (var i = 0; i < count; i++) {
+        for i in 0 ..< count {
             views[i].frame = CGRectMake(frame.width * CGFloat(i), 0, frame.width, frame.height)
             scrollView.addSubview(views[i])
         }

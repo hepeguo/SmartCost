@@ -47,14 +47,14 @@ class NumberPad: UIView {
     func initNumberView() {
         let width: CGFloat = (frame.width - padding) / 4
         let height: CGFloat = frame.height / 4
-        for var i = 1; i < 10; i++ {
+        for i in 1 ..< 10 {
             let label: UILabel = UILabel(frame: CGRectMake(width * CGFloat((i - 1) % 3), height * CGFloat(Int((i - 1) / 3)), width, height))
             label.text = "\(i)"
             label.font = font
             label.textColor = fontColor
             label.textAlignment = .Center
             label.userInteractionEnabled = true
-            let tap = UITapGestureRecognizer(target: self, action: "tappedNumber:")
+            let tap = UITapGestureRecognizer(target: self, action: #selector(NumberPad.tappedNumber(_:)))
             label.addGestureRecognizer(tap)
             addSubview(label)
         }
@@ -66,7 +66,7 @@ class NumberPad: UIView {
             label.textColor = fontColor
             label.textAlignment = .Center
             label.userInteractionEnabled = true
-            let tap = UITapGestureRecognizer(target: self, action: "tappedNumber:")
+            let tap = UITapGestureRecognizer(target: self, action: #selector(NumberPad.tappedNumber(_:)))
             label.addGestureRecognizer(tap)
             addSubview(label)
         }
@@ -78,7 +78,7 @@ class NumberPad: UIView {
             label.textColor = fontColor
             label.textAlignment = .Center
             label.userInteractionEnabled = true
-            let tap = UITapGestureRecognizer(target: self, action: "tappedNumber:")
+            let tap = UITapGestureRecognizer(target: self, action: #selector(NumberPad.tappedNumber(_:)))
             label.addGestureRecognizer(tap)
             addSubview(label)
         }
@@ -94,7 +94,7 @@ class NumberPad: UIView {
                     if text == "." {
                         
                     } else if text == "⌫" {
-                        afterDotTappedTapNumber--
+                        afterDotTappedTapNumber -= 1
                         let index = string.endIndex.advancedBy(-1);
                         string = string.substringToIndex(index)
                         if afterDotTappedTapNumber < 0 {
@@ -108,7 +108,7 @@ class NumberPad: UIView {
                     } else if text == "OK" {
                         delegate!.tappedOK()
                     }else {
-                        afterDotTappedTapNumber++
+                        afterDotTappedTapNumber += 1
                         if afterDotTappedTapNumber > 2 {
                             afterDotTappedTapNumber = 2
                             let index = string.endIndex.advancedBy(-1);

@@ -72,7 +72,7 @@ class CatagoriesViewController: UIViewController {
 //MARK: init view
     
     func initTopBar() {
-        let closeTap = UITapGestureRecognizer(target: self, action: "JustCloseCatagoriesView:")
+        let closeTap = UITapGestureRecognizer(target: self, action: #selector(CatagoriesViewController.JustCloseCatagoriesView(_:)))
         
         let closeButton = UILabel(frame: CGRectMake(10, 27, 30, 30))
         closeButton.userInteractionEnabled = true
@@ -113,7 +113,7 @@ class CatagoriesViewController: UIViewController {
             
             let itemView = KindItemView(frame: rect, kind: item.kind, imageName: item.imageName)
             
-            let tapKind = UITapGestureRecognizer(target: self, action: "editKind:")
+            let tapKind = UITapGestureRecognizer(target: self, action: #selector(CatagoriesViewController.editKind(_:)))
             itemView.addGestureRecognizer(tapKind)
             
             kindViews.append(itemView)

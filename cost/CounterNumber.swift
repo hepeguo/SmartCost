@@ -90,19 +90,19 @@ class CounterNumber: UIView, UIScrollViewDelegate {
         var endNumberArray = parseNumber(number)
         let patchLength = endNumberArray.count - numberArray.count
         if  patchLength > 0 {
-            for var i = 0; i < patchLength; i++ {
+            for _ in 0 ..< patchLength {
                 let scrollView = makeCharacterView("0")
                 numberScrollView.insert(scrollView, atIndex: 0)
                 addSubview(scrollView)
             }
         } else {
-            for var i = 0; i < abs(patchLength); i++ {
+            for  _ in 0 ..< abs(patchLength) {
                 let scrollView = numberScrollView.removeLast()
                 scrollView.removeFromSuperview()
             }
         }
         
-        for var i = 0; i < endNumberArray.count; i++ {
+        for i in 0 ..< endNumberArray.count {
             let view: UIScrollView =  numberScrollView[i] as! UIScrollView
             view.frame = CGRectMake(fontSize!.width * CGFloat(i), 0, fontSize!.width, fontSize!.height)
             
@@ -119,7 +119,7 @@ class CounterNumber: UIView, UIScrollViewDelegate {
         var endNumberAfterDotArray = parseNumber(numberAfterDot)
         let afterDotPatchLength = endNumberAfterDotArray.count - numberAfterDotArray.count
         if  afterDotPatchLength > 0 {
-            for var i = 0; i < afterDotPatchLength; i++ {
+            for _ in 0 ..< afterDotPatchLength {
                 let scrollView = makeCharacterView("0")
                 afterDotNumberScrollView.insert(scrollView, atIndex: 0)
                 addSubview(scrollView)
@@ -127,7 +127,7 @@ class CounterNumber: UIView, UIScrollViewDelegate {
         } else if afterDotPatchLength < 0{
             //小数点后面的位数不一致的时候的处理，保证至少两位小数
             if endNumberAfterDotArray.count >= 2 {
-                for var i = 0; i < abs(afterDotPatchLength); i++ {
+                for _ in 0 ..< abs(afterDotPatchLength) {
                     let scrollView = afterDotNumberScrollView.removeLast()
                     scrollView.removeFromSuperview()
                 }
@@ -141,7 +141,7 @@ class CounterNumber: UIView, UIScrollViewDelegate {
                     }                   
                 }
             }
-            for var i = 0; i < abs(afterDotPatchLength); i++ {
+            for _ in 0 ..< abs(afterDotPatchLength) {
                 if endNumberAfterDotArray.count > 2 {
                     let scrollView = afterDotNumberScrollView.removeLast()
                     scrollView.removeFromSuperview()
@@ -174,7 +174,7 @@ class CounterNumber: UIView, UIScrollViewDelegate {
         let rect: CGRect = CGRectMake(0, 0, fontSize!.width, fontSize!.height)
         let scrollView = UIScrollView(frame: rect)
         scrollView.contentSize = CGSizeMake(rect.width, rect.height * CGFloat(10))
-        for var i = 0; i < 10; i++ {
+        for i in 0 ..< 10 {
             let label: UILabel = UILabel()
             label.frame = CGRectMake(0, fontSize!.height * CGFloat(i), fontSize!.width, fontSize!.height)
             label.text = "\(i)"
