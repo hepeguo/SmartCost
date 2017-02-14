@@ -11,14 +11,15 @@ import UIKit
 class DashLine: UIView {
     // Only override drawRect: if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
-        CGContextSetLineWidth(context, 1.0)
-        CGContextSetStrokeColorWithColor(context, UIColor.grayColor().CGColor)
+        context?.setLineWidth(1.0)
+        context?.setStrokeColor(UIColor.gray.cgColor)
         let dashArray: [CGFloat] = [1, 1]
-        CGContextSetLineDash(context, 0, dashArray, 2)
-        CGContextMoveToPoint(context, 0, 0)
-        CGContextAddLineToPoint(context, bounds.width, 0)
-        CGContextStrokePath(context)
+//        CGContextSetLineDash(context, 0, dashArray, 2)
+        context?.setLineDash(phase: 2, lengths: dashArray)
+        context?.move(to: CGPoint(x: 0, y: 0))
+        context?.addLine(to: CGPoint(x: bounds.width, y: 0))
+        context?.strokePath()
     }
 }

@@ -8,6 +8,30 @@
 
 import UIKit
 import CoreData
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class CatagoriesViewController: UIViewController {
     
@@ -17,7 +41,7 @@ class CatagoriesViewController: UIViewController {
     let theme = Theme()
     var theTheme: String {
         get {
-            var returnValue: String? = NSUserDefaults.standardUserDefaults().objectForKey("theme") as? String
+            var returnValue: String? = UserDefaults.standard.object(forKey: "theme") as? String
             if returnValue == nil
             {
                 returnValue = "blue"
@@ -25,14 +49,14 @@ class CatagoriesViewController: UIViewController {
             return returnValue!
         }
         set (newValue) {
-            NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: "theme")
-            NSUserDefaults.standardUserDefaults().synchronize()
+            UserDefaults.standard.set(newValue, forKey: "theme")
+            UserDefaults.standard.synchronize()
         }
     }
     
     var catagoriesContent: UIScrollView?
     
-    var catagoriesView = CatagoriesEditView(frame: CGRectZero)
+    var catagoriesView = CatagoriesEditView(frame: CGRect.zero)
     
     
     var kinds: [CatagoriesModel] = [CatagoriesModel]()
@@ -45,12 +69,12 @@ class CatagoriesViewController: UIViewController {
         super.viewDidLoad()
         self.automaticallyAdjustsScrollViewInsets = false
         view.layer.cornerRadius = 5
-        let themeColor = theme.valueForKey(theTheme) as? UIColor
-        view.backgroundColor = themeColor?.colorWithAlphaComponent(0.9)
+        let themeColor = theme.value(forKey: theTheme) as? UIColor
+        view.backgroundColor = themeColor?.withAlphaComponent(0.9)
         contentView = UIView(frame: view.frame)
         view.addSubview(contentView!)
         
-        if let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext {
+        if let context = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext {
             moc = context
         }
         catagoriesView.delegate = self
@@ -64,8 +88,8 @@ class CatagoriesViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
     }
     
     
@@ -74,10 +98,10 @@ class CatagoriesViewController: UIViewController {
     func initTopBar() {
         let closeTap = UITapGestureRecognizer(target: self, action: #selector(CatagoriesViewController.JustCloseCatagoriesView(_:)))
         
-        let closeButton = UILabel(frame: CGRectMake(10, 27, 30, 30))
-        closeButton.userInteractionEnabled = true
+        let closeButton = UILabel(frame: CGRect(x: 10, y: 27, width: 30, height: 30))
+        closeButton.isUserInteractionEnabled = true
         closeButton.text = "✕"
-        closeButton.textColor = UIColor.whiteColor()
+        closeButton.textColor = UIColor.white
         closeButton.font = UIFont(name: "Avenir-Heavy", size: 28)!
         closeButton.addGestureRecognizer(closeTap)
         contentView!.addSubview(closeButton)
@@ -89,27 +113,27 @@ class CatagoriesViewController: UIViewController {
         let width: CGFloat = (view.frame.width - margin * 2) / 4
         let height: CGFloat = width
         if catagoriesContent == nil {
-            catagoriesContent = UIScrollView(frame: CGRectMake(0, 64, view.frame.width, view.frame.height - 64))
-            catagoriesContent?.contentSize = CGSizeMake(view.frame.width, height * CGFloat(kinds.count / 4 + 1))
-            catagoriesContent?.setContentOffset(CGPointMake(0, 0), animated: false)
+            catagoriesContent = UIScrollView(frame: CGRect(x: 0, y: 64, width: view.frame.width, height: view.frame.height - 64))
+            catagoriesContent?.contentSize = CGSize(width: view.frame.width, height: height * CGFloat(kinds.count / 4 + 1))
+            catagoriesContent?.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
             catagoriesContent?.showsHorizontalScrollIndicator = false
             catagoriesContent?.showsVerticalScrollIndicator = false
             catagoriesContent?.scrollsToTop = false
-            catagoriesContent?.directionalLockEnabled = true
+            catagoriesContent?.isDirectionalLockEnabled = true
             
             contentView!.addSubview(catagoriesContent!)
         } else {
-            catagoriesContent?.contentSize = CGSizeMake(view.frame.width, height * CGFloat(kinds.count / 4 + 1))
-            for (_, view) in (catagoriesContent?.subviews.enumerate())! {
+            catagoriesContent?.contentSize = CGSize(width: view.frame.width, height: height * CGFloat(kinds.count / 4 + 1))
+            for (_, view) in (catagoriesContent?.subviews.enumerated())! {
                 view.removeFromSuperview()
             }
             kindViews.removeAll()
         }
         
         
-        for (index, item) in kinds.enumerate() {
-            var rect: CGRect = CGRectZero
-            rect = CGRectMake(CGFloat(index % 4) * width + margin, CGFloat(index / 4) * height, width, height)
+        for (index, item) in kinds.enumerated() {
+            var rect: CGRect = CGRect.zero
+            rect = CGRect(x: CGFloat(index % 4) * width + margin, y: CGFloat(index / 4) * height, width: width, height: height)
             
             let itemView = KindItemView(frame: rect, kind: item.kind, imageName: item.imageName)
             
@@ -124,19 +148,19 @@ class CatagoriesViewController: UIViewController {
     
 //MARK: action
     
-    func JustCloseCatagoriesView(sender: UITapGestureRecognizer) {
-        UIView.animateWithDuration(0.3, animations: {
+    func JustCloseCatagoriesView(_ sender: UITapGestureRecognizer) {
+        UIView.animate(withDuration: 0.3, animations: {
             self.contentView!.alpha = 0
-            self.contentView!.transform = CGAffineTransformMakeScale(0.9, 0.9)
+            self.contentView!.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
             }, completion: {_ in
-                self.dismissViewControllerAnimated(false, completion: nil)
+                self.dismiss(animated: false, completion: nil)
         })
     }
     
-    func editKind(sender: UITapGestureRecognizer) {
+    func editKind(_ sender: UITapGestureRecognizer) {
         let view = sender.view as! KindItemView
         currentView = view
-        let themeColor = theme.valueForKey(theTheme) as? UIColor
+        let themeColor = theme.value(forKey: theTheme) as? UIColor
         let deleteable = canDelete(view.kind!)
         catagoriesView.show(CGRect(x: view.frame.origin.x + 10 + CGFloat(view.frame.width / 2), y: view.frame.origin.y + catagoriesContent!.contentOffset.y + 64 + CGFloat(view.frame.height / 2), width: 0, height: 0), kind: view.kind!, imageName: view.imageName!, bgColor: themeColor!, canDelete: deleteable)
     }
@@ -144,7 +168,7 @@ class CatagoriesViewController: UIViewController {
 }
 
 extension CatagoriesViewController: CatagoriesEditDelegate {
-    func endCatagoriesEdit(kind: String, oldKind: String, imageName: String, delete: Bool) {
+    func endCatagoriesEdit(_ kind: String, oldKind: String, imageName: String, delete: Bool) {
         if (delete) {
             deleteKind(oldKind, imageName: imageName)
         } else {
@@ -156,15 +180,15 @@ extension CatagoriesViewController: CatagoriesEditDelegate {
         }
     }
     
-    func saveKind(kind: String, oldKind: String, imageName: String, isInit: Bool) {
+    func saveKind(_ kind: String, oldKind: String, imageName: String, isInit: Bool) {
         var kindModel:Catagories?
-        let fetchRequest = NSFetchRequest(entityName: "Catagories")
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Catagories")
         fetchRequest.predicate = NSPredicate(format: "kind == '\(oldKind)'")
         
         
         var fetchResults: [Catagories]?
         do {
-            try fetchResults = (moc.executeFetchRequest(fetchRequest) as! [Catagories])
+            try fetchResults = (moc.fetch(fetchRequest) as! [Catagories])
         } catch let error as NSError {
             print(error)
         }
@@ -190,8 +214,8 @@ extension CatagoriesViewController: CatagoriesEditDelegate {
         }
     }
     
-    func addKind(kind: String, imageName: String, isInit: Bool) {
-        let itemModel: Catagories = NSEntityDescription.insertNewObjectForEntityForName("Catagories", inManagedObjectContext: moc) as! Catagories
+    func addKind(_ kind: String, imageName: String, isInit: Bool) {
+        let itemModel: Catagories = NSEntityDescription.insertNewObject(forEntityName: "Catagories", into: moc) as! Catagories
         
         itemModel.kind = kind
         itemModel.imageName = imageName
@@ -209,14 +233,14 @@ extension CatagoriesViewController: CatagoriesEditDelegate {
         }
     }
     
-    func deleteKind(kind: String, imageName: String) {
+    func deleteKind(_ kind: String, imageName: String) {
         var kindModel:Catagories?
-        let fetchRequest = NSFetchRequest(entityName: "Catagories")
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Catagories")
         fetchRequest.predicate = NSPredicate(format: "kind == '\(kind)'")
         
         var fetchResults: [Catagories]?
         do {
-            try fetchResults = (moc.executeFetchRequest(fetchRequest) as! [Catagories])
+            try fetchResults = (moc.fetch(fetchRequest) as! [Catagories])
         } catch let error as NSError {
             print(error)
         }
@@ -225,12 +249,12 @@ extension CatagoriesViewController: CatagoriesEditDelegate {
             kindModel = fetchResults![0]
         }
         if kindModel != nil {
-            moc.deleteObject(kindModel!)
+            moc.delete(kindModel!)
             
             do {
                 try moc.save()
-                UIView.animateWithDuration(0.3, animations: {
-                    self.currentView!.transform = CGAffineTransformMakeScale(0.2, 0.2)
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.currentView!.transform = CGAffineTransform(scaleX: 0.2, y: 0.2)
                     }, completion: {_ in
                         self.currentView?.removeFromSuperview()
                         self.initViews()
@@ -242,11 +266,11 @@ extension CatagoriesViewController: CatagoriesEditDelegate {
     }
     
     func getKinds() {
-        let fetchRequest = NSFetchRequest(entityName: "Catagories")
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Catagories")
         
         var fetchResults: [Catagories]?
         do {
-            try fetchResults = (moc.executeFetchRequest(fetchRequest) as? [Catagories])
+            try fetchResults = (moc.fetch(fetchRequest) as? [Catagories])
         } catch let error as NSError {
             print(error)
         }
@@ -254,7 +278,7 @@ extension CatagoriesViewController: CatagoriesEditDelegate {
         var kinds = [CatagoriesModel]()
         
         if fetchResults != nil && fetchResults?.count > 0 {
-            for (_, item) in fetchResults!.enumerate() {
+            for (_, item) in fetchResults!.enumerated() {
                 let catagory: CatagoriesModel = CatagoriesModel()
                 catagory.kind = item.kind!
                 catagory.imageName = item.imageName!
@@ -285,7 +309,7 @@ extension CatagoriesViewController: CatagoriesEditDelegate {
                 ["kind": "Other","imageName": "Other"]
             ]
             
-            for (_, item) in items.enumerate() {
+            for (_, item) in items.enumerated() {
                 let kind: CatagoriesModel = CatagoriesModel()
                 kind.kind = item["kind"]!
                 kind.imageName = item["imageName"]!
@@ -299,20 +323,20 @@ extension CatagoriesViewController: CatagoriesEditDelegate {
         self.kinds.append(kind)
     }
     
-    func updateAllItem(kind: String, oldKind: String) {
-        let fetchRequest = NSFetchRequest(entityName: "ItemModel")
+    func updateAllItem(_ kind: String, oldKind: String) {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ItemModel")
         
         fetchRequest.predicate = NSPredicate(format: "kind == '\(oldKind)'")
         
         var fetchResults: [ItemModel]?
         do {
-            try fetchResults = (moc.executeFetchRequest(fetchRequest) as! [ItemModel])
+            try fetchResults = (moc.fetch(fetchRequest) as! [ItemModel])
         } catch let error as NSError {
             print(error)
         }
         
         if (fetchResults != nil && fetchResults?.count > 0) {
-            for (_, item) in (fetchResults?.enumerate())! {
+            for (_, item) in (fetchResults?.enumerated())! {
                 item.kind = kind
             }
         }
@@ -324,18 +348,18 @@ extension CatagoriesViewController: CatagoriesEditDelegate {
         }
     }
     
-    func canDelete(kind: String) -> Bool {
+    func canDelete(_ kind: String) -> Bool {
         if (kind == "") {
             return false
         }
         
-        let fetchRequest = NSFetchRequest(entityName: "ItemModel")
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ItemModel")
         
         fetchRequest.predicate = NSPredicate(format: "kind == '\(kind)' && kill == false")
         
         var fetchResults: [ItemModel]?
         do {
-            try fetchResults = (moc.executeFetchRequest(fetchRequest) as! [ItemModel])
+            try fetchResults = (moc.fetch(fetchRequest) as! [ItemModel])
         } catch let error as NSError {
             print(error)
         }

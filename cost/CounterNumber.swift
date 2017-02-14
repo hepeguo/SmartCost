@@ -11,8 +11,8 @@ import UIKit
 class CounterNumber: UIView, UIScrollViewDelegate {
     var startNumber: Int = 0
     var startNumberAfterDot: Int = 0
-    var font: UIFont = UIFont.systemFontOfSize(25.0)
-    var fontColor: UIColor = UIColor.redColor()
+    var font: UIFont = UIFont.systemFont(ofSize: 25.0)
+    var fontColor: UIColor = UIColor.red
     var fontSize: CGSize?
     
     var numberArray: [Character] = [Character]()
@@ -43,10 +43,10 @@ class CounterNumber: UIView, UIScrollViewDelegate {
     func getSizeOfFont() {
         let tempNumberString = "8"
         let tempNumberNSString = tempNumberString as NSString
-        fontSize = tempNumberNSString.sizeWithAttributes([NSFontAttributeName: font])
+        fontSize = tempNumberNSString.size(attributes: [NSFontAttributeName: font])
     }
     
-    func parseNumber(number: Int) -> [Character]{
+    func parseNumber(_ number: Int) -> [Character]{
         let numberString: String = "\(number)"
         var numberArray: [Character] = [Character]()
         for character in numberString.characters {
@@ -57,14 +57,14 @@ class CounterNumber: UIView, UIScrollViewDelegate {
     
     func prepareNumberForEveryCharacter() {
         numberArray = parseNumber(startNumber)
-        for (index, character) in numberArray.enumerate() {
+        for (index, character) in numberArray.enumerated() {
             let scrollView = makeCharacterView(character)
-            scrollView.frame = CGRectMake(fontSize!.width * CGFloat(index), 0, fontSize!.width, fontSize!.height)
+            scrollView.frame = CGRect(x: fontSize!.width * CGFloat(index), y: 0, width: fontSize!.width, height: fontSize!.height)
             numberScrollView.append(scrollView)
             addSubview(scrollView)
         }
         
-        dotView = UILabel(frame: CGRectMake(fontSize!.width * CGFloat(numberArray.count), 0, fontSize!.width, fontSize!.height))
+        dotView = UILabel(frame: CGRect(x: fontSize!.width * CGFloat(numberArray.count), y: 0, width: fontSize!.width, height: fontSize!.height))
         dotView!.textColor = fontColor
         dotView!.font = font
         dotView!.text = "."
@@ -78,21 +78,21 @@ class CounterNumber: UIView, UIScrollViewDelegate {
         } else {
             numberAfterDotArray = parseNumber(startNumberAfterDot)
         }
-        for (index, character) in numberAfterDotArray.enumerate() {
+        for (index, character) in numberAfterDotArray.enumerated() {
             let scrollView = makeCharacterView(character)
-            scrollView.frame = CGRectMake(fontSize!.width * CGFloat(index + numberArray.count + 1), 0, fontSize!.width, fontSize!.height)
+            scrollView.frame = CGRect(x: fontSize!.width * CGFloat(index + numberArray.count + 1), y: 0, width: fontSize!.width, height: fontSize!.height)
             afterDotNumberScrollView.append(scrollView)
             addSubview(scrollView)
         }
     }
     
-    func scrollToNumber(number: Int, numberAfterDot: Int) {
+    func scrollToNumber(_ number: Int, numberAfterDot: Int) {
         var endNumberArray = parseNumber(number)
         let patchLength = endNumberArray.count - numberArray.count
         if  patchLength > 0 {
             for _ in 0 ..< patchLength {
                 let scrollView = makeCharacterView("0")
-                numberScrollView.insert(scrollView, atIndex: 0)
+                numberScrollView.insert(scrollView, at: 0)
                 addSubview(scrollView)
             }
         } else {
@@ -104,24 +104,24 @@ class CounterNumber: UIView, UIScrollViewDelegate {
         
         for i in 0 ..< endNumberArray.count {
             let view: UIScrollView =  numberScrollView[i] as! UIScrollView
-            view.frame = CGRectMake(fontSize!.width * CGFloat(i), 0, fontSize!.width, fontSize!.height)
+            view.frame = CGRect(x: fontSize!.width * CGFloat(i), y: 0, width: fontSize!.width, height: fontSize!.height)
             
             var numberString = ""
             numberString.append(endNumberArray[i])
             let numberValue: Int = Int(numberString)!
-            view.setContentOffset(CGPointMake(0, fontSize!.height * CGFloat(numberValue)), animated: true)
+            view.setContentOffset(CGPoint(x: 0, y: fontSize!.height * CGFloat(numberValue)), animated: true)
         }
         numberArray = endNumberArray
         startNumber = number
         
-        dotView!.frame = CGRectMake(fontSize!.width * CGFloat(endNumberArray.count), 0, fontSize!.width, fontSize!.height)
+        dotView!.frame = CGRect(x: fontSize!.width * CGFloat(endNumberArray.count), y: 0, width: fontSize!.width, height: fontSize!.height)
         
         var endNumberAfterDotArray = parseNumber(numberAfterDot)
         let afterDotPatchLength = endNumberAfterDotArray.count - numberAfterDotArray.count
         if  afterDotPatchLength > 0 {
             for _ in 0 ..< afterDotPatchLength {
                 let scrollView = makeCharacterView("0")
-                afterDotNumberScrollView.insert(scrollView, atIndex: 0)
+                afterDotNumberScrollView.insert(scrollView, at: 0)
                 addSubview(scrollView)
             }
         } else if afterDotPatchLength < 0{
@@ -134,7 +134,7 @@ class CounterNumber: UIView, UIScrollViewDelegate {
             } else {
                 for index in 0..<numberAfterDotArray.count {
                     if index >= 2 {
-                        let scrollView = afterDotNumberScrollView.removeAtIndex(index)
+                        let scrollView = afterDotNumberScrollView.remove(at: index)
                         scrollView.removeFromSuperview()
                     } else if index == 1 {
                         endNumberAfterDotArray.append("0")
@@ -153,43 +153,43 @@ class CounterNumber: UIView, UIScrollViewDelegate {
             }
         }
         
-        for (index, character) in endNumberAfterDotArray.enumerate() {
+        for (index, character) in endNumberAfterDotArray.enumerated() {
             let scrollView: UIScrollView =  afterDotNumberScrollView[index] as! UIScrollView
-            scrollView.frame = CGRectMake(fontSize!.width * CGFloat(index + endNumberArray.count + 1), 0, fontSize!.width, fontSize!.height)
+            scrollView.frame = CGRect(x: fontSize!.width * CGFloat(index + endNumberArray.count + 1), y: 0, width: fontSize!.width, height: fontSize!.height)
             
             var numberString = ""
             numberString.append(character)
             let numberValue: Int = Int(numberString)!
-            scrollView.setContentOffset(CGPointMake(0, fontSize!.height * CGFloat(numberValue)), animated: true)
+            scrollView.setContentOffset(CGPoint(x: 0, y: fontSize!.height * CGFloat(numberValue)), animated: true)
         }
         numberAfterDotArray = endNumberAfterDotArray
         startNumberAfterDot = numberAfterDot
     }
     
-    func makeCharacterView(number: Character) -> UIView {
+    func makeCharacterView(_ number: Character) -> UIView {
         var numberString = ""
         numberString.append(number)
         let numberValue: Int = Int(numberString)!
         
-        let rect: CGRect = CGRectMake(0, 0, fontSize!.width, fontSize!.height)
+        let rect: CGRect = CGRect(x: 0, y: 0, width: fontSize!.width, height: fontSize!.height)
         let scrollView = UIScrollView(frame: rect)
-        scrollView.contentSize = CGSizeMake(rect.width, rect.height * CGFloat(10))
+        scrollView.contentSize = CGSize(width: rect.width, height: rect.height * CGFloat(10))
         for i in 0 ..< 10 {
             let label: UILabel = UILabel()
-            label.frame = CGRectMake(0, fontSize!.height * CGFloat(i), fontSize!.width, fontSize!.height)
+            label.frame = CGRect(x: 0, y: fontSize!.height * CGFloat(i), width: fontSize!.width, height: fontSize!.height)
             label.text = "\(i)"
             label.textColor = fontColor
             label.font = font
             scrollView.addSubview(label)
         }
-        scrollView.setContentOffset(CGPointMake(0, rect.height * CGFloat(numberValue)), animated: false)
+        scrollView.setContentOffset(CGPoint(x: 0, y: rect.height * CGFloat(numberValue)), animated: false)
         
-        scrollView.pagingEnabled = true
+        scrollView.isPagingEnabled = true
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.scrollsToTop = false
-        scrollView.directionalLockEnabled = true
-        scrollView.userInteractionEnabled = false
+        scrollView.isDirectionalLockEnabled = true
+        scrollView.isUserInteractionEnabled = false
         scrollView.delegate = self
         
         return scrollView

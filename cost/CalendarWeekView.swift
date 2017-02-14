@@ -9,8 +9,8 @@
 import UIKit
 
 protocol CalendarWeekViewDelegate {
-    func selectedDay(dayView: CalendarDayView)
-    func unSelectedDay(dayView: CalendarDayView)
+    func selectedDay(_ dayView: CalendarDayView)
+    func unSelectedDay(_ dayView: CalendarDayView)
 }
 
 class CalendarWeekView: UIView, CalendarDayViewDelegate {
@@ -47,9 +47,9 @@ class CalendarWeekView: UIView, CalendarDayViewDelegate {
     func initDayViewsInWeek() {
         let height = frame.height
         let width = (frame.width - padding * 6) / 7
-        var rect = CGRectMake(0, 0, width, height)
+        var rect = CGRect(x: 0, y: 0, width: width, height: height)
         
-        for (index, day) in (dayOfWeek!).enumerate() {
+        for (index, day) in (dayOfWeek!).enumerated() {
             rect.origin.x =  CGFloat(index) * (width + padding)
             let dayView = CalendarDayView(frame: rect, date: day)
             if day == GDate() {
@@ -71,7 +71,7 @@ class CalendarWeekView: UIView, CalendarDayViewDelegate {
         }
     }
     
-    func selectDayFromWeek(day: GDate) {
+    func selectDayFromWeek(_ day: GDate) {
         for view in dayViewOfWeek {
             if view.date == day {
                 view.isSelectedDay = true
@@ -82,7 +82,7 @@ class CalendarWeekView: UIView, CalendarDayViewDelegate {
     }
     
     //MARK: CalendarDayViewDelegate
-    func selectedDay(dayView: CalendarDayView) {
+    func selectedDay(_ dayView: CalendarDayView) {
         for view in dayViewOfWeek {
             if view.date != dayView.date {
                 view.isSelectedDay = false
@@ -91,7 +91,7 @@ class CalendarWeekView: UIView, CalendarDayViewDelegate {
         delegate?.selectedDay(dayView)
     }
     
-    func unSelectedDay(dayView: CalendarDayView) {
+    func unSelectedDay(_ dayView: CalendarDayView) {
         
     }
 }

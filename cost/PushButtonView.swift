@@ -9,15 +9,15 @@
 import UIKit
 @IBDesignable
 class PushButtonView: UIButton {
-    @IBInspectable var fillColor: UIColor = UIColor.greenColor()
+    @IBInspectable var fillColor: UIColor = UIColor.green
     @IBInspectable var isAddButton: Bool = true
 
     
     // Only override drawRect: if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         // Drawing code
-        let path = UIBezierPath(ovalInRect: rect)
+        let path = UIBezierPath(ovalIn: rect)
         fillColor.setFill()
         path.fill()
         
@@ -34,30 +34,30 @@ class PushButtonView: UIButton {
         
         //move the initial point of the path
         //to the start of the horizontal stroke
-        plusPath.moveToPoint(CGPoint(
+        plusPath.move(to: CGPoint(
             x:bounds.width/2 - plusWidth/2 + 0.5,
             y:bounds.height/2 + 0.5))
         
         //add a point to the path at the end of the stroke
-        plusPath.addLineToPoint(CGPoint(
+        plusPath.addLine(to: CGPoint(
             x:bounds.width/2 + plusWidth/2 + 0.5,
             y:bounds.height/2 + 0.5))
         
         //Vertical Line
         if isAddButton {
             //move to the start of the vertical stroke
-            plusPath.moveToPoint(CGPoint(
+            plusPath.move(to: CGPoint(
                 x:bounds.width/2 + 0.5,
                 y:bounds.height/2 - plusWidth/2 + 0.5))
             
             //add the end point to the vertical stroke
-            plusPath.addLineToPoint(CGPoint(
+            plusPath.addLine(to: CGPoint(
                 x:bounds.width/2 + 0.5,
                 y:bounds.height/2 + plusWidth/2 + 0.5))
         }
         
         //set the stroke color
-        UIColor.whiteColor().setStroke()
+        UIColor.white.setStroke()
         
         //draw the stroke
         plusPath.stroke()

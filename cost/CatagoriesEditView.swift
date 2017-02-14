@@ -9,7 +9,7 @@
 import UIKit
 
 protocol CatagoriesEditDelegate {
-    func endCatagoriesEdit(kind: String, oldKind: String, imageName: String, delete: Bool)
+    func endCatagoriesEdit(_ kind: String, oldKind: String, imageName: String, delete: Bool)
 }
 
 class CatagoriesEditView: UIView {
@@ -30,7 +30,7 @@ class CatagoriesEditView: UIView {
     
     var bgView: UIView?
     
-    var originFrame: CGRect = CGRectZero
+    var originFrame: CGRect = CGRect.zero
     
     var isFirst: Bool = true
     
@@ -45,7 +45,7 @@ class CatagoriesEditView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.layer.cornerRadius = 5
-        bgView = UIView(frame: CGRectMake(0, 0, CGRectGetWidth(UIScreen.mainScreen().bounds), CGRectGetHeight(UIScreen.mainScreen().bounds)))
+        bgView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
         bgView?.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.75)
         self.clipsToBounds = true
         
@@ -59,28 +59,28 @@ class CatagoriesEditView: UIView {
     }
     
     func initImageViews() {
-        let screenWidth = CGRectGetWidth(UIScreen.mainScreen().bounds)
-        let screenHeight = CGRectGetHeight(UIScreen.mainScreen().bounds)
+        let screenWidth = UIScreen.main.bounds.width
+        let screenHeight = UIScreen.main.bounds.height
         
         let margin: CGFloat = 10
         let numberInline: CGFloat = 4
         let width: CGFloat = (screenWidth - margin * 4) / numberInline
         let height: CGFloat = width
         
-        imagesContent = UIScrollView(frame: CGRectMake(10, 44, screenWidth - 40, screenHeight - 232))
-        imagesContent?.contentSize = CGSizeMake(screenWidth - 40, height * CGFloat(allImage.count / Int(numberInline) + 1))
-        imagesContent?.setContentOffset(CGPointMake(0, 0), animated: false)
+        imagesContent = UIScrollView(frame: CGRect(x: 10, y: 44, width: screenWidth - 40, height: screenHeight - 232))
+        imagesContent?.contentSize = CGSize(width: screenWidth - 40, height: height * CGFloat(allImage.count / Int(numberInline) + 1))
+        imagesContent?.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
         imagesContent?.showsHorizontalScrollIndicator = false
         imagesContent?.showsVerticalScrollIndicator = false
         imagesContent?.scrollsToTop = false
-        imagesContent?.directionalLockEnabled = true
-        imagesContent?.hidden = true
+        imagesContent?.isDirectionalLockEnabled = true
+        imagesContent?.isHidden = true
         
         self.addSubview(imagesContent!)
         
-        for (index, item) in allImage.enumerate() {
-            var rect: CGRect = CGRectZero
-            rect = CGRectMake(CGFloat(index % Int(numberInline)) * width, CGFloat(index / Int(numberInline)) * height, width, height)
+        for (index, item) in allImage.enumerated() {
+            var rect: CGRect = CGRect.zero
+            rect = CGRect(x: CGFloat(index % Int(numberInline)) * width, y: CGFloat(index / Int(numberInline)) * height, width: width, height: height)
             
             let itemView = KindItemView(frame: rect, imageName: item)
             
@@ -95,32 +95,32 @@ class CatagoriesEditView: UIView {
     }
     
     func initView() {
-        kindLabel = UITextField(frame: CGRect(x: 10, y: CGRectGetMaxY(imagesContent!.frame) + 10, width: CGRectGetWidth(imagesContent!.frame), height: 44))
+        kindLabel = UITextField(frame: CGRect(x: 10, y: imagesContent!.frame.maxY + 10, width: imagesContent!.frame.width, height: 44))
         kindLabel?.layer.borderWidth = 2
-        kindLabel?.layer.borderColor = UIColor.whiteColor().CGColor
+        kindLabel?.layer.borderColor = UIColor.white.cgColor
         kindLabel?.font = UIFont(name: "Avenir-Heavy", size: 18)!
-        kindLabel?.userInteractionEnabled = true
-        kindLabel?.returnKeyType = .Done
-        kindLabel?.textColor = UIColor.whiteColor()
-        kindLabel?.addTarget(self, action: #selector(CatagoriesEditView.doneClicked(_:)), forControlEvents: UIControlEvents.EditingDidEndOnExit)
-        kindLabel?.addTarget(self, action: #selector(CatagoriesEditView.kindLabelTapped(_:)), forControlEvents: .EditingDidBegin)
+        kindLabel?.isUserInteractionEnabled = true
+        kindLabel?.returnKeyType = .done
+        kindLabel?.textColor = UIColor.white
+        kindLabel?.addTarget(self, action: #selector(CatagoriesEditView.doneClicked(_:)), for: UIControlEvents.editingDidEndOnExit)
+        kindLabel?.addTarget(self, action: #selector(CatagoriesEditView.kindLabelTapped(_:)), for: .editingDidBegin)
         kindLabelTap = UITapGestureRecognizer(target: self, action: #selector(CatagoriesEditView.kindLabelTapped(_:)))
         kindLabel?.addGestureRecognizer(kindLabelTap!)
         
         let spacerView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height:10))
-        kindLabel?.leftViewMode = .Always
+        kindLabel?.leftViewMode = .always
         kindLabel?.leftView = spacerView
-        self.kindLabel?.hidden = true
+        self.kindLabel?.isHidden = true
         
         self.addSubview(kindLabel!)
         
-        deleteButton = UILabel(frame: CGRect(x: 10, y: CGRectGetMaxY(kindLabel!.frame) + 10, width: CGRectGetWidth(imagesContent!.frame), height: 44))
+        deleteButton = UILabel(frame: CGRect(x: 10, y: kindLabel!.frame.maxY + 10, width: imagesContent!.frame.width, height: 44))
         deleteButton?.text = "DELETE"
-        deleteButton?.textAlignment = .Center
-        deleteButton?.textColor = UIColor.whiteColor()
+        deleteButton?.textAlignment = .center
+        deleteButton?.textColor = UIColor.white
         deleteButton?.font = UIFont(name: "Avenir-Heavy", size: 18)!
-        deleteButton?.userInteractionEnabled = true
-        deleteButton?.hidden = true
+        deleteButton?.isUserInteractionEnabled = true
+        deleteButton?.isHidden = true
         let deleteKindLabelTap = UITapGestureRecognizer(target: self, action: #selector(CatagoriesEditView.deleteKind(_:)))
         deleteButton?.addGestureRecognizer(deleteKindLabelTap)
         
@@ -130,120 +130,120 @@ class CatagoriesEditView: UIView {
     func initTopBar() {
         let closeTap = UITapGestureRecognizer(target: self, action: #selector(CatagoriesEditView.JustCloseEditView(_:)))
         
-        closeButton = UILabel(frame: CGRectMake(10, 10, 30, 30))
-        closeButton?.userInteractionEnabled = true
+        closeButton = UILabel(frame: CGRect(x: 10, y: 10, width: 30, height: 30))
+        closeButton?.isUserInteractionEnabled = true
         closeButton?.text = "✕"
-        closeButton?.textColor = UIColor.whiteColor()
+        closeButton?.textColor = UIColor.white
         closeButton?.font = UIFont(name: "Avenir-Heavy", size: 28)!
         closeButton?.addGestureRecognizer(closeTap)
         self.addSubview(closeButton!)
         
         let addTap = UITapGestureRecognizer(target: self, action: #selector(CatagoriesEditView.closeEditWithNewer(_:)))
-        addButton = UILabel(frame: CGRectZero)
-        addButton?.userInteractionEnabled = true
+        addButton = UILabel(frame: CGRect.zero)
+        addButton?.isUserInteractionEnabled = true
         addButton?.text = "SAVE"
-        addButton?.textAlignment = .Right
-        addButton?.textColor = UIColor.whiteColor()
+        addButton?.textAlignment = .right
+        addButton?.textColor = UIColor.white
         addButton?.font = UIFont(name: "Avenir-Heavy", size: 18)!
         addButton?.addGestureRecognizer(addTap)
         self.addSubview(addButton!)
     }
     
-    func selectImage(sender: UITapGestureRecognizer) {
+    func selectImage(_ sender: UITapGestureRecognizer) {
         let view = sender.view as! KindItemView
-        for (_, kindView) in kindViews.enumerate() {
-            kindView.backgroundColor = UIColor.clearColor()
+        for (_, kindView) in kindViews.enumerated() {
+            kindView.backgroundColor = UIColor.clear
         }
         view.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.3)
         self.imageName = view.imageName!
         if trim(kindLabel!.text!) != "" {
-            addButton?.hidden = false
+            addButton?.isHidden = false
         }
     }
     
-    func setImage(imageName: String) {
+    func setImage(_ imageName: String) {
         var has = false
-        for (_, kindView) in kindViews.enumerate() {
+        for (_, kindView) in kindViews.enumerated() {
             if kindView.imageName == imageName {
                 kindView.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.3)
                 has = true
             } else {
-                kindView.backgroundColor = UIColor.clearColor()
+                kindView.backgroundColor = UIColor.clear
             }
         }
         if !has {
-            addButton?.hidden = true
+            addButton?.isHidden = true
         }
     }
     
-    func kindLabelTapped(sender: UIGestureRecognizer) {
-        UIView.animateWithDuration(0.3, animations: {
+    func kindLabelTapped(_ sender: UIGestureRecognizer) {
+        UIView.animate(withDuration: 0.3, animations: {
             self.imagesContent?.frame.origin.y = -(self.imagesContent!.frame.height + (self.kindLabel?.frame.height)! + 44)
             self.kindLabel?.frame.origin.y = 44
-            self.deleteButton?.frame.origin.y = CGRectGetMaxY(self.kindLabel!.frame) + 10
-            self.addButton?.hidden = true
+            self.deleteButton?.frame.origin.y = self.kindLabel!.frame.maxY + 10
+            self.addButton?.isHidden = true
             }, completion: { _ in
                 self.kindLabel?.removeGestureRecognizer(self.kindLabelTap!)
                 self.kindLabel?.becomeFirstResponder()
         })
     }
     
-    func JustCloseEditView(sender: UITapGestureRecognizer) {
-        imagesContent?.hidden = true
-        self.kindLabel?.hidden = true
-        self.deleteButton?.hidden = true
+    func JustCloseEditView(_ sender: UITapGestureRecognizer) {
+        imagesContent?.isHidden = true
+        self.kindLabel?.isHidden = true
+        self.deleteButton?.isHidden = true
         self.kindLabel?.resignFirstResponder()
-        UIView.animateWithDuration(0.25, animations: {
+        UIView.animate(withDuration: 0.25, animations: {
             self.frame = self.originFrame
             self.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.75)
-            self.closeButton?.hidden = true
-            self.bgView?.hidden = true
-            self.addButton?.frame = CGRectZero
-            self.addButton?.hidden = true
+            self.closeButton?.isHidden = true
+            self.bgView?.isHidden = true
+            self.addButton?.frame = CGRect.zero
+            self.addButton?.isHidden = true
         }, completion: { _ in
-            self.hidden = true
+            self.isHidden = true
         })
     }
     
-    func closeEditWithNewer(sender: UITapGestureRecognizer) {
+    func closeEditWithNewer(_ sender: UITapGestureRecognizer) {
         self.kindLabel?.resignFirstResponder()
         if kindLabel?.text != nil {
-            imagesContent?.hidden = true
-            self.kindLabel?.hidden = true
-            self.deleteButton?.hidden = true
-            UIView.animateWithDuration(0.25, animations: {
+            imagesContent?.isHidden = true
+            self.kindLabel?.isHidden = true
+            self.deleteButton?.isHidden = true
+            UIView.animate(withDuration: 0.25, animations: {
                 self.frame = self.originFrame
                 self.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.75)
-                self.closeButton?.hidden = true
-                self.bgView?.hidden = true
-                self.addButton?.frame = CGRectZero
-                self.addButton?.hidden = true
+                self.closeButton?.isHidden = true
+                self.bgView?.isHidden = true
+                self.addButton?.frame = CGRect.zero
+                self.addButton?.isHidden = true
                 }, completion: { _ in
-                    self.hidden = true
+                    self.isHidden = true
                     self.delegate?.endCatagoriesEdit((self.kindLabel?.text)!, oldKind: self.oldKind, imageName: self.imageName!, delete: false)
             })
         }
     }
     
-    func deleteKind(sender: UITapGestureRecognizer) {
-        imagesContent?.hidden = true
-        self.kindLabel?.hidden = true
-        self.deleteButton?.hidden = true
-        UIView.animateWithDuration(0.25, animations: {
+    func deleteKind(_ sender: UITapGestureRecognizer) {
+        imagesContent?.isHidden = true
+        self.kindLabel?.isHidden = true
+        self.deleteButton?.isHidden = true
+        UIView.animate(withDuration: 0.25, animations: {
             self.frame = self.originFrame
             self.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.75)
-            self.closeButton?.hidden = true
-            self.bgView?.hidden = true
-            self.addButton?.frame = CGRectZero
-            self.addButton?.hidden = true
+            self.closeButton?.isHidden = true
+            self.bgView?.isHidden = true
+            self.addButton?.frame = CGRect.zero
+            self.addButton?.isHidden = true
             }, completion: { _ in
-                self.hidden = true
+                self.isHidden = true
                 self.delegate?.endCatagoriesEdit((self.kindLabel?.text)!, oldKind: self.oldKind, imageName: self.imageName!, delete: true)
         })
     }
     
     
-    func show(frame: CGRect, kind: String, imageName: String, bgColor: UIColor, canDelete: Bool) {
+    func show(_ frame: CGRect, kind: String, imageName: String, bgColor: UIColor, canDelete: Bool) {
         self.frame = frame
         self.originFrame = frame
         self.kind = kind
@@ -253,24 +253,24 @@ class CatagoriesEditView: UIView {
         kindLabel?.text = kind
         
         self.imagesContent?.frame.origin.y = 44
-        self.kindLabel?.frame.origin.y = CGRectGetMaxY(self.imagesContent!.frame) + 10
-        self.deleteButton?.frame.origin.y = CGRectGetMaxY(self.kindLabel!.frame) + 10
+        self.kindLabel?.frame.origin.y = self.imagesContent!.frame.maxY + 10
+        self.deleteButton?.frame.origin.y = self.kindLabel!.frame.maxY + 10
         
         
-        self.hidden = false
-        self.bgView?.hidden = false
-        self.closeButton?.hidden = false
+        self.isHidden = false
+        self.bgView?.isHidden = false
+        self.closeButton?.isHidden = false
 //        self.addButton?.hidden = false
         
         
-        UIView.animateWithDuration(0.25, animations: {
-            self.frame = CGRect(x: 10, y: 30, width: CGRectGetWidth(UIScreen.mainScreen().bounds) - 20, height: CGRectGetHeight(UIScreen.mainScreen().bounds) - 60)
-            self.addButton?.frame = CGRectMake(CGRectGetWidth(UIScreen.mainScreen().bounds) - 80, 10, 50, 30)
+        UIView.animate(withDuration: 0.25, animations: {
+            self.frame = CGRect(x: 10, y: 30, width: UIScreen.main.bounds.width - 20, height: UIScreen.main.bounds.height - 60)
+            self.addButton?.frame = CGRect(x: UIScreen.main.bounds.width - 80, y: 10, width: 50, height: 30)
             self.backgroundColor = bgColor
             if (self.isFirst) {
                 self.isFirst = false
-                let windows = UIApplication.sharedApplication().windows.reverse()
-                for (_, window) in windows.enumerate() {
+                let windows = UIApplication.shared.windows.reversed()
+                for (_, window) in windows.enumerated() {
                     if (window.windowLevel == UIWindowLevelNormal) {
                         window.addSubview(self.bgView!)
                         window.addSubview(self)
@@ -280,30 +280,30 @@ class CatagoriesEditView: UIView {
             }
         }, completion:
             {_ in
-                self.imagesContent?.hidden = false
-                self.kindLabel?.hidden = false
+                self.imagesContent?.isHidden = false
+                self.kindLabel?.isHidden = false
                 if (canDelete) {
-                    self.deleteButton?.hidden = false
+                    self.deleteButton?.isHidden = false
                 }
         })
     }
     
-    func doneClicked(sender: UIControlEvents) {
+    func doneClicked(_ sender: UIControlEvents) {
         kindLabel?.resignFirstResponder()
-        UIView.animateWithDuration(0.3, animations: {
+        UIView.animate(withDuration: 0.3, animations: {
             self.imagesContent?.frame.origin.y = 44
-            self.kindLabel?.frame.origin.y = CGRectGetMaxY(self.imagesContent!.frame) + 10
-            self.deleteButton?.frame.origin.y = CGRectGetMaxY(self.kindLabel!.frame) + 10
+            self.kindLabel?.frame.origin.y = self.imagesContent!.frame.maxY + 10
+            self.deleteButton?.frame.origin.y = self.kindLabel!.frame.maxY + 10
             if (self.imageName != nil && self.imageName != "" && self.imageName != "plus" && self.trim(self.kindLabel!.text!) != "") {
-                self.addButton?.hidden = false
+                self.addButton?.isHidden = false
             }
             }, completion: { _ in
                 self.kindLabel?.addGestureRecognizer(self.kindLabelTap!)
         })
     }
     
-    func trim(str: String) -> String {
-        return str.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+    func trim(_ str: String) -> String {
+        return str.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
     }
 
 }

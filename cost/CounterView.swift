@@ -25,7 +25,7 @@ class CounterView: UIView {
         0xee54f5c, 0xef06d5c, 0xee54f80, 0xef29c9f, 0xeeeb5b7
     ]
 
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         self.layer.sublayers = nil
         let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2 - 10)
         //width of circle
@@ -36,7 +36,7 @@ class CounterView: UIView {
         animation.duration = 0.4
         animation.fromValue = 0.0
         animation.toValue = 1.0
-        animation.removedOnCompletion = false
+        animation.isRemovedOnCompletion = false
         animation.fillMode = kCAFillModeForwards
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
         
@@ -48,12 +48,23 @@ class CounterView: UIView {
             for number in numbers {
                 num.append(number.sum)
             }
-            for var i = num.count - 1; i >= 0 ; i -= 1 {
+//            for var i = num.count - 1; i >= 0 ; i -= 1 {
+//                var before = num[i]
+//                for var j = i - 1; j >= 0; j -= 1 {
+//                    before += num[j]
+//                }
+//                num[i] = before
+//            }
+            var i = num.count
+            while i >= 0 {
                 var before = num[i]
-                for var j = i - 1; j >= 0; j -= 1 {
+                var j = i - 1
+                while j >= 0 {
                     before += num[j]
+                    j -= 1
                 }
                 num[i] = before
+                i -= 1
             }
             
             total = num[num.count - 1]
@@ -69,30 +80,30 @@ class CounterView: UIView {
             for i in 0 ..< numbers.count {
                 let path = UIBezierPath(arcCenter: center, radius: radius, startAngle: angles[i], endAngle: angles[i + 1], clockwise: true)
                 let calyer = CAShapeLayer()
-                calyer.path = path.CGPath
-                calyer.strokeColor = UIColor.colorFromCode(colors[i]).CGColor
+                calyer.path = path.cgPath
+                calyer.strokeColor = UIColor.colorFromCode(colors[i]).cgColor
                 calyer.strokeStart = 0
                 calyer.strokeEnd = 0
-                calyer.fillColor = UIColor.clearColor().CGColor
+                calyer.fillColor = UIColor.clear.cgColor
                 calyer.lineWidth = arcWidth
                 animation.beginTime = CACurrentMediaTime() + animation.duration * Double(i)
                 animation.duration = 0.4 / Double(numbers.count)
                 
-                calyer.addAnimation(animation, forKey: "strokeEnd")
+                calyer.add(animation, forKey: "strokeEnd")
                 self.layer.addSublayer(calyer)
             }
         } else {
             let path = UIBezierPath(arcCenter: center, radius: radius, startAngle: 0, endAngle: 2 * PI, clockwise: true)
             let calyer = CAShapeLayer()
-            calyer.path = path.CGPath
-            calyer.strokeColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5).CGColor
+            calyer.path = path.cgPath
+            calyer.strokeColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5).cgColor
             calyer.strokeStart = 0
             calyer.strokeEnd = 0
-            calyer.fillColor = UIColor.clearColor().CGColor
+            calyer.fillColor = UIColor.clear.cgColor
             calyer.lineWidth = arcWidth
             animation.beginTime = CACurrentMediaTime()
             
-            calyer.addAnimation(animation, forKey: "strokeEnd")
+            calyer.add(animation, forKey: "strokeEnd")
             self.layer.addSublayer(calyer)
         }
         
@@ -106,11 +117,11 @@ class CounterView: UIView {
 //        UIColor.whiteColor().setStroke()
 //        innerPath.stroke()
         
-        label = UILabel(frame: CGRectMake(center.x - 50, center.y - 20, 100, 40))
-        label!.textAlignment = .Center
+        label = UILabel(frame: CGRect(x: center.x - 50, y: center.y - 20, width: 100, height: 40))
+        label!.textAlignment = .center
         label!.adjustsFontSizeToFitWidth = true
-        label!.font = UIFont.boldSystemFontOfSize(30)
-        label!.textColor = UIColor.whiteColor()
+        label!.font = UIFont.boldSystemFont(ofSize: 30)
+        label!.textColor = UIColor.white
 //        label!.backgroundColor = UIColor.redColor()
         addSubview(label!)
         if total == 0.0 {

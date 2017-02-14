@@ -16,30 +16,30 @@ class PageView: UIView, UIScrollViewDelegate {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.frame = frame
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
     }
     
     init(frame: CGRect, views: Array<UIView>){
         super.init(frame: frame)
         self.frame = frame
-        self.userInteractionEnabled = true
-        self.backgroundColor = UIColor.clearColor()
+        self.isUserInteractionEnabled = true
+        self.backgroundColor = UIColor.clear
         
         let count = views.count
         
-        let scrollView = UIScrollView(frame: CGRectMake(0, 0, frame.width, frame.height))
-        scrollView.contentSize = CGSizeMake(frame.width * CGFloat(count), frame.height)
-        scrollView.setContentOffset(CGPointMake(0, 0), animated: false)
+        let scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height))
+        scrollView.contentSize = CGSize(width: frame.width * CGFloat(count), height: frame.height)
+        scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
         
-        scrollView.pagingEnabled = true
+        scrollView.isPagingEnabled = true
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.scrollsToTop = false
-        scrollView.directionalLockEnabled = true
+        scrollView.isDirectionalLockEnabled = true
         scrollView.delegate = self
         
         for i in 0 ..< count {
-            views[i].frame = CGRectMake(frame.width * CGFloat(i), 0, frame.width, frame.height)
+            views[i].frame = CGRect(x: frame.width * CGFloat(i), y: 0, width: frame.width, height: frame.height)
             scrollView.addSubview(views[i])
         }
         
@@ -48,11 +48,11 @@ class PageView: UIView, UIScrollViewDelegate {
         
         //title
         
-        let noteView = UIView(frame: CGRectMake(0, self.bounds.size.height - 30.0, frame.width, 20))
+        let noteView = UIView(frame: CGRect(x: 0, y: self.bounds.size.height - 30.0, width: frame.width, height: 20))
         
         let pageControlWidth = CGFloat(count - 2) * 10.0 + 40.0
         let pageControlHeight = CGFloat(20.0)
-        let pageControl = UIPageControl(frame: CGRectMake((frame.width - pageControlWidth) / 2, 6, pageControlWidth, pageControlHeight))
+        let pageControl = UIPageControl(frame: CGRect(x: (frame.width - pageControlWidth) / 2, y: 6, width: pageControlWidth, height: pageControlHeight))
         pageControl.currentPage = 0;
         pageControl.numberOfPages = count
         self.pageControl = pageControl
@@ -62,7 +62,7 @@ class PageView: UIView, UIScrollViewDelegate {
 
     }
 
-    func scrollViewDidScroll(scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let pageWidth = frame.width
         let page = Int(floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth)) + 1
         pageControl.currentPage = page
@@ -72,7 +72,7 @@ class PageView: UIView, UIScrollViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func scrollTo(point: CGPoint) {
+    func scrollTo(_ point: CGPoint) {
         scrollView.setContentOffset(point, animated: false)        
     }
 }

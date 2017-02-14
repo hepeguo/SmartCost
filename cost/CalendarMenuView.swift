@@ -19,7 +19,7 @@ class CalendarMenuView: UIView {
     */
     var weekDayName = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
     var padding: CGFloat = 0.0
-    var labelFont: UIFont = UIFont.boldSystemFontOfSize(10)
+    var labelFont: UIFont = UIFont.boldSystemFont(ofSize: 10)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -33,14 +33,14 @@ class CalendarMenuView: UIView {
     func initDayLabel() {
         let height = frame.height
         let width = (frame.width - padding * 6) / 7
-        var rect = CGRectMake(0, 0, width, height)
+        var rect = CGRect(x: 0, y: 0, width: width, height: height)
         
-        for (index, name) in  weekDayName.enumerate() {
+        for (index, name) in  weekDayName.enumerated() {
             rect.origin.x =  CGFloat(index) * (width + padding)
             let label = UILabel(frame: rect)
             label.text = name
-            label.textAlignment = .Center
-            label.textColor = UIColor.darkGrayColor()
+            label.textAlignment = .center
+            label.textColor = UIColor.darkGray
             label.font = labelFont
             addSubview(label)
         }

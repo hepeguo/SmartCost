@@ -24,7 +24,7 @@ class GAuxiliaryView: UIView {
     
     let defaultFillColor = UIColor.colorFromCode(0xe74c3c)
     
-    private var radius: CGFloat {
+    fileprivate var radius: CGFloat {
         get {
             return (min(frame.height, frame.width) - 10) / 2
         }
@@ -33,11 +33,11 @@ class GAuxiliaryView: UIView {
     init(rect: CGRect, shape: GShape) {
         self.shape = shape
         super.init(frame: rect)
-        strokeColor = UIColor.clearColor()
+        strokeColor = UIColor.clear
         fillColor = UIColor.colorFromCode(0xe74c3c)
         
         layer.cornerRadius = 5
-        backgroundColor = .clearColor()
+        backgroundColor = .clear
     }
     
     override func didMoveToSuperview() {
@@ -48,16 +48,16 @@ class GAuxiliaryView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         _ = UIGraphicsGetCurrentContext()
         var path: UIBezierPath!
         
         if let shape = shape {
             switch shape {
-            case .RightFlag: path = rightFlagPath()
-            case .LeftFlag: path = leftFlagPath()
-            case .Circle: path = circlePath()
-            case .Rect: path = rectPath()
+            case .rightFlag: path = rightFlagPath()
+            case .leftFlag: path = leftFlagPath()
+            case .circle: path = circlePath()
+            case .rect: path = rectPath()
             }
         }
         
@@ -77,7 +77,7 @@ class GAuxiliaryView: UIView {
 }
 
 extension GAuxiliaryView {
-    func updateFrame(frame: CGRect) {
+    func updateFrame(_ frame: CGRect) {
         self.frame = frame
         setNeedsDisplay()
     }
@@ -85,7 +85,7 @@ extension GAuxiliaryView {
 
 extension GAuxiliaryView {
     func circlePath() -> UIBezierPath {
-        let arcCenter = CGPointMake(frame.width / 2, frame.height / 2)
+        let arcCenter = CGPoint(x: frame.width / 2, y: frame.height / 2)
         let startAngle = CGFloat(0)
         let endAngle = CGFloat(M_PI * 2.0)
         let clockwise = true
@@ -98,30 +98,34 @@ extension GAuxiliaryView {
     
     func rightFlagPath() -> UIBezierPath {
         let flag = UIBezierPath()
-        flag.moveToPoint(CGPointMake(bounds.width / 2, bounds.height / 2 - radius))
-        flag.addLineToPoint(CGPointMake(bounds.width, bounds.height / 2 - radius))
-        flag.addLineToPoint(CGPointMake(bounds.width, bounds.height / 2 + radius ))
-        flag.addLineToPoint(CGPointMake(bounds.width / 2, bounds.height / 2 + radius))
+        flag.move(to: CGPoint(x: bounds.width / 2, y: bounds.height / 2 - radius))
+        flag.addLine(to: CGPoint(x: bounds.width, y: bounds.height / 2 - radius))
+        flag.addLine(to: CGPoint(x: bounds.width, y: bounds.height / 2 + radius ))
+        flag.addLine(to: CGPoint(x: bounds.width / 2, y: bounds.height / 2 + radius))
         
-        let path = CGPathCreateMutable()
-        CGPathAddPath(path, nil, circlePath().CGPath)
-        CGPathAddPath(path, nil, flag.CGPath)
+        let path = CGMutablePath()
+        path.addPath(circlePath().cgPath)
+        path.addPath(flag.cgPath)
+//        CGPathAddPath(path, nil, circlePath().cgPath)
+//        CGPathAddPath(path, nil, flag.cgPath)
         
-        return UIBezierPath(CGPath: path)
+        return UIBezierPath(cgPath: path)
     }
     
     func leftFlagPath() -> UIBezierPath {
         let flag = UIBezierPath()
-        flag.moveToPoint(CGPointMake(bounds.width / 2, bounds.height / 2 + radius))
-        flag.addLineToPoint(CGPointMake(0, bounds.height / 2 + radius))
-        flag.addLineToPoint(CGPointMake(0, bounds.height / 2 - radius))
-        flag.addLineToPoint(CGPointMake(bounds.width / 2, bounds.height / 2 - radius))
+        flag.move(to: CGPoint(x: bounds.width / 2, y: bounds.height / 2 + radius))
+        flag.addLine(to: CGPoint(x: 0, y: bounds.height / 2 + radius))
+        flag.addLine(to: CGPoint(x: 0, y: bounds.height / 2 - radius))
+        flag.addLine(to: CGPoint(x: bounds.width / 2, y: bounds.height / 2 - radius))
         
-        let path = CGPathCreateMutable()
-        CGPathAddPath(path, nil, circlePath().CGPath)
-        CGPathAddPath(path, nil, flag.CGPath)
+        let path = CGMutablePath()
+        path.addPath(circlePath().cgPath)
+        path.addPath(flag.cgPath)
+//        CGPathAddPath(path, nil, circlePath().cgPath)
+//        CGPathAddPath(path, nil, flag.cgPath)
         
-        return UIBezierPath(CGPath: path)
+        return UIBezierPath(cgPath: path)
     }
     
     func rectPath() -> UIBezierPath {
@@ -130,7 +134,7 @@ extension GAuxiliaryView {
         
         let offset:CGFloat = 5.0
         
-        let path = UIBezierPath(rect: CGRectMake(0 - offset, midY - radius, bounds.width + offset / 2, radius * 2))
+        let path = UIBezierPath(rect: CGRect(x: 0 - offset, y: midY - radius, width: bounds.width + offset / 2, height: radius * 2))
         
         return path
     }
@@ -138,7 +142,7 @@ extension GAuxiliaryView {
 
 
 extension UIColor {
-    class func colorFromCode(code: Int) -> UIColor {
+    class func colorFromCode(_ code: Int) -> UIColor {
         let red = CGFloat(((code & 0xFF0000) >> 16)) / 255
         let green = CGFloat(((code & 0xFF00) >> 8)) / 255
         let blue = CGFloat((code & 0xFF)) / 255

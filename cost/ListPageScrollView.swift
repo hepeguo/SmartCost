@@ -25,30 +25,30 @@ class ListPageScrollView: UIView, UIScrollViewDelegate {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.frame = frame
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
     }
     
     init(frame: CGRect, views: Array<UIView>){
         super.init(frame: frame)
         self.frame = frame
-        self.userInteractionEnabled = true
-        self.backgroundColor = UIColor.clearColor()
+        self.isUserInteractionEnabled = true
+        self.backgroundColor = UIColor.clear
         
         let count = views.count
         
-        let scrollView = UIScrollView(frame: CGRectMake(0, 0, frame.width, frame.height))
-        scrollView.contentSize = CGSizeMake(frame.width * CGFloat(count), frame.height)
-        scrollView.setContentOffset(CGPointMake(frame.width, 0), animated: false)
+        let scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height))
+        scrollView.contentSize = CGSize(width: frame.width * CGFloat(count), height: frame.height)
+        scrollView.setContentOffset(CGPoint(x: frame.width, y: 0), animated: false)
         
-        scrollView.pagingEnabled = true
+        scrollView.isPagingEnabled = true
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.scrollsToTop = false
-        scrollView.directionalLockEnabled = true
+        scrollView.isDirectionalLockEnabled = true
         scrollView.delegate = self
         
         for i in 0 ..< count {
-            views[i].frame = CGRectMake(frame.width * CGFloat(i), 0, frame.width, frame.height)
+            views[i].frame = CGRect(x: frame.width * CGFloat(i), y: 0, width: frame.width, height: frame.height)
             scrollView.addSubview(views[i])
         }
         
@@ -56,13 +56,13 @@ class ListPageScrollView: UIView, UIScrollViewDelegate {
         self.addSubview(scrollView)
     }
     
-    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if(scrollView.contentOffset.x > frame.width) {
             delegate?.next()
         } else if (scrollView.contentOffset.x < frame.width) {
             delegate?.prev()
         }
-        scrollView.setContentOffset(CGPointMake(frame.width, 0), animated: false)
+        scrollView.setContentOffset(CGPoint(x: frame.width, y: 0), animated: false)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -70,16 +70,16 @@ class ListPageScrollView: UIView, UIScrollViewDelegate {
     }
     
     func autoScrollLeft() {
-        scrollView.setContentOffset(CGPointMake(0, 0), animated: true)
+        scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
         
     }
     
     func autoScrollRight() {
-        scrollView.setContentOffset(CGPointMake(scrollView.frame.width * 2, 0), animated: true)
+        scrollView.setContentOffset(CGPoint(x: scrollView.frame.width * 2, y: 0), animated: true)
     }
     
-    func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
-        scrollView.setContentOffset(CGPointMake(frame.width, 0), animated: false)
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        scrollView.setContentOffset(CGPoint(x: frame.width, y: 0), animated: false)
         delegate!.afterAutoScroll()
     }
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 protocol NumberPadDelegate {
-    func tappedNumber(text: String)
+    func tappedNumber(_ text: String)
     func tappedOK()
 }
 
@@ -23,14 +23,14 @@ class NumberPad: UIView {
     */
     var padding: CGFloat = 0
     var font: UIFont = UIFont(name: "Avenir-Heavy", size: 18)!
-    var fontColor: UIColor = UIColor.whiteColor()
+    var fontColor: UIColor = UIColor.white
     var delegate: NumberPadDelegate?
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        let blurEffect = UIBlurEffect(style: .Light)
+        let blurEffect = UIBlurEffect(style: .light)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = CGRectMake(0, 0, frame.width, frame.height)
+        blurEffectView.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
         self.addSubview(blurEffectView)
         
         initNumberView()
@@ -48,43 +48,43 @@ class NumberPad: UIView {
         let width: CGFloat = (frame.width - padding) / 4
         let height: CGFloat = frame.height / 4
         for i in 1 ..< 10 {
-            let label: UILabel = UILabel(frame: CGRectMake(width * CGFloat((i - 1) % 3), height * CGFloat(Int((i - 1) / 3)), width, height))
+            let label: UILabel = UILabel(frame: CGRect(x: width * CGFloat((i - 1) % 3), y: height * CGFloat(Int((i - 1) / 3)), width: width, height: height))
             label.text = "\(i)"
             label.font = font
             label.textColor = fontColor
-            label.textAlignment = .Center
-            label.userInteractionEnabled = true
+            label.textAlignment = .center
+            label.isUserInteractionEnabled = true
             let tap = UITapGestureRecognizer(target: self, action: #selector(NumberPad.tappedNumber(_:)))
             label.addGestureRecognizer(tap)
             addSubview(label)
         }
         let labelName = [".", "0", "⌫"]
-        for (index, name) in labelName.enumerate() {
-            let label: UILabel = UILabel(frame: CGRectMake(width * CGFloat(index), height * CGFloat(3), width, height))
+        for (index, name) in labelName.enumerated() {
+            let label: UILabel = UILabel(frame: CGRect(x: width * CGFloat(index), y: height * CGFloat(3), width: width, height: height))
             label.text = "\(name)"
             label.font = font
             label.textColor = fontColor
-            label.textAlignment = .Center
-            label.userInteractionEnabled = true
+            label.textAlignment = .center
+            label.isUserInteractionEnabled = true
             let tap = UITapGestureRecognizer(target: self, action: #selector(NumberPad.tappedNumber(_:)))
             label.addGestureRecognizer(tap)
             addSubview(label)
         }
         let controllerName = ["C", "OK"]
-        for (index, name) in controllerName.enumerate() {
-            let label: UILabel = UILabel(frame: CGRectMake(width * CGFloat(3), height * CGFloat(2 * index), width, height * CGFloat(2)))
+        for (index, name) in controllerName.enumerated() {
+            let label: UILabel = UILabel(frame: CGRect(x: width * CGFloat(3), y: height * CGFloat(2 * index), width: width, height: height * CGFloat(2)))
             label.text = "\(name)"
             label.font = font
             label.textColor = fontColor
-            label.textAlignment = .Center
-            label.userInteractionEnabled = true
+            label.textAlignment = .center
+            label.isUserInteractionEnabled = true
             let tap = UITapGestureRecognizer(target: self, action: #selector(NumberPad.tappedNumber(_:)))
             label.addGestureRecognizer(tap)
             addSubview(label)
         }
     }
     
-    func tappedNumber(sender: UITapGestureRecognizer) {
+    func tappedNumber(_ sender: UITapGestureRecognizer) {
         if string == "0" {
             string = ""
         }
@@ -95,8 +95,8 @@ class NumberPad: UIView {
                         
                     } else if text == "⌫" {
                         afterDotTappedTapNumber -= 1
-                        let index = string.endIndex.advancedBy(-1);
-                        string = string.substringToIndex(index)
+                        let index = string.characters.index(string.endIndex, offsetBy: -1);
+                        string = string.substring(to: index)
                         if afterDotTappedTapNumber < 0 {
                             afterDotTappedTapNumber = 0
                             dotTapped = false
@@ -111,8 +111,8 @@ class NumberPad: UIView {
                         afterDotTappedTapNumber += 1
                         if afterDotTappedTapNumber > 2 {
                             afterDotTappedTapNumber = 2
-                            let index = string.endIndex.advancedBy(-1);
-                            let newstring = string.substringToIndex(index)
+                            let index = string.characters.index(string.endIndex, offsetBy: -1);
+                            let newstring = string.substring(to: index)
                             string = newstring + text
                         } else {
                             string = string + text
@@ -142,8 +142,8 @@ class NumberPad: UIView {
                         if string == "0" || string == "" {
                             return
                         }
-                        let index = string.endIndex.advancedBy(-1);
-                        let newstring = string.substringToIndex(index)
+                        let index = string.characters.index(string.endIndex, offsetBy: -1);
+                        let newstring = string.substring(to: index)
                         if newstring.isEmpty {
                             string = "0"
                         } else {

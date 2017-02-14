@@ -18,7 +18,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
     let theme = Theme()
     var theTheme: String {
         get {
-            var returnValue: String? = NSUserDefaults.standardUserDefaults().objectForKey("theme") as? String
+            var returnValue: String? = UserDefaults.standard.object(forKey: "theme") as? String
             if returnValue == nil
             {
                 returnValue = "blue"
@@ -26,8 +26,8 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
             return returnValue!
         }
         set (newValue) {
-            NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: "theme")
-            NSUserDefaults.standardUserDefaults().synchronize()
+            UserDefaults.standard.set(newValue, forKey: "theme")
+            UserDefaults.standard.synchronize()
         }
     }
     
@@ -36,7 +36,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         
         self.automaticallyAdjustsScrollViewInsets = false
         view.layer.cornerRadius = 5
-        view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
+        view.backgroundColor = theme.value(forKey: theTheme) as? UIColor
         contentView = UIView(frame: view.frame)
         view.addSubview(contentView!)
         
@@ -44,11 +44,11 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         initViews()
     }
     
-    override func viewWillAppear(animated: Bool) {
-        view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
-        contentView!.transform = CGAffineTransformMakeScale(0.9, 0.9)
-        UIView.animateWithDuration(0.3, animations: {
-            self.contentView!.transform = CGAffineTransformMakeScale(1, 1)
+    override func viewWillAppear(_ animated: Bool) {
+        view.backgroundColor = theme.value(forKey: theTheme) as? UIColor
+        contentView!.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        UIView.animate(withDuration: 0.3, animations: {
+            self.contentView!.transform = CGAffineTransform(scaleX: 1, y: 1)
             }, completion: nil)
     }
 
@@ -56,17 +56,17 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         super.didReceiveMemoryWarning()
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
     }
     
     func initTopBar() {
         let closeTap = UITapGestureRecognizer(target: self, action: #selector(SetUpViewController.JustCloseSetUpView(_:)))
         
-        let closeButton = UILabel(frame: CGRectMake(10, 27, 30, 30))
-        closeButton.userInteractionEnabled = true
+        let closeButton = UILabel(frame: CGRect(x: 10, y: 27, width: 30, height: 30))
+        closeButton.isUserInteractionEnabled = true
         closeButton.text = "✕"
-        closeButton.textColor = UIColor.whiteColor()
+        closeButton.textColor = UIColor.white
         closeButton.font = UIFont(name: "Avenir-Heavy", size: 28)!
         closeButton.addGestureRecognizer(closeTap)
         contentView!.addSubview(closeButton)
@@ -77,41 +77,41 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         let height: CGFloat = 54
         let marginBetweenButton:CGFloat = 4
         
-        let exportToExcelLabel = UILabel(frame: CGRectMake(0, 0, width * 2, height))
+        let exportToExcelLabel = UILabel(frame: CGRect(x: 0, y: 0, width: width * 2, height: height))
         exportToExcelLabel.text = "Export through Email"
-        exportToExcelLabel.textColor = UIColor.whiteColor()
+        exportToExcelLabel.textColor = UIColor.white
         exportToExcelLabel.font = font
-        exportToExcelLabel.userInteractionEnabled = true
+        exportToExcelLabel.isUserInteractionEnabled = true
         let exportExcelTap = UITapGestureRecognizer(target: self, action: #selector(SetUpViewController.exportExcel(_:)))
         exportToExcelLabel.addGestureRecognizer(exportExcelTap)
         
-        let exportToExcelView = UIView(frame: CGRectMake(10, 64 + marginBetweenButton, width * 2, height))
+        let exportToExcelView = UIView(frame: CGRect(x: 10, y: 64 + marginBetweenButton, width: width * 2, height: height))
         exportToExcelView.addSubview(exportToExcelLabel)
         
-        let suggestionToMeLabel = UILabel(frame: CGRectMake(0, 0, width * 2, height))
+        let suggestionToMeLabel = UILabel(frame: CGRect(x: 0, y: 0, width: width * 2, height: height))
         suggestionToMeLabel.text = "Suggestions"
-        suggestionToMeLabel.textColor = UIColor.whiteColor()
+        suggestionToMeLabel.textColor = UIColor.white
         suggestionToMeLabel.font = font
-        suggestionToMeLabel.userInteractionEnabled = true
+        suggestionToMeLabel.isUserInteractionEnabled = true
         let suggestionToMeTap = UITapGestureRecognizer(target: self, action: #selector(SetUpViewController.suggestionToMe(_:)))
         suggestionToMeLabel.addGestureRecognizer(suggestionToMeTap)
         
-        let suggestionToMeView = UIView(frame: CGRectMake(10, 64 + height + marginBetweenButton * 2, width * 2, height))
+        let suggestionToMeView = UIView(frame: CGRect(x: 10, y: 64 + height + marginBetweenButton * 2, width: width * 2, height: height))
         suggestionToMeView.addSubview(suggestionToMeLabel)
         
-        let themeLabel = UILabel(frame: CGRectMake(10, 64 + height * 2 + marginBetweenButton * 3, width * 2, height))
+        let themeLabel = UILabel(frame: CGRect(x: 10, y: 64 + height * 2 + marginBetweenButton * 3, width: width * 2, height: height))
         themeLabel.text = "Themes"
-        themeLabel.textColor = UIColor.whiteColor()
+        themeLabel.textColor = UIColor.white
         themeLabel.font = font
-        themeLabel.userInteractionEnabled = true
+        themeLabel.isUserInteractionEnabled = true
         let themeTap = UITapGestureRecognizer(target: self, action: #selector(SetUpViewController.showThemeView(_:)))
         themeLabel.addGestureRecognizer(themeTap)
         
-        let categoriesLabel = UILabel(frame: CGRectMake(10, 64 + height * 3 + marginBetweenButton * 4, width * 2, height))
+        let categoriesLabel = UILabel(frame: CGRect(x: 10, y: 64 + height * 3 + marginBetweenButton * 4, width: width * 2, height: height))
         categoriesLabel.text = "Categories"
-        categoriesLabel.textColor = UIColor.whiteColor()
+        categoriesLabel.textColor = UIColor.white
         categoriesLabel.font = font
-        categoriesLabel.userInteractionEnabled = true
+        categoriesLabel.isUserInteractionEnabled = true
         let categoriesTap = UITapGestureRecognizer(target: self, action: #selector(SetUpViewController.showCatagoriesView(_:)))
         categoriesLabel.addGestureRecognizer(categoriesTap)
         
@@ -122,26 +122,26 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
     }
     
 //MARK: action
-    func JustCloseSetUpView(sender: UITapGestureRecognizer) {
-        UIView.animateWithDuration(0.3, animations: {
+    func JustCloseSetUpView(_ sender: UITapGestureRecognizer) {
+        UIView.animate(withDuration: 0.3, animations: {
             self.contentView!.alpha = 0
-            self.contentView!.transform = CGAffineTransformMakeScale(0.9, 0.9)
+            self.contentView!.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
             }, completion: {_ in
-                self.performSegueWithIdentifier("closeSetUpView", sender: self)
+                self.performSegue(withIdentifier: "closeSetUpView", sender: self)
         })
     }
     
-    func showThemeView(sender: UITapGestureRecognizer) {
-        let vc = self.storyboard?.instantiateViewControllerWithIdentifier("themeView") as! ThemeViewController
-        self.presentViewController(vc, animated: true, completion: nil)
+    func showThemeView(_ sender: UITapGestureRecognizer) {
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "themeView") as! ThemeViewController
+        self.present(vc, animated: true, completion: nil)
     }
     
-    func showCatagoriesView(sender: UITapGestureRecognizer) {
+    func showCatagoriesView(_ sender: UITapGestureRecognizer) {
         let vc = CatagoriesViewController()
-        self.presentViewController(vc, animated: true, completion: nil)
+        self.present(vc, animated: true, completion: nil)
     }
     
-    func toggleAutoSync(sender: UITapGestureRecognizer) {
+    func toggleAutoSync(_ sender: UITapGestureRecognizer) {
         if autoSyncTip!.text == "YES" {
             autoSyncTip?.text = "NO"
             print("open auto sync")
@@ -151,23 +151,23 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         }
     }
     
-    func syncNow(sender: UITapGestureRecognizer) {
+    func syncNow(_ sender: UITapGestureRecognizer) {
         
     }
     
-    func exportExcel(sender: UITapGestureRecognizer) {
+    func exportExcel(_ sender: UITapGestureRecognizer) {
         let mailComposeViewController = configuredExportDataMailComposeViewController()
         if MFMailComposeViewController.canSendMail() {
-            self.presentViewController(mailComposeViewController, animated: true, completion: nil)
+            self.present(mailComposeViewController, animated: true, completion: nil)
         } else {
             self.showSendMailErrorAlert()
         }
     }
     
-    func suggestionToMe(sender: UITapGestureRecognizer) {
+    func suggestionToMe(_ sender: UITapGestureRecognizer) {
         let mailComposeViewController = configuredSentToMeMailComposeViewController()
         if MFMailComposeViewController.canSendMail() {
-            self.presentViewController(mailComposeViewController, animated: true, completion: nil)
+            self.present(mailComposeViewController, animated: true, completion: nil)
         } else {
             self.showSendMailErrorAlert()
         }
@@ -196,22 +196,22 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         
         let data = compileDataToExcel()
         
-        _ = (NSFileManager.defaultManager())
-        let directorys : [String]? = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory,NSSearchPathDomainMask.AllDomainsMask, true) as [String]
+        _ = (FileManager.default)
+        let directorys : [String]? = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory,FileManager.SearchPathDomainMask.allDomainsMask, true) as [String]
         
         if ((directorys) != nil) {
             
             let directories:[String] = directorys!;
             let dictionary = directories[0];
             let plistfile = "/cost-data.csv"
-            let plistpath = dictionary.stringByAppendingString(plistfile)
+            let plistpath = dictionary + plistfile
             
             do {
-                try data.writeToFile(plistpath, atomically: true, encoding: NSUTF8StringEncoding)
+                try data.write(toFile: plistpath, atomically: true, encoding: String.Encoding.utf8)
             } catch let error as NSError  {
                 print(error)
             }
-            let costData: NSData = NSData(contentsOfFile: plistpath)!
+            let costData: Data = try! Data(contentsOf: URL(fileURLWithPath: plistpath))
             mailComposerVC.addAttachmentData(costData, mimeType: "text/csv", fileName: "cost-data.csv")
         }
         
@@ -225,8 +225,8 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
     
     // MARK: MFMailComposeViewControllerDelegate
     
-    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
-        controller.dismissViewControllerAnimated(true, completion: nil)
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true, completion: nil)
         
     }
     
@@ -234,7 +234,7 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
         let items = getAllDataFromDatabase()
         var data = "Index,Price,Kind,Detail,Time\n"
         if items != nil {
-            for (index, item) in items!.enumerate() {
+            for (index, item) in items!.enumerated() {
                 data += "\(index),\(String(format: "%.2f", Float(item.price))),\(item.kind),\(item.detail),\(item.year)-\(item.month)-\(item.day) \(item.addTime)\n"
             }
         }
@@ -243,16 +243,16 @@ class SetUpViewController: UIViewController, MFMailComposeViewControllerDelegate
     
 //MARK: get data from database
     func getAllDataFromDatabase() -> [ItemModel]? {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let managedContext = appDelegate.managedObjectContext!
         
-        let fetchRequest = NSFetchRequest(entityName: "ItemModel")
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ItemModel")
         
         fetchRequest.predicate = NSPredicate(format: "kill == false")
         
         var fetchResults: [ItemModel]?
         do {
-            fetchResults = try managedContext.executeFetchRequest(fetchRequest) as? [ItemModel]
+            fetchResults = try managedContext.fetch(fetchRequest) as? [ItemModel]
         } catch let error as NSError {
             print(error)
         }

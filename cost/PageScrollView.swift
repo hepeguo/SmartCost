@@ -18,30 +18,30 @@ class PageScrollView: UIView, UIScrollViewDelegate {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.frame = frame
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
     }
     
     init(frame: CGRect, views: Array<UIView>, titles: Array<String>){
         super.init(frame: frame)
         self.titles = titles
         self.frame = frame
-        self.userInteractionEnabled = true
-        self.backgroundColor = UIColor.clearColor()
+        self.isUserInteractionEnabled = true
+        self.backgroundColor = UIColor.clear
         
         let count = views.count
         
-        let scrollView = UIScrollView(frame: CGRectMake(0, 0, frame.width, frame.height))
-        scrollView.contentSize = CGSizeMake(frame.width * CGFloat(count), frame.height)
-        scrollView.setContentOffset(CGPointMake(frame.width, 0), animated: false)
+        let scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height))
+        scrollView.contentSize = CGSize(width: frame.width * CGFloat(count), height: frame.height)
+        scrollView.setContentOffset(CGPoint(x: frame.width, y: 0), animated: false)
         
-        scrollView.pagingEnabled = true
+        scrollView.isPagingEnabled = true
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.scrollsToTop = false
         scrollView.delegate = self
         
         for i in 0 ..< count {
-            views[i].frame = CGRectMake(frame.width * CGFloat(i), 0, frame.width, frame.height)
+            views[i].frame = CGRect(x: frame.width * CGFloat(i), y: 0, width: frame.width, height: frame.height)
             scrollView.addSubview(views[i])
         }
         
@@ -49,28 +49,28 @@ class PageScrollView: UIView, UIScrollViewDelegate {
         self.addSubview(scrollView)
         
         //title
-        let noteView = UIView(frame: CGRectMake(0, self.bounds.size.height - 33.0, frame.width, 33))
+        let noteView = UIView(frame: CGRect(x: 0, y: self.bounds.size.height - 33.0, width: frame.width, height: 33))
         noteView.backgroundColor = UIColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 0.5)
         
         let pageControlWidth = CGFloat(count - 2) * 10.0 + 40.0
         let pageControlHeight = CGFloat(20.0)
-        let pageControl = UIPageControl(frame: CGRectMake(frame.width - pageControlWidth, 6, pageControlWidth, pageControlHeight))
+        let pageControl = UIPageControl(frame: CGRect(x: frame.width - pageControlWidth, y: 6, width: pageControlWidth, height: pageControlHeight))
         pageControl.currentPage = 0;
         pageControl.numberOfPages = count - 2
         self.pageControl = pageControl
         noteView.addSubview(pageControl)
         
-        let noteTitle = UILabel(frame: CGRectMake(5, 6, frame.width - pageControlWidth, 20))
+        let noteTitle = UILabel(frame: CGRect(x: 5, y: 6, width: frame.width - pageControlWidth, height: 20))
         noteTitle.text = titles[0]
-        noteTitle.backgroundColor = UIColor.clearColor()
-        noteTitle.font = UIFont.systemFontOfSize(13)
+        noteTitle.backgroundColor = UIColor.clear
+        noteTitle.font = UIFont.systemFont(ofSize: 13)
         self.noteTitle = noteTitle
         noteView.addSubview(noteTitle)
         
         self.addSubview(noteView)
     }
     
-    func scrollViewDidScroll(scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let pageWidth = frame.width
         let page = Int(floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth)) + 1
         currentPageIndex = page
@@ -85,16 +85,16 @@ class PageScrollView: UIView, UIScrollViewDelegate {
         noteTitle.text = titles[titleIndex]
     }
     
-    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if(currentPageIndex == 0) {
-            scrollView.setContentOffset(CGPointMake(CGFloat(titles.count) * frame.width, 0), animated: false)
+            scrollView.setContentOffset(CGPoint(x: CGFloat(titles.count) * frame.width, y: 0), animated: false)
         }
         if(currentPageIndex == titles.count + 1) {
-            scrollView.setContentOffset(CGPointMake(frame.width, 0), animated: false)
+            scrollView.setContentOffset(CGPoint(x: frame.width, y: 0), animated: false)
         }
     }
     
-    func imagePressed(sender: UITapGestureRecognizer) {
+    func imagePressed(_ sender: UITapGestureRecognizer) {
         
     }
     

@@ -32,37 +32,37 @@ class TableViewCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         
         priceLabel = UILabel(frame: CGRect.null)
-        priceLabel.textColor = UIColor.whiteColor()
-        priceLabel.font = UIFont.boldSystemFontOfSize(25)
-        priceLabel.backgroundColor = UIColor.clearColor()
+        priceLabel.textColor = UIColor.white
+        priceLabel.font = UIFont.boldSystemFont(ofSize: 25)
+        priceLabel.backgroundColor = UIColor.clear
         priceLabel.adjustsFontSizeToFitWidth = true
-        priceLabel.textAlignment = .Right
+        priceLabel.textAlignment = .right
         priceLabel.text = "\(item?.price)"
         
         detailLabel = UILabel(frame: CGRect.null)
-        detailLabel.textColor = UIColor.whiteColor()
-        detailLabel.font = UIFont.boldSystemFontOfSize(16)
-        detailLabel.backgroundColor = UIColor.clearColor()
-        detailLabel.textAlignment = .Left
+        detailLabel.textColor = UIColor.white
+        detailLabel.font = UIFont.boldSystemFont(ofSize: 16)
+        detailLabel.backgroundColor = UIColor.clear
+        detailLabel.textAlignment = .left
         detailLabel.numberOfLines = 2
         detailLabel.text = item?.detail
         
         timeLabel = UILabel(frame: CGRect.null)
-        timeLabel.textColor = UIColor.whiteColor()
-        timeLabel.font = UIFont.systemFontOfSize(16)
-        timeLabel.backgroundColor = UIColor.clearColor()
-        timeLabel.textAlignment = .Right
+        timeLabel.textColor = UIColor.white
+        timeLabel.font = UIFont.systemFont(ofSize: 16)
+        timeLabel.backgroundColor = UIColor.clear
+        timeLabel.textAlignment = .right
         timeLabel.text = item?.time
         
         dotLine = DashLine()
-        dotLine.backgroundColor = UIColor.clearColor()
+        dotLine.backgroundColor = UIColor.clear
         
         
         kindLabel = UILabel(frame: CGRect.null)
-        kindLabel.textColor = UIColor.whiteColor()
-        kindLabel.font = UIFont.systemFontOfSize(16)
-        kindLabel.backgroundColor = UIColor.clearColor()
-        kindLabel.textAlignment = .Left
+        kindLabel.textColor = UIColor.white
+        kindLabel.font = UIFont.systemFont(ofSize: 16)
+        kindLabel.backgroundColor = UIColor.clear
+        kindLabel.textAlignment = .left
         kindLabel.text = item?.kind
         
         kindImage = UIImageView()     
@@ -79,7 +79,7 @@ class TableViewCell: UITableViewCell {
         contentView.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.15)
         contentView.layer.cornerRadius = 3
         addSubview(contentView)
-        selectionStyle = .None
+        selectionStyle = .none
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -100,7 +100,7 @@ class TableViewCell: UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        contentView.frame = CGRectMake(marginLR, marginTB, bounds.size.width - marginLR * 2, contentHeight)
+        contentView.frame = CGRect(x: marginLR, y: marginTB, width: bounds.size.width - marginLR * 2, height: contentHeight)
         
         kindImage.frame = CGRect(x: paddingLR, y: marginTB, width: imageSize, height: imageSize)
         kindLabel.frame = CGRect(x: imageSize + paddingLR + 5.0, y: paddingTB, width: contentView.frame.width - imageSize - 2 * paddingLR, height: imageSize)

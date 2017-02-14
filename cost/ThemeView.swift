@@ -32,13 +32,13 @@ class ThemeView: UIView {
     }
     
     func addBorder() {
-        layer.borderColor = UIColor.whiteColor().CGColor
+        layer.borderColor = UIColor.white.cgColor
         layer.borderWidth = 2
     }
     
     func removeBorder() {
         layer.borderWidth = 0
-        layer.borderColor = UIColor.clearColor().CGColor
+        layer.borderColor = UIColor.clear.cgColor
     }
     
     required init?(coder aDecoder: NSCoder) {

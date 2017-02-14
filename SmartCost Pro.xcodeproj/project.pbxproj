@@ -294,12 +294,13 @@
 			attributes = {
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = guozy;
 				TargetAttributes = {
 					B14CB5DC1AFF7BA6003D9C8F = {
 						CreatedOnToolsVersion = 6.3.1;
 						DevelopmentTeam = SS929F32ZE;
+						LastSwiftMigration = 0820;
 						SystemCapabilities = {
 							com.apple.iCloud = {
 								enabled = 1;
@@ -439,8 +440,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: zhenyong guo (SS929F32ZE)";
@@ -486,8 +489,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: zhenyong guo (SS929F32ZE)";
@@ -508,6 +513,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PROVISIONING_PROFILE = "1883ce6b-5808-4411-9a63-8206c1c490e6";
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -528,6 +534,7 @@
 				PRODUCT_NAME = "SmartCost Pro";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "";
 			};
 			name = Debug;
@@ -547,6 +554,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.hepeguo.www.costpro;
 				PRODUCT_NAME = "SmartCost Pro";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "";
 			};
 			name = Release;

@@ -8,6 +8,30 @@
 
 import UIKit
 import CoreData
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ListPageScrollViewDelegate, CalendarWeekViewControllerDelegate {
     
@@ -46,7 +70,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     let theme = Theme()
     var theTheme: String {
         get {
-            var returnValue: String? = NSUserDefaults.standardUserDefaults().objectForKey("theme") as? String
+            var returnValue: String? = UserDefaults.standard.object(forKey: "theme") as? String
             if returnValue == nil
             {
                 returnValue = "blue"
@@ -54,8 +78,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             return returnValue!
         }
         set (newValue) {
-            NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: "theme")
-            NSUserDefaults.standardUserDefaults().synchronize()
+            UserDefaults.standard.set(newValue, forKey: "theme")
+            UserDefaults.standard.synchronize()
         }
     }
     var kinds: [CatagoriesModel] = [CatagoriesModel]()
@@ -66,51 +90,51 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         self.automaticallyAdjustsScrollViewInsets = false
         view.layer.cornerRadius = 5
         view.clipsToBounds = true
-        view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
+        view.backgroundColor = theme.value(forKey: theTheme) as? UIColor
         
-        if let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext {
+        if let context = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext {
             moc = context
         }
         
         initYearMonthDay()
-        initTableViews(CGRectMake(0, 130, view.bounds.width, view.bounds.height - 130))
+        initTableViews(CGRect(x: 0, y: 130, width: view.bounds.width, height: view.bounds.height - 130))
         initDataForTableViews()
         initTopBar()
         
-        NSNotificationCenter.defaultCenter().addObserver(
+        NotificationCenter.default.addObserver(
             self,
             selector: #selector(MainViewController.timeChanged(_:)),
-            name: UIApplicationSignificantTimeChangeNotification,
+            name: NSNotification.Name.UIApplicationSignificantTimeChange,
             object: nil)
     }
     
-    func timeChanged(notification: NSNotification) {
+    func timeChanged(_ notification: Notification) {
         let date = GDate()
         calendarView?.setCurrentDay(date)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        view.backgroundColor = theme.valueForKey(theTheme) as? UIColor
+        view.backgroundColor = theme.value(forKey: theTheme) as? UIColor
         self.topBar!.frame.origin.y = -130
         self.listView?.frame.origin.y = self.view.frame.height
         getKinds()
         todayTableView.reloadData()
         
-        UIView.animateWithDuration(0.3, animations: {
+        UIView.animate(withDuration: 0.3, animations: {
             self.topBar!.frame.origin.y = 0
             self.listView?.frame.origin.y = 130
             }, completion: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MainViewController.persistentStoreDidChange), name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MainViewController.persistentStoreWillChange(_:)), name: NSPersistentStoreCoordinatorStoresWillChangeNotification, object: moc.persistentStoreCoordinator)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MainViewController.receiveICloudChanges(_:)), name: NSPersistentStoreDidImportUbiquitousContentChangesNotification, object: moc.persistentStoreCoordinator)
+        NotificationCenter.default.addObserver(self, selector: #selector(MainViewController.persistentStoreDidChange), name: NSNotification.Name.NSPersistentStoreCoordinatorStoresDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MainViewController.persistentStoreWillChange(_:)), name: NSNotification.Name.NSPersistentStoreCoordinatorStoresWillChange, object: moc.persistentStoreCoordinator)
+        NotificationCenter.default.addObserver(self, selector: #selector(MainViewController.receiveICloudChanges(_:)), name: NSNotification.Name.NSPersistentStoreDidImportUbiquitousContentChanges, object: moc.persistentStoreCoordinator)
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSPersistentStoreCoordinatorStoresWillChangeNotification, object: moc.persistentStoreCoordinator)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSPersistentStoreDidImportUbiquitousContentChangesNotification, object: moc.persistentStoreCoordinator)
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSPersistentStoreCoordinatorStoresDidChange, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSPersistentStoreCoordinatorStoresWillChange, object: moc.persistentStoreCoordinator)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSPersistentStoreDidImportUbiquitousContentChanges, object: moc.persistentStoreCoordinator)
     }
     
     func persistentStoreDidChange() {
@@ -119,8 +143,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         counterNumber!.scrollToNumber(total.numberBeforeDot, numberAfterDot: total.numberAfterDot)
     }
     
-    func persistentStoreWillChange(notifaction: NSNotification) {
-        moc.performBlock({ () -> Void in
+    func persistentStoreWillChange(_ notifaction: Notification) {
+        moc.perform({ () -> Void in
             if self.moc.hasChanges {
                 let error: NSError? = nil
                 
@@ -138,9 +162,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         })
     }
     
-    func receiveICloudChanges(notifaction: NSNotification) {
-        moc.performBlock { () -> Void in
-            self.moc.mergeChangesFromContextDidSaveNotification(notifaction)
+    func receiveICloudChanges(_ notifaction: Notification) {
+        moc.perform { () -> Void in
+            self.moc.mergeChanges(fromContextDidSave: notifaction)
             self.initDataForTableViews()
             let total = self.getSum(self.todayList)
             self.counterNumber!.scrollToNumber(total.numberBeforeDot, numberAfterDot: total.numberAfterDot)
@@ -169,49 +193,49 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let fontBigger: UIFont = UIFont(name: "Avenir-Heavy", size: 30)!
         let fontBig: UIFont = UIFont(name: "Avenir-Heavy", size: 18)!
         let fontSmall: UIFont = UIFont(name: "Avenir-Heavy", size: 12)!
-        let color: UIColor = UIColor.redColor()
+        let color: UIColor = UIColor.red
         
-        topBar = UIView(frame: CGRectMake(0, 0, view.bounds.width, 130))
+        topBar = UIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 130))
         
-        let statusLabel = UILabel(frame: CGRectMake(0, 0, view.frame.width, 20))
-        statusLabel.backgroundColor = UIColor.whiteColor()
+        let statusLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 20))
+        statusLabel.backgroundColor = UIColor.white
         
-        dateLabel = UILabel(frame: CGRectMake(10, 20, 100, 22))
+        dateLabel = UILabel(frame: CGRect(x: 10, y: 20, width: 100, height: 22))
         dateLabel!.text = "\(monthName[month - 1]) \(year)"
         dateLabel!.font = fontSmall
         dateLabel!.textColor = color
         
         
-        let setUpView = UIView(frame: CGRectMake(view.frame.width - 98, 20, 44, 44))
-        setUpView.userInteractionEnabled = true
+        let setUpView = UIView(frame: CGRect(x: view.frame.width - 98, y: 20, width: 44, height: 44))
+        setUpView.isUserInteractionEnabled = true
         let setUpTap = UITapGestureRecognizer(target: self, action: #selector(MainViewController.showSetUpView(_:)))
         setUpView.addGestureRecognizer(setUpTap)
-        let setUpIcon = UIImageView(frame: CGRectMake(13, 13, 18, 18))
+        let setUpIcon = UIImageView(frame: CGRect(x: 13, y: 13, width: 18, height: 18))
         setUpIcon.image = UIImage(named: "setUp")
         setUpView.addSubview(setUpIcon)
         
-        let addLabel = UILabel(frame: CGRectMake(view.bounds.width - 54, 20, 44, 44))
-        addLabel.textAlignment = .Center
+        let addLabel = UILabel(frame: CGRect(x: view.bounds.width - 54, y: 20, width: 44, height: 44))
+        addLabel.textAlignment = .center
         addLabel.text = "+"
         addLabel.font = fontBigger
         
-        let totalLabel = UILabel(frame: CGRectMake(10, 42, 70, 22))
+        let totalLabel = UILabel(frame: CGRect(x: 10, y: 42, width: 70, height: 22))
         totalLabel.text = "TOTAL: "
         totalLabel.font = fontBig
         totalLabel.textColor = color
         
         let total = getSum(todayList)
-        counterNumber = CounterNumber(frame: CGRectMake(80, 36, view.frame.width - 178, 22), startNumber: total.numberBeforeDot, startNumberAfterDot: total.numberAfterDot)
-        counterNumber!.fontColor = UIColor.redColor()
-        counterNumber!.backgroundColor = UIColor.clearColor()
+        counterNumber = CounterNumber(frame: CGRect(x: 80, y: 36, width: view.frame.width - 178, height: 22), startNumber: total.numberBeforeDot, startNumberAfterDot: total.numberAfterDot)
+        counterNumber!.fontColor = UIColor.red
+        counterNumber!.backgroundColor = UIColor.clear
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(MainViewController.showAddItemView(_:)))
-        addLabel.userInteractionEnabled = true
+        addLabel.isUserInteractionEnabled = true
         addLabel.addGestureRecognizer(tap)
         
-        let calenderMenu = CalendarMenuView(frame: CGRectMake(0, 64, view.frame.width, 22))
-        calendarView = CalendarWeekViewControllerView(frame: CGRectMake(0, 86, view.bounds.width, 44))
-        calendarView!.backgroundColor = UIColor.whiteColor()
+        let calenderMenu = CalendarMenuView(frame: CGRect(x: 0, y: 64, width: view.frame.width, height: 22))
+        calendarView = CalendarWeekViewControllerView(frame: CGRect(x: 0, y: 86, width: view.bounds.width, height: 44))
+        calendarView!.backgroundColor = UIColor.white
         calendarView!.layer.zPosition = 2
         calendarView!.delegate = self
         
@@ -223,80 +247,80 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         topBar!.addSubview(counterNumber!)
         topBar!.addSubview(calenderMenu)
         topBar!.addSubview(calendarView!)
-        topBar?.backgroundColor = UIColor.whiteColor()
+        topBar?.backgroundColor = UIColor.white
         view.addSubview(topBar!)
     }
     
-    func initTableViews(frame: CGRect) {
+    func initTableViews(_ frame: CGRect) {
         listView = UIView(frame: frame)
         view.addSubview(listView!)
         
-        todayTableView.registerClass(TableViewCell.self, forCellReuseIdentifier: "cell")
-        todayTableView.separatorStyle = .None
-        todayTableView.backgroundColor = UIColor.clearColor()
-        todayTableView.frame = CGRectMake(0, 0, frame.width, frame.height)
+        todayTableView.register(TableViewCell.self, forCellReuseIdentifier: "cell")
+        todayTableView.separatorStyle = .none
+        todayTableView.backgroundColor = UIColor.clear
+        todayTableView.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
         todayTableView.dataSource = self
         todayTableView.delegate = self
         
-        yesterdayTableView.registerClass(TableViewCell.self, forCellReuseIdentifier: "cell")
-        yesterdayTableView.separatorStyle = .None
-        yesterdayTableView.backgroundColor = UIColor.clearColor()
-        yesterdayTableView.frame = CGRectMake(-view.bounds.width, 0, frame.width, frame.height)
+        yesterdayTableView.register(TableViewCell.self, forCellReuseIdentifier: "cell")
+        yesterdayTableView.separatorStyle = .none
+        yesterdayTableView.backgroundColor = UIColor.clear
+        yesterdayTableView.frame = CGRect(x: -view.bounds.width, y: 0, width: frame.width, height: frame.height)
         yesterdayTableView.dataSource = self
         yesterdayTableView.delegate = self
         
-        tomorrowTableView.registerClass(TableViewCell.self, forCellReuseIdentifier: "cell")
-        tomorrowTableView.separatorStyle = .None
-        tomorrowTableView.backgroundColor = UIColor.clearColor()
-        tomorrowTableView.frame = CGRectMake(view.bounds.width, 0, frame.width, frame.height)
+        tomorrowTableView.register(TableViewCell.self, forCellReuseIdentifier: "cell")
+        tomorrowTableView.separatorStyle = .none
+        tomorrowTableView.backgroundColor = UIColor.clear
+        tomorrowTableView.frame = CGRect(x: view.bounds.width, y: 0, width: frame.width, height: frame.height)
         tomorrowTableView.dataSource = self
         tomorrowTableView.delegate = self
         
         let views = [yesterdayTableView, todayTableView, tomorrowTableView]
         
-        let pageFrame = CGRectMake(0, 0, frame.width, frame.height)
+        let pageFrame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
         
         pageScrollView = ListPageScrollView(frame: pageFrame, views: views)
         pageScrollView!.delegate = self
         
         listView!.addSubview(pageScrollView!)
         
-        let statisticsIconView = UIView(frame: CGRectMake(frame.width - 48, frame.height - 66, 36, 36))
-        statisticsIconView.userInteractionEnabled = true
+        let statisticsIconView = UIView(frame: CGRect(x: frame.width - 48, y: frame.height - 66, width: 36, height: 36))
+        statisticsIconView.isUserInteractionEnabled = true
         let showStatisticsViewTap = UITapGestureRecognizer(target: self, action: #selector(MainViewController.showStatisticsView(_:)))
         statisticsIconView.addGestureRecognizer(showStatisticsViewTap)
         
-        let statistics = UIImageView(frame: CGRectMake(8, 8, 18, 18))
+        let statistics = UIImageView(frame: CGRect(x: 8, y: 8, width: 18, height: 18))
         statistics.image = UIImage(named: "pan")
         
         statisticsIconView.addSubview(statistics)
         listView?.addSubview(statisticsIconView)
         
-        let gotoTodayIconView = UIView(frame: CGRectMake(10, frame.height - 66, 36, 36))
-        gotoTodayIconView.userInteractionEnabled = true
+        let gotoTodayIconView = UIView(frame: CGRect(x: 10, y: frame.height - 66, width: 36, height: 36))
+        gotoTodayIconView.isUserInteractionEnabled = true
         let gotoTodayTap = UITapGestureRecognizer(target: self, action: #selector(MainViewController.gotoToday(_:)))
         gotoTodayIconView.addGestureRecognizer(gotoTodayTap)
         
-        gotoTodayIcon = UIImageView(frame: CGRectMake(7, 7, 22, 22))
+        gotoTodayIcon = UIImageView(frame: CGRect(x: 7, y: 7, width: 22, height: 22))
         gotoTodayIconView.addSubview(gotoTodayIcon!)
         listView?.addSubview(gotoTodayIconView)
     }
     
     func setupGotoTodayIcon() {
         if numberOfDayFromToday == 0 {
-            UIView.animateWithDuration(0.3, animations: {
+            UIView.animate(withDuration: 0.3, animations: {
                 self.gotoTodayIcon?.alpha = 0
                 }, completion: { _ in
                     self.gotoTodayIcon?.image = nil
             })
         } else if numberOfDayFromToday > 0 {
             gotoTodayIcon?.image = UIImage(named: "arrow-left")
-            UIView.animateWithDuration(0.3, animations: {
+            UIView.animate(withDuration: 0.3, animations: {
                 self.gotoTodayIcon?.alpha = 1
                 }, completion: nil)
         } else {
             gotoTodayIcon?.image = UIImage(named: "arrow-right")
-            UIView.animateWithDuration(0.3, animations: {
+            UIView.animate(withDuration: 0.3, animations: {
                 self.gotoTodayIcon?.alpha = 1
                 }, completion: nil)
         }
@@ -340,37 +364,37 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     //MARK: - action
     
-    func showAddItemView(tap: UITapGestureRecognizer) {
-        UIView.animateWithDuration(0.3, animations: {
+    func showAddItemView(_ tap: UITapGestureRecognizer) {
+        UIView.animate(withDuration: 0.3, animations: {
             self.topBar!.frame.origin.y = -110
             self.listView?.frame.origin.y = self.view.frame.height
             }, completion: {_ in
-                let vc = self.storyboard?.instantiateViewControllerWithIdentifier("AddItemView") as! NewItemViewController
-                self.presentViewController(vc, animated: false, completion: nil)
+                let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddItemView") as! NewItemViewController
+                self.present(vc, animated: false, completion: nil)
         })
     }
     
-    func showSetUpView(tap: UITapGestureRecognizer) {
-        UIView.animateWithDuration(0.3, animations: {
+    func showSetUpView(_ tap: UITapGestureRecognizer) {
+        UIView.animate(withDuration: 0.3, animations: {
             self.topBar!.frame.origin.y = -110
             self.listView?.frame.origin.y = self.view.frame.height
             }, completion: {_ in
-                let vc = self.storyboard?.instantiateViewControllerWithIdentifier("setUpView") as! SetUpViewController
-                self.presentViewController(vc, animated: false, completion: nil)
+                let vc = self.storyboard?.instantiateViewController(withIdentifier: "setUpView") as! SetUpViewController
+                self.present(vc, animated: false, completion: nil)
         })
     }
     
-    func showStatisticsView(tap: UITapGestureRecognizer) {
-        UIView.animateWithDuration(0.3, animations: {
+    func showStatisticsView(_ tap: UITapGestureRecognizer) {
+        UIView.animate(withDuration: 0.3, animations: {
             self.topBar!.frame.origin.y = -110
             self.listView?.frame.origin.y = self.view.frame.height
             }, completion: {_ in
-                let vc = self.storyboard?.instantiateViewControllerWithIdentifier("statisticsView") as! StatisticsViewController
-                self.presentViewController(vc, animated: false, completion: nil)
+                let vc = self.storyboard?.instantiateViewController(withIdentifier: "statisticsView") as! StatisticsViewController
+                self.present(vc, animated: false, completion: nil)
         })
     }
     
-    func newItemFromAddView(item: Item) {
+    func newItemFromAddView(_ item: Item) {
         if item.id != "" {
             if item.kill {
                 deleteItem(item)
@@ -382,19 +406,19 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
     }
     
-    @IBAction func closeNewItemView(sender: UIStoryboardSegue) {
+    @IBAction func closeNewItemView(_ sender: UIStoryboardSegue) {
         //        println("success")
     }
     
-    @IBAction func closeSetUpView(sender: UIStoryboardSegue) {
+    @IBAction func closeSetUpView(_ sender: UIStoryboardSegue) {
         //        println("success")
     }
     
-    @IBAction func closeStatisticsView(sender: UIStoryboardSegue) {
+    @IBAction func closeStatisticsView(_ sender: UIStoryboardSegue) {
         //        println("success")
     }
     
-    func gotoToday(sender: UITapGestureRecognizer) {
+    func gotoToday(_ sender: UITapGestureRecognizer) {
         let date = GDate()
         calendarView?.setCalendarSelectedDay(date)
     }
@@ -402,11 +426,11 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     // MARK: - Table view data source
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if tableView == yesterdayTableView {
             return yesterdayList.count
         } else if tableView == todayTableView {
@@ -418,12 +442,12 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 110
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
         var itemModel: ItemModel?
         if tableView == yesterdayTableView {
             itemModel = yesterdayList[indexPath.row]
@@ -447,34 +471,34 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             item.imageName = getKingIamgeName(item.kind)
             cell.item = item
         }
-        cell.backgroundColor = UIColor.clearColor()        
+        cell.backgroundColor = UIColor.clear        
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        UIView.animateWithDuration(0.3, animations: {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        UIView.animate(withDuration: 0.3, animations: {
             self.topBar!.frame.origin.y = -110
             self.listView?.frame.origin.y = self.view.frame.height
             }, completion: {_ in
-                let vc = self.storyboard?.instantiateViewControllerWithIdentifier("AddItemView") as! NewItemViewController
+                let vc = self.storyboard?.instantiateViewController(withIdentifier: "AddItemView") as! NewItemViewController
                 let item = self.todayList[indexPath.row]
                 vc.item.price = item.price.floatValue
                 vc.item.detail = item.detail
                 vc.item.kind = item.kind
                 vc.item.id = item.id
-                self.presentViewController(vc, animated: false, completion: nil)
+                self.present(vc, animated: false, completion: nil)
         })
     }
     
     //MARK: - get and save data
-    func deleteItem(item: Item) {
+    func deleteItem(_ item: Item) {
         var itemModel:ItemModel?
-        let fetchRequest = NSFetchRequest(entityName: "ItemModel")
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ItemModel")
         fetchRequest.predicate = NSPredicate(format: "id == '\(item.id)'")
         
         var fetchResults: [ItemModel]?
         do {
-            try fetchResults = (moc.executeFetchRequest(fetchRequest) as! [ItemModel])
+            try fetchResults = (moc.fetch(fetchRequest) as! [ItemModel])
         } catch let error as NSError {
             print(error)
         }
@@ -483,7 +507,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             itemModel = fetchResults![0]
         }
         if itemModel != nil {
-            itemModel!.kill = item.kill
+            itemModel!.kill = item.kill as NSNumber
             
             do {
                 try moc.save()
@@ -491,9 +515,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 print(error)
             }
             
-            for (index, data) in todayList.enumerate() {
+            for (index, data) in todayList.enumerated() {
                 if item.id == data.id {
-                    todayList.removeAtIndex(index)
+                    todayList.remove(at: index)
                     break
                 }
             }
@@ -504,14 +528,14 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         todayTableView.reloadData()
     }
     
-    func saveItem(item: Item) {
+    func saveItem(_ item: Item) {
         var itemModel:ItemModel?
-        let fetchRequest = NSFetchRequest(entityName: "ItemModel")
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ItemModel")
         fetchRequest.predicate = NSPredicate(format: "id == '\(item.id)'")
         
         var fetchResults: [ItemModel]?
         do {
-            try fetchResults = (moc.executeFetchRequest(fetchRequest) as! [ItemModel])
+            try fetchResults = (moc.fetch(fetchRequest) as! [ItemModel])
         } catch let error as NSError {
             print(error)
         }
@@ -522,11 +546,11 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         if itemModel != nil {
             let date = GDate()
             let time = date.getTime()
-            itemModel!.price = item.price
+            itemModel!.price = NSNumber(value: item.price)
             itemModel!.detail = item.detail
             itemModel!.kind = item.kind
-            itemModel!.isSpend = item.isSpend
-            itemModel!.kill = item.kill
+            itemModel!.isSpend = item.isSpend as NSNumber
+            itemModel!.kill = item.kill as NSNumber
             itemModel!.addTime = "\(time.hour): \(time.minute): \(time.second)"
             
             do {
@@ -535,7 +559,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 print(error)
             }
             
-            for (index, item)in todayList.enumerate() {
+            for (index, item)in todayList.enumerated() {
                 if item.id == todayList[index].id {
                     todayList[index] = item
                     break
@@ -548,15 +572,15 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         todayTableView.reloadData()
     }
     
-    func addItem(item: Item) {
-        let fetchRequest = NSFetchRequest(entityName: "BookModel")
+    func addItem(_ item: Item) {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "BookModel")
         fetchRequest.predicate = NSPredicate(format: "name == '\(listName)'")
         
         var book: BookModel?
         
         var fetchResults: [BookModel]?
         do {
-            try fetchResults = (moc.executeFetchRequest(fetchRequest) as! [BookModel])
+            try fetchResults = (moc.fetch(fetchRequest) as! [BookModel])
         } catch let error as NSError {
             print(error)
         }
@@ -566,21 +590,21 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         
         if book == nil{
-            book = NSEntityDescription.insertNewObjectForEntityForName("BookModel", inManagedObjectContext: moc) as? BookModel
+            book = NSEntityDescription.insertNewObject(forEntityName: "BookModel", into: moc) as? BookModel
             book!.name = "\(listName)"
         }
         
-        let itemModel: ItemModel = NSEntityDescription.insertNewObjectForEntityForName("ItemModel", inManagedObjectContext: moc) as! ItemModel
+        let itemModel: ItemModel = NSEntityDescription.insertNewObject(forEntityName: "ItemModel", into: moc) as! ItemModel
         
         let date = GDate()
         let time = date.getTime()
         itemModel.id = "\(date.timeInterval)"
-        itemModel.price = item.price
+        itemModel.price = NSNumber(value: Double(item.price))
         itemModel.book = book!
-        itemModel.isSpend = item.isSpend
+        itemModel.isSpend = item.isSpend as NSNumber
         itemModel.detail = item.detail
         itemModel.kind = item.kind
-        itemModel.kill = item.kill
+        itemModel.kill = item.kill as NSNumber
         itemModel.addTime = "\(time.hour): \(time.minute): \(time.second)"
         itemModel.year = "\(year)"
         itemModel.month = "\(month)"
@@ -601,21 +625,21 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         todayTableView.reloadData()
     }
     
-    func getDayDataFromDatabase(year: Int, month: Int, day: Int) -> [ItemModel]? {
-        let fetchRequest = NSFetchRequest(entityName: "ItemModel")
+    func getDayDataFromDatabase(_ year: Int, month: Int, day: Int) -> [ItemModel]? {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ItemModel")
         
         fetchRequest.predicate = NSPredicate(format: "year == '\(year)' && month == '\(month)' && day == '\(day)' && kill == false")
         
         var fetchResults: [ItemModel]?
         do {
-            try fetchResults = (moc.executeFetchRequest(fetchRequest) as! [ItemModel])
+            try fetchResults = (moc.fetch(fetchRequest) as! [ItemModel])
         } catch let error as NSError {
             print(error)
         }
         return fetchResults
     }
     
-    func getSum (data: [ItemModel]) -> (numberBeforeDot: Int, numberAfterDot: Int) {
+    func getSum (_ data: [ItemModel]) -> (numberBeforeDot: Int, numberAfterDot: Int) {
         var sum: Double = 0.0
         var numberBeforeDot = 0
         var numberAfterDot = 0
@@ -624,8 +648,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         numberBeforeDot = Int(sum)
         let totalString = NSString(format: "%.2f", sum)
-        let location = [totalString .rangeOfString(".")].first?.location
-        let stringAfterDot = totalString.substringFromIndex(location! + 1)
+        let location = [totalString .range(of: ".")].first?.location
+        let stringAfterDot = totalString.substring(from: location! + 1)
         if stringAfterDot == "0" {
             numberAfterDot = 0
         } else {
@@ -635,11 +659,11 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func getKinds() {
-        let fetchRequest = NSFetchRequest(entityName: "Catagories")
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Catagories")
         
         var fetchResults: [Catagories]?
         do {
-            try fetchResults = (moc.executeFetchRequest(fetchRequest) as? [Catagories])
+            try fetchResults = (moc.fetch(fetchRequest) as? [Catagories])
         } catch let error as NSError {
             print(error)
         }
@@ -647,7 +671,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         var kinds = [CatagoriesModel]()
         
         if fetchResults != nil && fetchResults?.count > 0 {
-            for (_, item) in fetchResults!.enumerate() {
+            for (_, item) in fetchResults!.enumerated() {
                 let catagory: CatagoriesModel = CatagoriesModel()
                 catagory.kind = item.kind!
                 catagory.imageName = item.imageName!
@@ -678,7 +702,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 ["kind": "Other","imageName": "Other"]
             ]
             
-            for (_, item) in items.enumerate() {
+            for (_, item) in items.enumerated() {
                 let kind: CatagoriesModel = CatagoriesModel()
                 kind.kind = item["kind"]!
                 kind.imageName = item["imageName"]!
@@ -688,9 +712,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
     }
     
-    func getKingIamgeName(kind: String) -> String {
+    func getKingIamgeName(_ kind: String) -> String {
         var imageName = ""
-        for (_, item) in kinds.enumerate() {
+        for (_, item) in kinds.enumerated() {
             if kind == item.kind {
                 imageName = item.imageName
             }
@@ -705,7 +729,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         yesterdayList = todayList
         todayList = tomorrowList
         var date = GDate()
-        let presentDate = date.addDay(++numberOfDayFromToday)
+        numberOfDayFromToday += 1
+        let presentDate = date.addDay(numberOfDayFromToday)
         let dateTemp = presentDate.getDay()
         let weekTemp = presentDate.getWeek()
         year = dateTemp.year
@@ -737,7 +762,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         tomorrowList = todayList
         todayList = yesterdayList
         var date = GDate()
-        let presentDate = date.addDay(--numberOfDayFromToday)
+        numberOfDayFromToday -= 1
+        let presentDate = date.addDay(numberOfDayFromToday)
         let dateTemp = presentDate.getDay()
         let weekTemp = presentDate.getWeek()
         year = dateTemp.year
@@ -774,7 +800,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
 //  MARK: CalendarWeekViewControllerDelegate
-    func selectedDay(date: GDate) {
+    func selectedDay(_ date: GDate) {
         let selectedDay = date.getDay()
         let seletedDate = GDate(year: selectedDay.year, month: selectedDay.month, day: selectedDay.day, hour: 0, minute: 0, second: 0)
         let today = GDate(year: year, month: month, day: day, hour: 0, minute: 0, second: 0)

@@ -8,8 +8,8 @@
 
 import UIKit
 protocol CalendarDayViewDelegate {
-    func selectedDay(dayView: CalendarDayView)
-    func unSelectedDay(dayView: CalendarDayView)
+    func selectedDay(_ dayView: CalendarDayView)
+    func unSelectedDay(_ dayView: CalendarDayView)
 }
 
 class CalendarDayView: UIView {
@@ -43,7 +43,7 @@ class CalendarDayView: UIView {
         }
     }
     
-    private var radius: CGFloat {
+    fileprivate var radius: CGFloat {
         get {
             return (min(frame.height, frame.width) - 10) / 2
         }
@@ -52,11 +52,11 @@ class CalendarDayView: UIView {
     var selectedCircleView: GAuxiliaryView?
     
     var selectedDayFillColor: UIColor = UIColor.colorFromCode(0x1D62F0)
-    var presentDayFillColor: UIColor = UIColor.redColor()
+    var presentDayFillColor: UIColor = UIColor.red
     
-    var normalDayFontColor: UIColor = UIColor.blackColor()
-    var presentDayFontColor: UIColor = UIColor.redColor()
-    var selectedDayFontColor: UIColor = UIColor.whiteColor()
+    var normalDayFontColor: UIColor = UIColor.black
+    var presentDayFontColor: UIColor = UIColor.red
+    var selectedDayFontColor: UIColor = UIColor.white
     
     var normalDayFont: UIFont = UIFont(name: "Avenir", size: 18)!
     var presentDayFont: UIFont = UIFont(name: "Avenir-Heavy", size: 18)!
@@ -65,9 +65,9 @@ class CalendarDayView: UIView {
     init(frame: CGRect, date: GDate) {
         super.init(frame: frame)
         self.date = date
-        let rect = CGRectMake(0, 0, frame.width, frame.height)
+        let rect = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
         dateLabel = UILabel(frame: rect)
-        dateLabel!.textAlignment = .Center
+        dateLabel!.textAlignment = .center
         dateLabel!.text = "\(date.getDay().day)"
         dateLabel!.font = normalDayFont
         dateLabel!.layer.zPosition = 2
@@ -86,7 +86,7 @@ class CalendarDayView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func selectDay(sender: UITapGestureRecognizer) {
+    func selectDay(_ sender: UITapGestureRecognizer) {
         if isSelectedDay {
             isSelectedDay = false
         } else {
@@ -97,19 +97,19 @@ class CalendarDayView: UIView {
     func setPresentDay() {
         if isSelectedDay {
             if selectedCircleView == nil {
-                let rect = CGRectMake(0, 0, frame.width, frame.height)
-                selectedCircleView = GAuxiliaryView(rect: rect, shape: .Circle)
+                let rect = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
+                selectedCircleView = GAuxiliaryView(rect: rect, shape: .circle)
             }
             selectedCircleView!.fillColor = presentDayFillColor
             dateLabel!.textColor = selectedDayFontColor
             dateLabel!.font = selectedDayFont
             
-            dateLabel!.transform = CGAffineTransformMakeScale(0.5, 0.5)
-            selectedCircleView!.transform = CGAffineTransformMakeScale(0.5, 0.5)
+            dateLabel!.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+            selectedCircleView!.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
             
-            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.3, initialSpringVelocity: 0.1, options: UIViewAnimationOptions.BeginFromCurrentState, animations: {
-                self.dateLabel!.transform = CGAffineTransformMakeScale(1, 1)
-                self.selectedCircleView!.transform = CGAffineTransformMakeScale(1, 1)
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.3, initialSpringVelocity: 0.1, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
+                self.dateLabel!.transform = CGAffineTransform(scaleX: 1, y: 1)
+                self.selectedCircleView!.transform = CGAffineTransform(scaleX: 1, y: 1)
                 }, completion: nil)
         } else {
             dateLabel!.textColor = presentDayFontColor
@@ -130,8 +130,8 @@ class CalendarDayView: UIView {
     
     func setSelectedDay() {
         if selectedCircleView == nil {
-            let rect = CGRectMake(0, 0, frame.width, frame.height)
-            selectedCircleView = GAuxiliaryView(rect: rect, shape: .Circle)
+            let rect = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
+            selectedCircleView = GAuxiliaryView(rect: rect, shape: .circle)
         }
         if isPresentDay {
             selectedCircleView!.fillColor = presentDayFillColor
@@ -142,21 +142,21 @@ class CalendarDayView: UIView {
         dateLabel!.textColor = selectedDayFontColor
         dateLabel!.font = selectedDayFont
         
-        dateLabel!.transform = CGAffineTransformMakeScale(0.5, 0.5)
-        selectedCircleView!.transform = CGAffineTransformMakeScale(0.5, 0.5)
+        dateLabel!.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        selectedCircleView!.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
         
-        UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.3, initialSpringVelocity: 0.1, options: UIViewAnimationOptions.BeginFromCurrentState, animations: {
-            self.dateLabel!.transform = CGAffineTransformMakeScale(1, 1)
-            self.selectedCircleView!.transform = CGAffineTransformMakeScale(1, 1)
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.3, initialSpringVelocity: 0.1, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
+            self.dateLabel!.transform = CGAffineTransform(scaleX: 1, y: 1)
+            self.selectedCircleView!.transform = CGAffineTransform(scaleX: 1, y: 1)
             }, completion: nil)
         delegate?.selectedDay(self)
     }
     
     func unSetSelectedDay() {
         if selectedCircleView != nil {
-            UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+            UIView.animate(withDuration: 0.2, delay: 0, options: UIViewAnimationOptions(), animations: {
                 if let circleView = self.selectedCircleView {
-                    circleView.transform = CGAffineTransformMakeScale(0.1, 0.1)
+                    circleView.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
                     circleView.alpha = 0.1
                 }
                 }, completion: { _ in
@@ -174,9 +174,9 @@ class CalendarDayView: UIView {
     }
     
     func setTips() {
-        let rect = CGRectMake((frame.width - 5) / 2, frame.height - 5.0, 5.0, 5.0)
-        let circleView = GAuxiliaryView(rect: rect, shape: .Circle)
-        circleView.fillColor = UIColor.blueColor()
+        let rect = CGRect(x: (frame.width - 5) / 2, y: frame.height - 5.0, width: 5.0, height: 5.0)
+        let circleView = GAuxiliaryView(rect: rect, shape: .circle)
+        circleView.fillColor = UIColor.blue
         addSubview(circleView)
     }
 }

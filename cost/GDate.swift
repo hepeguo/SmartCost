@@ -34,62 +34,62 @@ func >(lhs: GDate, rhs: GDate) -> Bool {
 func <(lhs: GDate, rhs: GDate) -> Bool {
     return lhs.timeInterval < rhs.timeInterval
 }
-func +(lhs: GDate, rhs: NSTimeInterval) -> GDate {
+func +(lhs: GDate, rhs: TimeInterval) -> GDate {
     return GDate(rhs, sinceDate:lhs)
 }
-func -(lhs: GDate, rhs: NSTimeInterval) -> GDate {
+func -(lhs: GDate, rhs: TimeInterval) -> GDate {
     return GDate(-rhs, sinceDate:lhs)
 }
-func +(lhs: NSTimeInterval, rhs: GDate) -> GDate {
+func +(lhs: TimeInterval, rhs: GDate) -> GDate {
     return GDate(lhs, sinceDate:rhs)
 }
-func -(lhs: NSTimeInterval, rhs: GDate) -> GDate {
+func -(lhs: TimeInterval, rhs: GDate) -> GDate {
     return GDate(-lhs, sinceDate:rhs)
 }
 
-func +=(inout lhs: GDate, rhs: NSTimeInterval) {
+func +=(lhs: inout GDate, rhs: TimeInterval) {
     return lhs = GDate(rhs, sinceDate:lhs)
 }
-func -=(inout lhs: GDate, rhs: NSTimeInterval) {
+func -=(lhs: inout GDate, rhs: TimeInterval) {
     return lhs = GDate(-rhs, sinceDate:lhs)
 }
 
 
 struct GDate {
-    var timeInterval:NSTimeInterval = 0
+    var timeInterval:TimeInterval = 0
     
-    init() { self.timeInterval = NSDate().timeIntervalSince1970 }
+    init() { self.timeInterval = Date().timeIntervalSince1970 }
 }
 
 // MARK: - 输出
 extension GDate {
-    func stringWithFormat(format:String = "yyyy-MM-dd HH:mm:ss") -> String {
-        let formatter = NSDateFormatter()
+    func stringWithFormat(_ format:String = "yyyy-MM-dd HH:mm:ss") -> String {
+        let formatter = DateFormatter()
         formatter.dateFormat = format
-        return formatter.stringFromDate(NSDate(timeIntervalSince1970: timeInterval))
+        return formatter.string(from: Date(timeIntervalSince1970: timeInterval))
     }
 }
 
 // MARK: - 计算
 extension GDate {
-    mutating func addDay(day:Int) -> GDate {
+    mutating func addDay(_ day:Int) -> GDate {
         let second = timeInterval + Double(day) * 24 * 3600
         return GDate(second)
     }
-    mutating func addHour(hour:Int) {
+    mutating func addHour(_ hour:Int) {
         timeInterval += Double(hour) * 3600
     }
-    mutating func addMinute(minute:Int) {
+    mutating func addMinute(_ minute:Int) {
         timeInterval += Double(minute) * 60
     }
-    mutating func addSecond(second:Int) {
+    mutating func addSecond(_ second:Int) {
         timeInterval += Double(second)
     }
     mutating func addMonth(month m:Int) {
         let (year, month, day) = getDay()
         let (hour, minute, second) = getTime()
         let era = year / 100
-        if let date = NSCalendar.currentCalendar().dateWithEra(era, year: year, month: month + m, day: day, hour: hour, minute: minute, second: second, nanosecond: 0) {
+        if let date = (Calendar.current as NSCalendar).date(era: era, year: year, month: month + m, day: day, hour: hour, minute: minute, second: second, nanosecond: 0) {
             timeInterval = date.timeIntervalSince1970
         } else {
             timeInterval += Double(m) * 30 * 24 * 3600
@@ -99,7 +99,7 @@ extension GDate {
         let (year, month, day) = getDay()
         let (hour, minute, second) = getTime()
         let era = year / 100
-        if let date = NSCalendar.currentCalendar().dateWithEra(era, year: year + y, month: month, day: day, hour: hour, minute: minute, second: second, nanosecond: 0) {
+        if let date = (Calendar.current as NSCalendar).date(era: era, year: year + y, month: month, day: day, hour: hour, minute: minute, second: second, nanosecond: 0) {
             timeInterval = date.timeIntervalSince1970
         } else {
             timeInterval += Double(y) * 365 * 24 * 3600
@@ -109,7 +109,7 @@ extension GDate {
 
 // MARK: - 判断
 extension GDate {
-    func between(begin:GDate,_ over:GDate) -> Bool {
+    func between(_ begin:GDate,_ over:GDate) -> Bool {
         return (self >= begin && self <= over) || (self >= over && self <= begin)
     }
 }
@@ -120,23 +120,23 @@ extension GDate {
     // for example : let (year, month, day) = date.getDay()
     func getDay() -> (year:Int, month:Int, day:Int) {
         var year:Int = 0, month:Int = 0, day:Int = 0
-        let date = NSDate(timeIntervalSince1970: timeInterval)
-        NSCalendar.currentCalendar().getEra(nil, year: &year, month: &month, day: &day, fromDate: date)
+        let date = Date(timeIntervalSince1970: timeInterval)
+        (Calendar.current as NSCalendar).getEra(nil, year: &year, month: &month, day: &day, from: date)
         return (year, month, day)
     }
     
     // for example : let (hour, minute, second) = date.getTime()
     func getTime() -> (hour:Int, minute:Int, second:Int) {
         var hour:Int = 0, minute:Int = 0, second:Int = 0
-        let date = NSDate(timeIntervalSince1970: timeInterval)
-        NSCalendar.currentCalendar().getHour(&hour, minute: &minute, second: &second, nanosecond: nil, fromDate: date)
+        let date = Date(timeIntervalSince1970: timeInterval)
+        (Calendar.current as NSCalendar).getHour(&hour, minute: &minute, second: &second, nanosecond: nil, from: date)
         return (hour, minute, second)
     }
     
     func getWeek() -> (year: Int, dayOfWeek: Int, weekOfYear: Int) {
         var dayOfWeek:Int = 0, weekOfYear:Int = 0, year: Int = 0
-        let date = NSDate(timeIntervalSince1970: timeInterval)
-        NSCalendar.currentCalendar().getEra(nil,yearForWeekOfYear: &year, weekOfYear: &weekOfYear, weekday: &dayOfWeek, fromDate: date)
+        let date = Date(timeIntervalSince1970: timeInterval)
+        (Calendar.current as NSCalendar).getEra(nil,yearForWeekOfYear: &year, weekOfYear: &weekOfYear, weekday: &dayOfWeek, from: date)
         return (year, dayOfWeek, weekOfYear)
     }
 }
@@ -145,42 +145,42 @@ extension GDate {
 extension GDate {
     init(year:Int, month:Int = 1, day:Int = 1, hour:Int = 0, minute:Int = 0, second:Int = 0) {
         let era = year / 100
-        if let date = NSCalendar.currentCalendar().dateWithEra(era, year: year, month: month, day: day, hour: hour, minute: minute, second: second, nanosecond: 0) {
+        if let date = (Calendar.current as NSCalendar).date(era: era, year: year, month: month, day: day, hour: hour, minute: minute, second: second, nanosecond: 0) {
             timeInterval = date.timeIntervalSince1970
         }
     }
 }
 
 extension GDate {
-    init(_ v: NSTimeInterval) { timeInterval = v }
+    init(_ v: TimeInterval) { timeInterval = v }
     
-    init(_ v: NSTimeInterval, sinceDate:GDate) {
-        let date = NSDate(timeIntervalSince1970: sinceDate.timeInterval)
-        timeInterval = NSDate(timeInterval: v, sinceDate: date).timeIntervalSince1970
+    init(_ v: TimeInterval, sinceDate:GDate) {
+        let date = Date(timeIntervalSince1970: sinceDate.timeInterval)
+        timeInterval = Date(timeInterval: v, since: date).timeIntervalSince1970
     }
     
-    init(sinceNow: NSTimeInterval) {
-        timeInterval = NSDate(timeIntervalSinceNow: sinceNow).timeIntervalSince1970
+    init(sinceNow: TimeInterval) {
+        timeInterval = Date(timeIntervalSinceNow: sinceNow).timeIntervalSince1970
     }
     
-    init(sinceReferenceDate: NSTimeInterval) {
-        timeInterval = NSDate(timeIntervalSinceReferenceDate: sinceReferenceDate).timeIntervalSince1970
+    init(sinceReferenceDate: TimeInterval) {
+        timeInterval = Date(timeIntervalSinceReferenceDate: sinceReferenceDate).timeIntervalSince1970
     }
 }
 
 extension GDate {
-    init(_ v: String, style: NSDateFormatterStyle = .NoStyle) {
-        let formatter = NSDateFormatter()
+    init(_ v: String, style: DateFormatter.Style = .none) {
+        let formatter = DateFormatter()
         formatter.dateStyle = style
-        if let date = formatter.dateFromString(v) {
+        if let date = formatter.date(from: v) {
             self.timeInterval = date.timeIntervalSince1970
         }
     }
     
     init(_ v: String, dateFormat:String = "yyyy-MM-dd HH:mm:ss") {
-        let formatter = NSDateFormatter()
+        let formatter = DateFormatter()
         formatter.dateFormat = dateFormat
-        if let date = formatter.dateFromString(v) {
+        if let date = formatter.date(from: v) {
             self.timeInterval = date.timeIntervalSince1970
         }
     }
@@ -207,12 +207,12 @@ extension GDate {
 // MARK: - 可以直接输出
 extension GDate : CustomStringConvertible {
     var description: String {
-        return NSDate(timeIntervalSince1970: timeInterval).description
+        return Date(timeIntervalSince1970: timeInterval).description
     }
 }
 extension GDate : CustomDebugStringConvertible {
     var debugDescription: String {
-        return NSDate(timeIntervalSince1970: timeInterval).debugDescription
+        return Date(timeIntervalSince1970: timeInterval).debugDescription
     }
 }
 //
