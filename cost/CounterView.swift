@@ -55,7 +55,7 @@ class CounterView: UIView {
 //                }
 //                num[i] = before
 //            }
-            var i = num.count
+            var i = num.count - 1
             while i >= 0 {
                 var before = num[i]
                 var j = i - 1
